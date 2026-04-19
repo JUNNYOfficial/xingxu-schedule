@@ -156,6 +156,9 @@ struct SummaryView: View {
         .onTapGesture {
             showTodayDetail = true
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("今日进度，\(completedCount)个任务已完成，共\(todayTasks.count)个任务，\(todayMood != nil ? "心情\(todayMood!.value)分" : "心情未记录")")
+        .accessibilityHint("双击查看今日日程详情")
     }
     
     // MARK: - Quick Access Grid
@@ -196,6 +199,7 @@ struct SummaryView: View {
         }
         .buttonStyle(PlainButtonStyle())
         .frame(maxWidth: .infinity)
+        .accessibilityLabel("\(title)")
     }
     
     // MARK: - Today Schedule
@@ -209,6 +213,7 @@ struct SummaryView: View {
                 Button("查看全部") { showTodayDetail = true }
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .accessibilityLabel("查看全部日程")
             }
             .padding(.horizontal)
             
@@ -258,6 +263,7 @@ struct SummaryView: View {
                             .padding()
                         }
                         .buttonStyle(PlainButtonStyle())
+                        .accessibilityLabel("\(task.completed ? "已完成" : "未完成")任务：\(task.name)，时间 \(task.displayTime)")
                         
                         if task.id != todayTasks.prefix(4).last?.id {
                             Divider()
@@ -294,6 +300,7 @@ struct SummaryView: View {
                 Button("记录") { showMoodPicker = true }
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .accessibilityLabel("记录今日心情")
             }
             .padding(.horizontal)
             
@@ -362,6 +369,7 @@ struct SummaryView: View {
         .background(Color(.systemBackground))
         .cornerRadius(14)
         .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
+        .accessibilityLabel("\(label) \(value)")
     }
     
     // MARK: - Helpers

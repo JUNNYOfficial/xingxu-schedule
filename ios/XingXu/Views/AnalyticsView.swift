@@ -49,6 +49,8 @@ struct AnalyticsView: View {
                         .cornerRadius(8)
                 }
                 .buttonStyle(PlainButtonStyle())
+                .accessibilityLabel("查看近\(days)天数据")
+                .accessibilityAddTraits(rangeDays == days ? .isSelected : [])
             }
         }
     }
@@ -220,6 +222,7 @@ struct AnalyticsView: View {
                     .padding()
                     .background(Color(.systemGray6))
                     .cornerRadius(12)
+                    .accessibilityLabel(insight)
             }
         }
     }

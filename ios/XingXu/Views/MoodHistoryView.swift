@@ -194,6 +194,8 @@ struct MoodHistoryView: View {
                                 .cornerRadius(8)
                         }
                         .padding()
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("\(formattedDate(mood.date))，心情\(mood.emoji)，\(mood.value)分\(!mood.note.isEmpty ? "，备注：\(mood.note)" : "")")
                         
                         if mood.id != filteredMoods.last?.id {
                             Divider()

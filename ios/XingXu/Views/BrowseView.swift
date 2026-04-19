@@ -160,6 +160,8 @@ struct BrowseRow: View {
             Spacer()
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(title)，\(subtitle)")
     }
 }
 
@@ -212,5 +214,6 @@ struct QuickStatCard: View {
         .padding(.vertical, 16)
         .background(Color(.systemBackground))
         .cornerRadius(12)
+        .accessibilityLabel("\(label) \(value)")
     }
 }
