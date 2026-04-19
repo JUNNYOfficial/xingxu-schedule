@@ -3,7 +3,7 @@
  * 提供离线缓存支持，核心功能无需网络即可使用
  */
 
-const CACHE_NAME = 'xingxu-schedule-v1';
+const CACHE_NAME = 'xingxu-schedule-v2';
 const STATIC_ASSETS = [
   './',
   './index.html',
