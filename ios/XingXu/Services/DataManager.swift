@@ -15,6 +15,7 @@ class DataManager: ObservableObject {
     private let currentDateKey = "xingxu_current_date"
     private let lastRepeatGenKey = "xingxu_last_repeat_gen"
     private let customTemplatesKey = "xingxu_custom_templates"
+    private let menstrualRecordsKey = "xingxu_menstrual_records"
     
     private var defaults: UserDefaults? {
         UserDefaults(suiteName: suiteName)
@@ -24,6 +25,7 @@ class DataManager: ObservableObject {
     @Published var moods: [MoodEntry] = []
     @Published var settings: AppSettings = AppSettings()
     @Published var customTemplates: [ScheduleTemplate] = []
+    @Published var menstrualRecords: [MenstrualRecord] = []
     @Published var currentDate: String = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -33,8 +35,10 @@ class DataManager: ObservableObject {
     private init() {
         loadAll()
         loadCustomTemplates()
+        loadMenstrualRecords()
         generateRepeatingTasksIfNeeded()
         insertSampleDataIfNeeded()
+        insertSampleCycleDataIfNeeded()
     }
     
     // MARK: - Sample Data
@@ -61,6 +65,40 @@ class DataManager: ObservableObject {
         defaults.set(true, forKey: key)
     }
     
+    private func insertSampleCycleDataIfNeeded() {
+        guard let defaults = defaults else { return }
+        let key = "xingxu_has_cycle_sample"
+        guard !defaults.bool(forKey: key) else { return }
+        
+        // 插入3条示例周期记录（模拟不规律周期：28天、35天、26天）
+        let calendar = Calendar.current
+        let today = Date()
+        
+        menstrualRecords = [
+            MenstrualRecord(
+                startDate: calendar.date(byAdding: .day, value: -89, to: today)!,
+                endDate: calendar.date(byAdding: .day, value: -85, to: today),
+                flowLevel: .medium,
+                symptoms: [.cramps, .moodSwings]
+            ),
+            MenstrualRecord(
+                startDate: calendar.date(byAdding: .day, value: -54, to: today)!,
+                endDate: calendar.date(byAdding: .day, value: -50, to: today),
+                flowLevel: .light,
+                symptoms: [.fatigue, .sensorySensitivity]
+            ),
+            MenstrualRecord(
+                startDate: calendar.date(byAdding: .day, value: -28, to: today)!,
+                endDate: calendar.date(byAdding: .day, value: -24, to: today),
+                flowLevel: .heavy,
+                symptoms: [.cramps, .anxiety, .socialWithdrawal]
+            )
+        ]
+        
+        saveMenstrualRecords()
+        defaults.set(true, forKey: key)
+    }
+    
     // MARK: - Load
     
     func loadAll() {
@@ -68,6 +106,7 @@ class DataManager: ObservableObject {
         loadMoods()
         loadSettings()
         loadCustomTemplates()
+        loadMenstrualRecords()
     }
     
     func loadTasks() {
@@ -141,6 +180,34 @@ class DataManager: ObservableObject {
               let encoded = try? JSONEncoder().encode(customTemplates) else { return }
         defaults.set(encoded, forKey: customTemplatesKey)
         iCloudSyncManager.shared.syncToCloud()
+    }
+    
+    func loadMenstrualRecords() {
+        guard let defaults = defaults,
+              let data = defaults.data(forKey: menstrualRecordsKey),
+              let decoded = try? JSONDecoder().decode([MenstrualRecord].self, from: data) else {
+            menstrualRecords = []
+            return
+        }
+        menstrualRecords = decoded
+    }
+    
+    func saveMenstrualRecords() {
+        guard let defaults = defaults,
+              let encoded = try? JSONEncoder().encode(menstrualRecords) else { return }
+        defaults.set(encoded, forKey: menstrualRecordsKey)
+    }
+    
+    func addMenstrualRecord(_ record: MenstrualRecord) {
+        var newRecord = record
+        newRecord.modifiedAt = Date()
+        menstrualRecords.append(newRecord)
+        saveMenstrualRecords()
+    }
+    
+    func deleteMenstrualRecord(id: String) {
+        menstrualRecords.removeAll { $0.id == id }
+        saveMenstrualRecords()
     }
     
     func saveCustomTemplate(from date: String, name: String) {

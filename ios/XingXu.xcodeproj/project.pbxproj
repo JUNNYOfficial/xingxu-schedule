@@ -29,13 +29,16 @@
 		FF11361711D0961284B8CDEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5CD203DC48EC2F4C10D2252 /* Foundation.framework */; };
 		22DCC227640646E487D598B3 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DCC227640646E487D598B3R /* TaskItem.swift */; };
 		F88E9E06D2AD429CAD984C4E /* MoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */; };
+		8BF9F06748DD462F99DF03CA /* MenstrualCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */; };
 		08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D087871E0D4FC5B06F9D87R /* AppSettings.swift */; };
 		08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */; };
 		11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B25E23A72E41A0A431CABDR /* DataManager.swift */; };
 				AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
+		81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */; };
 		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
 		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
 		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
+		0D56975539A0466890C1DCA0 /* CycleTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */; };
 		8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */; };
 		F5DDEBBE76AA495F97147811 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DDEBBE76AA495F97147811R /* AddTaskView.swift */; };
 		1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1908A7110B084AE985C88D15R /* MoodPickerView.swift */; };
@@ -99,13 +102,16 @@
 		EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = XingXu/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		22DCC227640646E487D598B3R /* TaskItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskItem.swift; path = XingXu/Models/TaskItem.swift; sourceTree = "<group>"; };
 		F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodEntry.swift; path = XingXu/Models/MoodEntry.swift; sourceTree = "<group>"; };
+		8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MenstrualCycle.swift; path = XingXu/Models/MenstrualCycle.swift; sourceTree = "<group>"; };
 		08D087871E0D4FC5B06F9D87R /* AppSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = XingXu/Models/AppSettings.swift; sourceTree = "<group>"; };
 		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
 		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
 				AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
+		81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CyclePredictor.swift; path = XingXu/Services/CyclePredictor.swift; sourceTree = "<group>"; };
 		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
 		651E9BC7BCD44D5390D6C866R /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = XingXu/Views/ContentView.swift; sourceTree = "<group>"; };
 		6156274E582A4A71BB4E1950R /* TodayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = XingXu/Views/TodayView.swift; sourceTree = "<group>"; };
+		0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleTrackingView.swift; path = XingXu/Views/CycleTrackingView.swift; sourceTree = "<group>"; };
 		8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingView.swift; path = XingXu/Views/OnboardingView.swift; sourceTree = "<group>"; };
 		F5DDEBBE76AA495F97147811R /* AddTaskView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskView.swift; path = XingXu/Views/AddTaskView.swift; sourceTree = "<group>"; };
 		1908A7110B084AE985C88D15R /* MoodPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodPickerView.swift; path = XingXu/Views/MoodPickerView.swift; sourceTree = "<group>"; };
@@ -325,13 +331,16 @@
 				07365785FD4E575DC286BBCA /* SharedData.swift in Sources */,
 				22DCC227640646E487D598B3 /* TaskItem.swift in Sources */,
 				F88E9E06D2AD429CAD984C4E /* MoodEntry.swift in Sources */,
+				8BF9F06748DD462F99DF03CA /* MenstrualCycle.swift in Sources */,
 				08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */,
 				08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */,
 					AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */,
+				81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */,
 				B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */,
 				11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */,
 				651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */,
 				6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */,
+				0D56975539A0466890C1DCA0 /* CycleTrackingView.swift in Sources */,
 				8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */,
 				F5DDEBBE76AA495F97147811 /* AddTaskView.swift in Sources */,
 				1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */,

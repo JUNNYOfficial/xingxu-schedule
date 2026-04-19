@@ -14,6 +14,7 @@ struct AppSettings: Codable, Equatable {
     var highContrastEnabled: Bool
     var colorCodingEnabled: Bool
     var healthSyncEnabled: Bool
+    var cycleTrackingEnabled: Bool
     
     init(
         theme: AppTheme = .system,
@@ -26,7 +27,8 @@ struct AppSettings: Codable, Equatable {
         childModeEnabled: Bool = false,
         highContrastEnabled: Bool = false,
         colorCodingEnabled: Bool = true,
-        healthSyncEnabled: Bool = false
+        healthSyncEnabled: Bool = false,
+        cycleTrackingEnabled: Bool = false
     ) {
         self.theme = theme
         self.fontSize = fontSize
@@ -39,6 +41,7 @@ struct AppSettings: Codable, Equatable {
         self.highContrastEnabled = highContrastEnabled
         self.colorCodingEnabled = colorCodingEnabled
         self.healthSyncEnabled = healthSyncEnabled
+        self.cycleTrackingEnabled = cycleTrackingEnabled
     }
 }
 

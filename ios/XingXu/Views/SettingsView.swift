@@ -79,6 +79,15 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("开启周期追踪", isOn: $dataManager.settings.cycleTrackingEnabled)
+                } header: {
+                    Text("周期")
+                } footer: {
+                    Text("记录月经周期，了解身体规律。所有数据仅存储在本地，完全隐私")
+                        .font(.caption)
+                }
+                
+                Section {
                     Toggle("启用提醒", isOn: Binding(
                         get: { dataManager.settings.notificationsEnabled },
                         set: { newValue in

@@ -9,6 +9,7 @@ struct SummaryView: View {
     @State private var showAnalytics = false
     @State private var showTemplateLibrary = false
     @State private var showSettings = false
+    @State private var showCycleTracking = false
     @StateObject private var healthManager = HealthManager.shared
     
     // 自闭症友好：统一柔和色系
@@ -62,6 +63,7 @@ struct SummaryView: View {
                     quickAccessGrid
                     todayScheduleSection
                     moodOverviewSection
+                    cycleOverviewSection
                     healthOverviewSection
                     weeklyTrendSection
                 }
@@ -95,6 +97,10 @@ struct SummaryView: View {
             }
             .sheet(isPresented: $showSettings) {
                 SettingsView()
+                    .environmentObject(dataManager)
+            }
+            .sheet(isPresented: $showCycleTracking) {
+                CycleTrackingView()
                     .environmentObject(dataManager)
             }
             .navigationDestination(isPresented: $showTodayDetail) {
@@ -192,7 +198,7 @@ struct SummaryView: View {
                 quickItem(title: "日历", icon: "calendar") { showTodayDetail = true }
                 quickItem(title: "心情", icon: "heart.fill") { showMoodPicker = true }
                 quickItem(title: "分析", icon: "chart.bar.fill") { showAnalytics = true }
-                quickItem(title: "模板", icon: "doc.on.doc") { showTemplateLibrary = true }
+                quickItem(title: "周期", icon: "drop.fill") { showCycleTracking = true }
                 quickItem(title: "添加", icon: "plus.circle.fill") { showAddTask = true }
                 quickItem(title: "设置", icon: "gearshape.fill") { showSettings = true }
             }
@@ -357,6 +363,103 @@ struct SummaryView: View {
         }
     }
     
+    // MARK: - Cycle Overview
+    
+    private var cycleOverviewSection: some View {
+        let prediction = CyclePredictor.predict(records: dataManager.menstrualRecords)
+        let hasData = !dataManager.menstrualRecords.isEmpty
+        
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("周期追踪")
+                    .font(.title3.bold())
+                Spacer()
+                if hasData {
+                    Button("详情") { showCycleTracking = true }
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal)
+            
+            if !hasData {
+                EmptyStateView(
+                    icon: "drop.fill",
+                    title: "开始追踪周期",
+                    subtitle: "了解自己的身体规律，提前做好准备",
+                    action: { showCycleTracking = true },
+                    actionTitle: "添加记录"
+                )
+                .padding(.horizontal)
+            } else {
+                HStack(spacing: 12) {
+                    // 预测卡片
+                    VStack(spacing: 8) {
+                        HStack {
+                            Image(systemName: "calendar.badge.clock")
+                                .font(.title3)
+                                .foregroundColor(prediction.isPremenstrualAlert ? Color(hex: "#D4886A") : primaryTint)
+                            Spacer()
+                        }
+                        HStack(alignment: .lastTextBaseline, spacing: 2) {
+                            if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
+                                let daysUntil = daysBetween(Date(), earliest)
+                                if daysUntil <= 0 {
+                                    Text("快了")
+                                        .font(.headline)
+                                } else {
+                                    Text("\(daysUntil)")
+                                        .font(.system(size: 28, weight: .bold))
+                                    Text("天")
+                                        .font(.subheadline)
+                                }
+                            } else {
+                                Text("--")
+                                    .font(.title2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(prediction.daysUntilDescription)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(2)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+                    
+                    // 阶段卡片
+                    VStack(spacing: 8) {
+                        HStack {
+                            Circle()
+                                .fill(Color(hex: prediction.currentPhase.color))
+                                .frame(width: 10, height: 10)
+                            Spacer()
+                        }
+                        Text(prediction.currentPhase.rawValue)
+                            .font(.headline)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        Text(prediction.currentPhase.description)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .lineLimit(2)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Color(.systemBackground))
+                    .cornerRadius(16)
+                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+                }
+                .padding(.horizontal)
+            }
+        }
+    }
+    
     // MARK: - Health Overview
     
     private var healthOverviewSection: some View {
@@ -465,5 +568,9 @@ struct SummaryView: View {
         guard let date = formatter.date(from: dateString) else { return "" }
         formatter.dateFormat = "M/d"
         return formatter.string(from: date)
+    }
+    
+    private func daysBetween(_ from: Date, _ to: Date) -> Int {
+        Calendar.current.dateComponents([.day], from: from, to: to).day ?? 0
     }
 }
