@@ -323,6 +323,13 @@
                             <rect x="14" y="14" width="7" height="7" rx="1"></rect>
                         </svg>
                     </button>
+                    <button class="icon-btn" onclick="openAnalyticsModal()" title="数据分析">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"></line>
+                            <line x1="12" y1="20" x2="12" y2="4"></line>
+                            <line x1="6" y1="20" x2="6" y2="14"></line>
+                        </svg>
+                    </button>
                     <button class="icon-btn" onclick="openSettingsModal()" title="设置">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="3"></circle>
@@ -1804,6 +1811,66 @@
                             <span class="mood-stat-emoji">😢</span>
                             <div class="mood-stat-bar"><div class="mood-stat-fill" id="mood-stat-1" style="width: 0%"></div></div>
                             <span class="mood-stat-count" id="mood-count-1">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 数据分析弹窗 -->
+        <div id="analytics-modal" class="modal" onclick="closeAnalyticsModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 900px; max-height: 92vh;">
+                <div class="modal-header">
+                    <h2>📊 数据分析中心</h2>
+                    <button class="close-btn" onclick="closeAnalyticsModal()">×</button>
+                </div>
+                <div class="modal-body" id="analytics-body" style="overflow-y: auto; max-height: calc(92vh - 70px);">
+                    <!-- 时间范围选择 -->
+                    <div style="display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <button class="analytics-range-btn active" data-range="7" onclick="switchAnalyticsRange(this, 7)" style="padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--accent); color: white; cursor: pointer; font-size: 13px;">近7天</button>
+                        <button class="analytics-range-btn" data-range="14" onclick="switchAnalyticsRange(this, 14)" style="padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); cursor: pointer; font-size: 13px;">近14天</button>
+                        <button class="analytics-range-btn" data-range="30" onclick="switchAnalyticsRange(this, 30)" style="padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); cursor: pointer; font-size: 13px;">近30天</button>
+                    </div>
+                    
+                    <!-- 概览卡片 -->
+                    <div id="analytics-overview" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 28px;"></div>
+                    
+                    <!-- 图表区域 -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px;">
+                        <!-- 完成率趋势 -->
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg);">
+                            <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">📈 完成率趋势</h3>
+                            <div id="analytics-trend-chart" style="height: 180px;"></div>
+                        </div>
+                        
+                        <!-- 时段分析 -->
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg);">
+                            <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">⏰ 时段完成率</h3>
+                            <div id="analytics-hour-chart" style="height: 180px;"></div>
+                        </div>
+                        
+                        <!-- 标签分布 -->
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg);">
+                            <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">🏷️ 任务标签分布</h3>
+                            <div id="analytics-tag-chart" style="height: 180px; display: flex; align-items: center; justify-content: center;"></div>
+                        </div>
+                        
+                        <!-- 心情趋势 -->
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg);">
+                            <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">😊 心情趋势</h3>
+                            <div id="analytics-mood-chart" style="height: 180px;"></div>
+                        </div>
+                        
+                        <!-- 习惯热力图 -->
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); grid-column: 1 / -1;">
+                            <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">🔥 习惯养成热力图</h3>
+                            <div id="analytics-heatmap" style="overflow-x: auto;"></div>
+                        </div>
+                        
+                        <!-- 智能建议 -->
+                        <div style="padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); grid-column: 1 / -1;">
+                            <h3 style="font-size: 15px; font-weight: 600; margin-bottom: 16px;">💡 智能分析建议</h3>
+                            <div id="analytics-insights" style="line-height: 1.8;"></div>
                         </div>
                     </div>
                 </div>

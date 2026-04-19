@@ -6636,3 +6636,485 @@ _________________________________<br>
         window.addEventListener('online', updateOnlineStatus);
         window.addEventListener('offline', updateOnlineStatus);
         window.addEventListener('DOMContentLoaded', updateOnlineStatus);
+
+// ========== 数据分析中心 ==========
+let currentAnalyticsRange = 7;
+
+function openAnalyticsModal() {
+    document.getElementById('analytics-modal').classList.remove('hidden');
+    renderAnalytics(currentAnalyticsRange);
+}
+
+function closeAnalyticsModal(e) {
+    if (!e || e.target.id === 'analytics-modal') {
+        document.getElementById('analytics-modal').classList.add('hidden');
+    }
+}
+
+function switchAnalyticsRange(btn, days) {
+    currentAnalyticsRange = days;
+    document.querySelectorAll('.analytics-range-btn').forEach(b => {
+        b.classList.remove('active');
+        b.style.background = 'var(--bg)';
+        b.style.color = '';
+    });
+    btn.classList.add('active');
+    btn.style.background = 'var(--accent)';
+    btn.style.color = 'white';
+    renderAnalytics(days);
+}
+
+function renderAnalytics(days) {
+    const data = getAnalyticsData(days);
+    renderOverview(data);
+    renderTrendChart(data);
+    renderHourChart(data);
+    renderTagChart(data);
+    renderMoodChart(data);
+    renderHeatmap(data);
+    renderInsights(data);
+}
+
+function getAnalyticsData(days) {
+    const allTasks = Storage.getAllTasks ? Storage.getAllTasks() : [];
+    const endDate = new Date();
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days + 1);
+    
+    const dateRange = [];
+    for (let i = 0; i < days; i++) {
+        const d = new Date(startDate);
+        d.setDate(d.getDate() + i);
+        dateRange.push(d.toISOString().split('T')[0]);
+    }
+    
+    // 按日期筛选任务
+    const filteredTasks = allTasks.filter(t => {
+        const d = t.date?.split('T')[0] || t.date;
+        return d >= dateRange[0] && d <= dateRange[dateRange.length - 1];
+    });
+    
+    // 每日统计
+    const dailyStats = dateRange.map(date => {
+        const dayTasks = filteredTasks.filter(t => {
+            const d = t.date?.split('T')[0] || t.date;
+            return d === date;
+        });
+        return {
+            date,
+            total: dayTasks.length,
+            completed: dayTasks.filter(t => t.completed).length
+        };
+    });
+    
+    // 时段统计
+    const hourStats = {};
+    for (let h = 0; h < 24; h++) hourStats[h] = { total: 0, completed: 0 };
+    filteredTasks.forEach(t => {
+        if (!t.time) return;
+        const hour = parseInt(t.time.split(':')[0]);
+        if (hourStats[hour]) {
+            hourStats[hour].total++;
+            if (t.completed) hourStats[hour].completed++;
+        }
+    });
+    
+    // 标签统计
+    const tagStats = {};
+    filteredTasks.forEach(t => {
+        const tag = t.tag || '未分类';
+        if (!tagStats[tag]) tagStats[tag] = { total: 0, completed: 0 };
+        tagStats[tag].total++;
+        if (t.completed) tagStats[tag].completed++;
+    });
+    
+    // 心情数据
+    const moods = [];
+    try {
+        const moodData = localStorage.getItem('schedule-moods');
+        if (moodData) {
+            const parsed = JSON.parse(moodData);
+            Object.entries(parsed).forEach(([date, mood]) => {
+                if (date >= dateRange[0] && date <= dateRange[dateRange.length - 1]) {
+                    moods.push({ date, value: parseInt(mood) || 3 });
+                }
+            });
+        }
+    } catch (e) {}
+    moods.sort((a, b) => a.date.localeCompare(b.date));
+    
+    // 汇总
+    const totalTasks = filteredTasks.length;
+    const completedTasks = filteredTasks.filter(t => t.completed).length;
+    const completionRate = totalTasks > 0 ? Math.round(completedTasks / totalTasks * 100) : 0;
+    
+    // 连续完成天数
+    let streak = 0;
+    for (let i = dailyStats.length - 1; i >= 0; i--) {
+        if (dailyStats[i].total > 0 && dailyStats[i].completed === dailyStats[i].total) {
+            streak++;
+        } else if (dailyStats[i].total > 0) {
+            break;
+        }
+    }
+    
+    // 最佳/最差时段
+    let bestHour = null, worstHour = null;
+    let bestRate = -1, worstRate = 101;
+    Object.entries(hourStats).forEach(([hour, stat]) => {
+        if (stat.total < 2) return;
+        const rate = stat.completed / stat.total * 100;
+        if (rate > bestRate) { bestRate = rate; bestHour = hour; }
+        if (rate < worstRate) { worstRate = rate; worstHour = hour; }
+    });
+    
+    return {
+        days,
+        dateRange,
+        dailyStats,
+        hourStats,
+        tagStats,
+        moods,
+        totalTasks,
+        completedTasks,
+        completionRate,
+        streak,
+        bestHour,
+        bestRate,
+        worstHour,
+        worstRate
+    };
+}
+
+function renderOverview(data) {
+    const container = document.getElementById('analytics-overview');
+    const activeDays = data.dailyStats.filter(d => d.total > 0).length;
+    const avgTasks = activeDays > 0 ? (data.totalTasks / activeDays).toFixed(1) : 0;
+    
+    const cards = [
+        { label: '总任务', value: data.totalTasks, color: '#3B82F6' },
+        { label: '已完成', value: data.completedTasks, color: '#10B981' },
+        { label: '完成率', value: data.completionRate + '%', color: '#F59E0B' },
+        { label: '活跃天数', value: activeDays + '天', color: '#8B5CF6' },
+        { label: '日均任务', value: avgTasks + '个', color: '#EC4899' },
+        { label: '连续满分', value: data.streak + '天', color: '#EF4444' }
+    ];
+    
+    container.innerHTML = cards.map(c => `
+        <div style="padding: 16px; border-radius: var(--radius-lg); background: var(--bg-secondary); text-align: center; border-left: 4px solid ${c.color};">
+            <div style="font-size: 24px; font-weight: 700; color: ${c.color}; margin-bottom: 4px;">${c.value}</div>
+            <div style="font-size: 12px; color: var(--text-secondary);">${c.label}</div>
+        </div>
+    `).join('');
+}
+
+function renderTrendChart(data) {
+    const container = document.getElementById('analytics-trend-chart');
+    const stats = data.dailyStats;
+    if (stats.length === 0 || stats.every(s => s.total === 0)) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding-top:60px;">暂无数据</div>';
+        return;
+    }
+    
+    const maxVal = Math.max(...stats.map(s => s.total), 1);
+    const barWidth = Math.max(20, Math.min(60, 500 / stats.length));
+    const gap = 4;
+    const chartHeight = 160;
+    
+    let svg = `<svg width="100%" height="${chartHeight}" viewBox="0 0 ${stats.length * (barWidth + gap)} ${chartHeight}" preserveAspectRatio="none">`;
+    
+    stats.forEach((s, i) => {
+        const x = i * (barWidth + gap);
+        const totalH = (s.total / maxVal) * (chartHeight - 30);
+        const compH = s.total > 0 ? (s.completed / s.total) * totalH : 0;
+        const yTotal = chartHeight - totalH - 20;
+        const yComp = chartHeight - compH - 20;
+        
+        // 背景柱（总数）
+        svg += `<rect x="${x}" y="${yTotal}" width="${barWidth}" height="${totalH}" fill="var(--border)" rx="3" />`;
+        // 完成柱
+        if (compH > 0) {
+            svg += `<rect x="${x}" y="${yComp}" width="${barWidth}" height="${compH}" fill="#10B981" rx="3" />`;
+        }
+        // 日期标签（每3天或每天显示）
+        const showLabel = stats.length <= 10 || i % Math.ceil(stats.length / 10) === 0;
+        if (showLabel) {
+            const date = s.date.slice(5);
+            svg += `<text x="${x + barWidth/2}" y="${chartHeight - 4}" text-anchor="middle" font-size="10" fill="var(--text-secondary)">${date}</text>`;
+        }
+    });
+    
+    svg += '</svg>';
+    svg += `<div style="display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:12px;color:var(--text-secondary);">
+        <span><span style="display:inline-block;width:12px;height:12px;background:var(--border);border-radius:2px;margin-right:4px;vertical-align:middle;"></span>总数</span>
+        <span><span style="display:inline-block;width:12px;height:12px;background:#10B981;border-radius:2px;margin-right:4px;vertical-align:middle;"></span>已完成</span>
+    </div>`;
+    
+    container.innerHTML = svg;
+}
+
+function renderHourChart(data) {
+    const container = document.getElementById('analytics-hour-chart');
+    const hours = Object.entries(data.hourStats)
+        .filter(([_, s]) => s.total > 0)
+        .sort((a, b) => parseInt(a[0]) - parseInt(b[0]));
+    
+    if (hours.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding-top:60px;">暂无数据</div>';
+        return;
+    }
+    
+    const maxTotal = Math.max(...hours.map(([_, s]) => s.total), 1);
+    const barWidth = Math.max(16, Math.min(32, 400 / hours.length));
+    const gap = 2;
+    const chartHeight = 140;
+    
+    let svg = `<svg width="100%" height="${chartHeight + 20}" viewBox="0 0 ${hours.length * (barWidth + gap)} ${chartHeight + 20}" preserveAspectRatio="none">`;
+    
+    hours.forEach(([hour, stat], i) => {
+        const x = i * (barWidth + gap);
+        const h = (stat.total / maxTotal) * (chartHeight - 20);
+        const rate = stat.total > 0 ? stat.completed / stat.total : 0;
+        const color = rate >= 0.8 ? '#10B981' : rate >= 0.5 ? '#F59E0B' : '#EF4444';
+        
+        svg += `<rect x="${x}" y="${chartHeight - h}" width="${barWidth}" height="${h}" fill="${color}" rx="2" opacity="0.85"/>`;
+        svg += `<text x="${x + barWidth/2}" y="${chartHeight + 14}" text-anchor="middle" font-size="9" fill="var(--text-secondary)">${hour}h</text>`;
+    });
+    
+    svg += '</svg>';
+    container.innerHTML = svg;
+}
+
+function renderTagChart(data) {
+    const container = document.getElementById('analytics-tag-chart');
+    const tags = Object.entries(data.tagStats).sort((a, b) => b[1].total - a[1].total);
+    
+    if (tags.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);">暂无数据</div>';
+        return;
+    }
+    
+    const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899', '#06B6D4', '#84CC16'];
+    const total = tags.reduce((sum, [_, s]) => sum + s.total, 0);
+    
+    // SVG 环形图
+    const size = 140;
+    const strokeWidth = 24;
+    const radius = (size - strokeWidth) / 2;
+    const circumference = 2 * Math.PI * radius;
+    let offset = 0;
+    
+    let svg = `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">`;
+    const center = size / 2;
+    
+    tags.forEach(([tag, stat], i) => {
+        const pct = stat.total / total;
+        const dash = pct * circumference;
+        const color = colors[i % colors.length];
+        
+        svg += `<circle cx="${center}" cy="${center}" r="${radius}" fill="none" stroke="${color}" 
+            stroke-width="${strokeWidth}" stroke-dasharray="${dash} ${circumference}"
+            stroke-dashoffset="${-offset}" transform="rotate(-90 ${center} ${center})" />`;
+        offset += dash;
+    });
+    
+    // 中心文字
+    svg += `<text x="${center}" y="${center - 4}" text-anchor="middle" font-size="16" font-weight="700" fill="var(--text)">${total}</text>`;
+    svg += `<text x="${center}" y="${center + 14}" text-anchor="middle" font-size="10" fill="var(--text-secondary)">总任务</text>`;
+    svg += '</svg>';
+    
+    // 图例
+    let legend = '<div style="margin-left:20px;">';
+    tags.forEach(([tag, stat], i) => {
+        const color = colors[i % colors.length];
+        const pct = Math.round(stat.total / total * 100);
+        legend += `<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;font-size:12px;">
+            <span style="width:10px;height:10px;border-radius:50%;background:${color};"></span>
+            <span style="flex:1;">${tag || '未分类'}</span>
+            <span style="color:var(--text-secondary);">${stat.total} (${pct}%)</span>
+        </div>`;
+    });
+    legend += '</div>';
+    
+    container.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;">${svg}${legend}</div>`;
+}
+
+function renderMoodChart(data) {
+    const container = document.getElementById('analytics-mood-chart');
+    const moods = data.moods;
+    
+    if (moods.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding-top:60px;">暂无心情记录</div>';
+        return;
+    }
+    
+    const chartHeight = 140;
+    const padding = 20;
+    const width = Math.max(moods.length * 30, 300);
+    
+    let svg = `<svg width="100%" height="${chartHeight + 30}" viewBox="0 0 ${width} ${chartHeight + 30}" preserveAspectRatio="none">`;
+    
+    // 网格线
+    for (let i = 1; i <= 5; i++) {
+        const y = chartHeight - (i / 5) * (chartHeight - padding) + padding / 2;
+        svg += `<line x1="30" y1="${y}" x2="${width - 10}" y2="${y}" stroke="var(--border)" stroke-dasharray="3,3"/>`;
+        svg += `<text x="25" y="${y + 3}" text-anchor="end" font-size="10" fill="var(--text-muted)">${i}</text>`;
+    }
+    
+    // 折线
+    const stepX = (width - 50) / Math.max(moods.length - 1, 1);
+    let pathD = '';
+    moods.forEach((m, i) => {
+        const x = 35 + i * stepX;
+        const y = chartHeight - (m.value / 5) * (chartHeight - padding) + padding / 2;
+        if (i === 0) pathD += `M ${x} ${y}`;
+        else pathD += ` L ${x} ${y}`;
+        
+        const moodColors = ['#EF4444', '#F59E0B', '#9CA3AF', '#10B981', '#3B82F6'];
+        svg += `<circle cx="${x}" cy="${y}" r="5" fill="${moodColors[m.value - 1]}" stroke="white" stroke-width="2"/>`;
+    });
+    
+    if (moods.length > 1) {
+        svg += `<path d="${pathD}" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>`;
+    }
+    
+    // 日期标签
+    moods.forEach((m, i) => {
+        if (moods.length <= 10 || i % Math.ceil(moods.length / 8) === 0) {
+            const x = 35 + i * stepX;
+            svg += `<text x="${x}" y="${chartHeight + 22}" text-anchor="middle" font-size="9" fill="var(--text-secondary)">${m.date.slice(5)}</text>`;
+        }
+    });
+    
+    svg += '</svg>';
+    container.innerHTML = svg;
+}
+
+function renderHeatmap(data) {
+    const container = document.getElementById('analytics-heatmap');
+    const stats = data.dailyStats;
+    
+    if (stats.length === 0) {
+        container.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px;">暂无数据</div>';
+        return;
+    }
+    
+    // 按周分组
+    const weeks = [];
+    let currentWeek = [];
+    stats.forEach((s, i) => {
+        currentWeek.push(s);
+        if (currentWeek.length === 7 || i === stats.length - 1) {
+            weeks.push(currentWeek);
+            currentWeek = [];
+        }
+    });
+    
+    const intensityColors = [
+        'var(--bg-secondary)',      // 0任务
+        'rgba(16, 185, 129, 0.2)',  // 有任务，低完成
+        'rgba(16, 185, 129, 0.4)',
+        'rgba(16, 185, 129, 0.6)',
+        'rgba(16, 185, 129, 0.8)',
+        '#10B981'                   // 全部完成
+    ];
+    
+    let html = '<div style="display:flex;gap:4px;">';
+    
+    // 星期标签
+    const weekDays = ['一', '二', '三', '四', '五', '六', '日'];
+    html += '<div style="display:flex;flex-direction:column;gap:4px;margin-right:4px;">';
+    html += '<div style="height:20px;"></div>';
+    weekDays.forEach(d => {
+        html += `<div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-muted);">${d}</div>`;
+    });
+    html += '</div>';
+    
+    // 每周列
+    weeks.forEach(week => {
+        html += '<div style="display:flex;flex-direction:column;gap:4px;">';
+        // 周标签
+        const weekLabel = week[0]?.date?.slice(5) || '';
+        html += `<div style="height:20px;font-size:9px;color:var(--text-muted);text-align:center;">${weekLabel}</div>`;
+        
+        week.forEach(s => {
+            let colorIdx = 0;
+            if (s.total > 0) {
+                const rate = s.completed / s.total;
+                colorIdx = Math.min(5, Math.ceil(rate * 5));
+            }
+            const color = intensityColors[colorIdx];
+            const title = `${s.date}: ${s.completed}/${s.total} 完成`;
+            html += `<div style="width:20px;height:20px;border-radius:3px;background:${color};" title="${title}"></div>`;
+        });
+        
+        // 补齐剩余天数
+        for (let i = week.length; i < 7; i++) {
+            html += `<div style="width:20px;height:20px;"></div>`;
+        }
+        html += '</div>';
+    });
+    
+    html += '</div>';
+    
+    // 图例
+    html += `<div style="display:flex;gap:8px;margin-top:12px;align-items:center;font-size:11px;color:var(--text-secondary);">
+        <span>少</span>
+        ${intensityColors.slice(1).map(c => `<div style="width:14px;height:14px;border-radius:2px;background:${c};"></div>`).join('')}
+        <span>多</span>
+    </div>`;
+    
+    container.innerHTML = html;
+}
+
+function renderInsights(data) {
+    const container = document.getElementById('analytics-insights');
+    const insights = [];
+    
+    if (data.totalTasks === 0) {
+        container.innerHTML = '<p style="color:var(--text-muted);">数据积累不足，继续使用后会生成个性化分析建议。</p>';
+        return;
+    }
+    
+    // 完成率分析
+    if (data.completionRate >= 85) {
+        insights.push('🌟 <strong>表现优秀</strong>：任务完成率高达 ' + data.completionRate + '%，可以适量增加挑战性任务。');
+    } else if (data.completionRate >= 60) {
+        insights.push('👍 <strong>表现良好</strong>：完成率 ' + data.completionRate + '%，继续保持！');
+    } else if (data.completionRate >= 30) {
+        insights.push('💪 <strong>有待提升</strong>：完成率 ' + data.completionRate + '%，建议减少每日任务数量，聚焦重点。');
+    } else {
+        insights.push('🤗 <strong>需要调整</strong>：完成率较低，建议从最简单、最感兴趣的任务开始，逐步建立信心。');
+    }
+    
+    // 连续天数
+    if (data.streak >= 3) {
+        insights.push('🔥 <strong>连续满分</strong>：已连续 ' + data.streak + ' 天全部完成任务，太棒了！');
+    }
+    
+    // 时段分析
+    if (data.bestHour !== null) {
+        insights.push(`⏰ <strong>黄金时段</strong>：${data.bestHour}:00-${parseInt(data.bestHour)+1}:00 是效率最高的时段（完成率 ${Math.round(data.bestRate)}%），建议把重要任务安排在这个时间。`);
+    }
+    if (data.worstHour !== null && data.worstHour !== data.bestHour) {
+        insights.push(`😴 <strong>低效时段</strong>：${data.worstHour}:00-${parseInt(data.worstHour)+1}:00 完成率较低（${Math.round(data.worstRate)}%），建议安排轻松任务或休息。`);
+    }
+    
+    // 心情关联
+    if (data.moods.length >= 3) {
+        const avgMood = (data.moods.reduce((s, m) => s + m.value, 0) / data.moods.length).toFixed(1);
+        if (avgMood >= 4) {
+            insights.push('😊 <strong>心情不错</strong>：近期平均心情 ' + avgMood + '/5，保持当前节奏！');
+        } else if (avgMood <= 2.5) {
+            insights.push('💙 <strong>关注情绪</strong>：近期平均心情 ' + avgMood + '/5，建议增加喜欢的活动，适当减轻任务压力。');
+        }
+    }
+    
+    // 活跃度
+    const activeDays = data.dailyStats.filter(d => d.total > 0).length;
+    if (activeDays < data.days * 0.3) {
+        insights.push('📅 <strong>使用频率</strong>：近 ' + data.days + ' 天中只有 ' + activeDays + ' 天有记录，建议养成每日查看日程的习惯。');
+    }
+    
+    container.innerHTML = insights.map(i => `<p style="margin-bottom:10px;padding:10px 14px;background:var(--bg-secondary);border-radius:var(--radius);">${i}</p>`).join('');
+}
