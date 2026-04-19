@@ -1,5 +1,6 @@
 import Foundation
 import WidgetKit
+import UserNotifications
 
 /// 核心数据管理器
 @MainActor
@@ -198,6 +199,30 @@ class DataManager: ObservableObject {
     // MARK: - Widget Sync
     
     private func syncToWidget() {
+        let dayTasks = tasksForDate(currentDate)
+        let widgetData = WidgetScheduleData(
+            date: currentDate,
+            tasks: dayTasks.map {
+                WidgetTask(
+                    id: $0.id,
+                    name: $0.name,
+                    time: $0.time,
+                    completed: $0.completed,
+                    tag: $0.tag,
+                    icon: $0.icon
+                )
+            },
+            totalTasks: dayTasks.count,
+            completedTasks: dayTasks.filter(\.completed).count,
+            updatedAt: Date()
+        )
+        SharedDataManager.shared.saveScheduleData(widgetData)
+        WidgetCenter.shared.reloadTimelines(ofKind: "XingXuWidget")
+    }
+    
+    // MARK: - Widget Sync
+    
+    func syncToWidget() {
         let dayTasks = tasksForDate(currentDate)
         let widgetData = WidgetScheduleData(
             date: currentDate,
