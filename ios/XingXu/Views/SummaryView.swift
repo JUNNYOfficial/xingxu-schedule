@@ -60,7 +60,6 @@ struct SummaryView: View {
                 VStack(spacing: 16) {
                     headerGreeting
                     progressCard
-                    quickAccessGrid
                     todayScheduleSection
                     moodOverviewSection
                     cycleOverviewSection
@@ -75,6 +74,34 @@ struct SummaryView: View {
                     Button(action: { showAddTask = true }) {
                         Image(systemName: "plus")
                             .font(.title3)
+                            .foregroundColor(primaryTint)
+                    }
+                }
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Menu {
+                        Button(action: { showTodayDetail = true }) {
+                            Label("今日日程", systemImage: "calendar")
+                        }
+                        Button(action: { showMoodPicker = true }) {
+                            Label("记录心情", systemImage: "heart")
+                        }
+                        Button(action: { showCycleTracking = true }) {
+                            Label("周期追踪", systemImage: "drop")
+                        }
+                        Button(action: { showAnalytics = true }) {
+                            Label("数据分析", systemImage: "chart.bar")
+                        }
+                        Button(action: { showTemplateLibrary = true }) {
+                            Label("日程模板", systemImage: "doc.on.doc")
+                        }
+                        Divider()
+                        Button(action: { showSettings = true }) {
+                            Label("设置", systemImage: "gearshape")
+                        }
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .font(.title3)
+                            .foregroundColor(primaryTint)
                     }
                 }
             }
@@ -187,45 +214,6 @@ struct SummaryView: View {
     }
     
     // MARK: - Quick Access Grid
-    
-    private var quickAccessGrid: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("快捷入口")
-                .font(.title3.bold())
-                .padding(.horizontal)
-            
-            HStack(spacing: 0) {
-                quickItem(title: "日历", icon: "calendar") { showTodayDetail = true }
-                quickItem(title: "心情", icon: "heart.fill") { showMoodPicker = true }
-                quickItem(title: "分析", icon: "chart.bar.fill") { showAnalytics = true }
-                quickItem(title: "周期", icon: "drop.fill") { showCycleTracking = true }
-                quickItem(title: "添加", icon: "plus.circle.fill") { showAddTask = true }
-                quickItem(title: "设置", icon: "gearshape.fill") { showSettings = true }
-            }
-            .padding(.horizontal)
-        }
-    }
-    
-    private func quickItem(title: String, icon: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            VStack(spacing: 8) {
-                Circle()
-                    .fill(softBackground)
-                    .frame(width: 48, height: 48)
-                    .overlay(
-                        Image(systemName: icon)
-                            .font(.system(size: 20))
-                            .foregroundColor(primaryTint)
-                    )
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.primary)
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
-        .frame(maxWidth: .infinity)
-        .accessibilityLabel("\(title)")
-    }
     
     // MARK: - Today Schedule
     
