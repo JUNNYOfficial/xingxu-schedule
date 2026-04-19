@@ -14,6 +14,7 @@ class DataManager: ObservableObject {
     private let settingsKey = "xingxu_settings"
     private let currentDateKey = "xingxu_current_date"
     private let lastRepeatGenKey = "xingxu_last_repeat_gen"
+    private let customTemplatesKey = "xingxu_custom_templates"
     
     private var defaults: UserDefaults? {
         UserDefaults(suiteName: suiteName)
@@ -22,6 +23,7 @@ class DataManager: ObservableObject {
     @Published var tasks: [TaskItem] = []
     @Published var moods: [MoodEntry] = []
     @Published var settings: AppSettings = AppSettings()
+    @Published var customTemplates: [ScheduleTemplate] = []
     @Published var currentDate: String = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -30,6 +32,7 @@ class DataManager: ObservableObject {
     
     private init() {
         loadAll()
+        loadCustomTemplates()
         generateRepeatingTasksIfNeeded()
     }
     
@@ -39,6 +42,7 @@ class DataManager: ObservableObject {
         loadTasks()
         loadMoods()
         loadSettings()
+        loadCustomTemplates()
     }
     
     func loadTasks() {
@@ -90,6 +94,60 @@ class DataManager: ObservableObject {
         guard let defaults = defaults,
               let encoded = try? JSONEncoder().encode(settings) else { return }
         defaults.set(encoded, forKey: settingsKey)
+    }
+    
+    // MARK: - Custom Templates
+    
+    func loadCustomTemplates() {
+        guard let defaults = defaults,
+              let data = defaults.data(forKey: customTemplatesKey),
+              let decoded = try? JSONDecoder().decode([ScheduleTemplate].self, from: data) else {
+            customTemplates = []
+            return
+        }
+        customTemplates = decoded
+    }
+    
+    func saveCustomTemplates() {
+        guard let defaults = defaults,
+              let encoded = try? JSONEncoder().encode(customTemplates) else { return }
+        defaults.set(encoded, forKey: customTemplatesKey)
+    }
+    
+    func saveCustomTemplate(from date: String, name: String) {
+        let dayTasks = tasksForDate(date)
+        guard !dayTasks.isEmpty else { return }
+        
+        let templateTasks = dayTasks.map {
+            TemplateTask(name: $0.name, time: $0.time, icon: $0.icon, tag: $0.tag)
+        }
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let dateObj = formatter.date(from: date) ?? Date()
+        formatter.dateFormat = "M月d日"
+        let dateStr = formatter.string(from: dateObj)
+        
+        let template = ScheduleTemplate(
+            name: name.isEmpty ? "\(dateStr)的日程" : name,
+            icon: "📋",
+            description: "共 \(templateTasks.count) 个任务",
+            tasks: templateTasks,
+            color: "#5B7CF5",
+            isUserCreated: true
+        )
+        
+        customTemplates.append(template)
+        saveCustomTemplates()
+    }
+    
+    func deleteCustomTemplate(id: String) {
+        customTemplates.removeAll { $0.id == id }
+        saveCustomTemplates()
+    }
+    
+    var allTemplates: [ScheduleTemplate] {
+        ScheduleTemplate.presets + customTemplates
     }
     
     // MARK: - Task Operations

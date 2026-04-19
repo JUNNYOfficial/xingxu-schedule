@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 /// 日程模板
 struct ScheduleTemplate: Identifiable, Codable, Equatable {
@@ -8,6 +9,8 @@ struct ScheduleTemplate: Identifiable, Codable, Equatable {
     var description: String
     var tasks: [TemplateTask]
     var isDefault: Bool
+    var color: String
+    var isUserCreated: Bool
     
     init(
         id: String = UUID().uuidString,
@@ -15,7 +18,9 @@ struct ScheduleTemplate: Identifiable, Codable, Equatable {
         icon: String,
         description: String,
         tasks: [TemplateTask],
-        isDefault: Bool = false
+        isDefault: Bool = false,
+        color: String = "#5B7CF5",
+        isUserCreated: Bool = false
     ) {
         self.id = id
         self.name = name
@@ -23,6 +28,13 @@ struct ScheduleTemplate: Identifiable, Codable, Equatable {
         self.description = description
         self.tasks = tasks
         self.isDefault = isDefault
+        self.color = color
+        self.isUserCreated = isUserCreated
+    }
+    
+    /// SwiftUI Color from hex string
+    var themeColor: Color {
+        Color(hex: color)
     }
 }
 
@@ -50,7 +62,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "换衣服", time: "07:50", icon: "👕", tag: "生活"),
                 TemplateTask(name: "准备出门", time: "08:00", icon: "🎒", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#F5A623"
         ),
         ScheduleTemplate(
             id: "evening",
@@ -64,7 +77,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "读故事书", time: "20:15", icon: "📚", tag: "学习"),
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🛏️", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#5B7CF5"
         ),
         ScheduleTemplate(
             id: "school",
@@ -85,7 +99,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "洗澡", time: "19:30", icon: "🛁", tag: "生活"),
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#34C759"
         ),
         ScheduleTemplate(
             id: "weekend",
@@ -103,7 +118,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "洗澡", time: "19:30", icon: "🛁", tag: "生活"),
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#FF6B8A"
         ),
         ScheduleTemplate(
             id: "hospital",
@@ -122,7 +138,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "休息", time: "11:30", icon: "😴", tag: "生活"),
                 TemplateTask(name: "吃午餐", time: "12:00", icon: "🍱", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#5AC8FA"
         ),
         ScheduleTemplate(
             id: "sensory",
@@ -142,7 +159,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "洗澡", time: "19:30", icon: "🛁", tag: "生活"),
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#AF52DE"
         ),
         ScheduleTemplate(
             id: "home",
@@ -163,7 +181,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "洗澡", time: "19:30", icon: "🛁", tag: "生活"),
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#C69C6D"
         ),
         ScheduleTemplate(
             id: "outing",
@@ -184,7 +203,8 @@ extension ScheduleTemplate {
                 TemplateTask(name: "洗澡", time: "19:30", icon: "🛁", tag: "生活"),
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
-            isDefault: true
+            isDefault: true,
+            color: "#30D158"
         )
     ]
 }
