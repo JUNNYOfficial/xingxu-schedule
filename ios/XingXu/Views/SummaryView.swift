@@ -27,7 +27,6 @@ struct SummaryView: View {
         dataManager.stats(forDays: 7)
     }
     
-    // MARK: - 问候语
     private var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
@@ -49,23 +48,12 @@ struct SummaryView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 20) {
-                    // 顶部问候
+                VStack(spacing: 16) {
                     headerGreeting
-                    
-                    // 核心数据大卡片
-                    coreDataCard
-                    
-                    // 六宫格快捷入口
+                    progressCard
                     quickAccessGrid
-                    
-                    // 今日日程
                     todayScheduleSection
-                    
-                    // 心情概览
                     moodOverviewSection
-                    
-                    // 本周趋势
                     weeklyTrendSection
                 }
                 .padding(.vertical)
@@ -97,7 +85,7 @@ struct SummaryView: View {
         }
     }
     
-    // MARK: - 顶部问候
+    // MARK: - Header
     
     private var headerGreeting: some View {
         HStack {
@@ -113,95 +101,71 @@ struct SummaryView: View {
         .padding(.horizontal)
     }
     
-    // MARK: - 核心数据大卡片
+    // MARK: - Progress Card
     
-    private var coreDataCard: some View {
+    private var progressCard: some View {
         HStack(spacing: 20) {
-            // 左侧大圆环
+            // 左侧小圆环
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.12), lineWidth: 12)
-                    .frame(width: 100, height: 100)
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(
-                        progressRingColor,
-                        style: StrokeStyle(lineWidth: 12, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
-                    .frame(width: 100, height: 100)
-                
-                VStack(spacing: 0) {
-                    Text("\(Int(progress * 100))%")
-                        .font(.system(size: 24, weight: .bold))
-                    Text("完成")
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
+                    .stroke(themeColor.opacity(0.12), lineWidth: 8)
+                    .frame(width: 80, height: 80)
+                if progress > 0 {
+                    Circle()
+                        .trim(from: 0, to: progress)
+                        .stroke(themeColor, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .frame(width: 80, height: 80)
                 }
+                Text(progress > 0 ? "\(Int(progress * 100))%" : "--")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundColor(progress > 0 ? themeColor : .secondary)
             }
             
             // 右侧数据列
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 6) {
-                    Text("\(completedCount)/\(todayTasks.count)")
-                        .font(.title3.bold())
-                    Text("任务")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
+            VStack(alignment: .leading, spacing: 6) {
+                Text("今日进度")
+                    .font(.headline)
                 
-                Divider()
+                Text("\(completedCount)/\(todayTasks.count) 任务")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
                 
-                HStack(spacing: 6) {
-                    if let mood = todayMood {
-                        Text(mood.emoji)
-                            .font(.title3)
-                        Text("\(mood.value)/5")
-                            .font(.subheadline.bold())
-                    } else {
-                        Image(systemName: "face.smiling")
-                            .font(.body)
-                            .foregroundColor(.secondary)
-                        Text("未记录")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    Text("心情")
+                if let mood = todayMood {
+                    Text("\(mood.emoji) 心情 \(mood.value)/5")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                }
-                
-                Button(action: { showTodayDetail = true }) {
-                    HStack(spacing: 4) {
-                        Text("查看日程")
-                            .font(.caption.bold())
-                        Image(systemName: "chevron.right")
-                            .font(.caption2)
-                    }
-                    .foregroundColor(.white)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 6)
-                    .background(progressRingColor)
-                    .cornerRadius(8)
+                } else {
+                    Text("😊 心情未记录")
+                        .font(.caption)
+                        .foregroundColor(.secondary.opacity(0.7))
                 }
             }
             
             Spacer()
+            
+            // 箭头
+            Image(systemName: "chevron.right")
+                .font(.caption)
+                .foregroundColor(.secondary.opacity(0.4))
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(20)
+        .cornerRadius(18)
         .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 3)
         .padding(.horizontal)
+        .onTapGesture {
+            showTodayDetail = true
+        }
     }
     
-    private var progressRingColor: Color {
+    private var themeColor: Color {
         if progress >= 1.0 { return .mint }
         if progress >= 0.6 { return Color(red: 0.5, green: 0.72, blue: 0.85) }
         return Color(red: 1.0, green: 0.7, blue: 0.3)
     }
     
-    // MARK: - 六宫格快捷入口
+    // MARK: - Quick Access Grid
     
     private var quickAccessGrid: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -209,77 +173,33 @@ struct SummaryView: View {
                 .font(.title3.bold())
                 .padding(.horizontal)
             
-            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 12) {
-                quickAccessItem(
-                    title: "日程日历",
-                    icon: "calendar",
-                    color: Color(red: 1.0, green: 0.55, blue: 0.35),
-                    destination: AnyView(CalendarView())
-                )
-                quickAccessItem(
-                    title: "心情记录",
-                    icon: "heart.fill",
-                    color: Color(red: 1.0, green: 0.5, blue: 0.6),
-                    destination: AnyView(MoodHistoryView())
-                )
-                quickAccessItem(
-                    title: "数据分析",
-                    icon: "chart.bar.fill",
-                    color: .mint,
-                    destination: AnyView(AnalyticsView())
-                )
-                quickAccessItem(
-                    title: "模板库",
-                    icon: "doc.text.fill",
-                    color: Color(red: 0.4, green: 0.6, blue: 0.95),
-                    destination: AnyView(TemplateLibraryView())
-                )
-                quickAccessButton(
-                    title: "添加任务",
-                    icon: "plus.circle.fill",
-                    color: Color(red: 1.0, green: 0.7, blue: 0.3)
-                ) {
+            HStack(spacing: 0) {
+                quickItem(title: "日历", icon: "calendar", color: Color(red: 1.0, green: 0.55, blue: 0.35)) {
+                    showTodayDetail = true
+                }
+                quickItem(title: "心情", icon: "heart.fill", color: Color(red: 1.0, green: 0.5, blue: 0.6)) {
+                    showMoodPicker = true
+                }
+                quickItem(title: "分析", icon: "chart.bar.fill", color: .mint) {}
+                quickItem(title: "模板", icon: "doc.on.doc", color: Color(red: 0.4, green: 0.6, blue: 0.95)) {}
+                quickItem(title: "添加", icon: "plus.circle.fill", color: Color(red: 1.0, green: 0.7, blue: 0.3)) {
                     showAddTask = true
                 }
-                quickAccessItem(
-                    title: "设置",
-                    icon: "gearshape.fill",
-                    color: Color(red: 0.5, green: 0.65, blue: 0.8),
-                    destination: AnyView(SettingsView())
-                )
+                quickItem(title: "设置", icon: "gearshape.fill", color: Color(red: 0.5, green: 0.65, blue: 0.8)) {}
             }
             .padding(.horizontal)
         }
     }
     
-    private func quickAccessItem(title: String, icon: String, color: Color, destination: AnyView) -> some View {
-        NavigationLink(destination: destination) {
-            VStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(color.opacity(0.15))
-                    .frame(height: 60)
-                    .overlay(
-                        Image(systemName: icon)
-                            .font(.title2)
-                            .foregroundColor(color)
-                    )
-                Text(title)
-                    .font(.caption)
-                    .foregroundColor(.primary)
-            }
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-    
-    private func quickAccessButton(title: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
+    private func quickItem(title: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            VStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 16)
-                    .fill(color.opacity(0.15))
-                    .frame(height: 60)
+            VStack(spacing: 8) {
+                Circle()
+                    .fill(color.opacity(0.12))
+                    .frame(width: 48, height: 48)
                     .overlay(
                         Image(systemName: icon)
-                            .font(.title2)
+                            .font(.system(size: 20))
                             .foregroundColor(color)
                     )
                 Text(title)
@@ -288,9 +208,10 @@ struct SummaryView: View {
             }
         }
         .buttonStyle(PlainButtonStyle())
+        .frame(maxWidth: .infinity)
     }
     
-    // MARK: - 今日日程
+    // MARK: - Today Schedule
     
     private var todayScheduleSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -302,6 +223,7 @@ struct SummaryView: View {
                     showTodayDetail = true
                 }
                 .font(.subheadline)
+                .foregroundColor(.secondary)
             }
             .padding(.horizontal)
             
@@ -309,7 +231,7 @@ struct SummaryView: View {
                 if todayTasks.isEmpty {
                     HStack(spacing: 10) {
                         Image(systemName: "doc.text")
-                            .font(.system(size: 20))
+                            .font(.system(size: 18))
                             .foregroundColor(.secondary.opacity(0.4))
                         Text("今日暂无日程")
                             .font(.subheadline)
@@ -317,16 +239,13 @@ struct SummaryView: View {
                         Spacer()
                     }
                     .padding()
-                    .frame(maxWidth: .infinity, minHeight: 60)
                 } else {
                     ForEach(todayTasks.prefix(4)) { task in
-                        Button(action: {
-                            editingTask = task
-                        }) {
+                        Button(action: { editingTask = task }) {
                             HStack(spacing: 12) {
                                 Circle()
-                                    .fill(task.completed ? Color.mint : Color.gray.opacity(0.3))
-                                    .frame(width: 10, height: 10)
+                                    .fill(task.completed ? Color.mint : Color.gray.opacity(0.25))
+                                    .frame(width: 8, height: 8)
                                 
                                 if !task.icon.isEmpty {
                                     Text(task.icon)
@@ -347,7 +266,7 @@ struct SummaryView: View {
                                 
                                 if task.completed {
                                     Image(systemName: "checkmark")
-                                        .font(.caption)
+                                        .font(.caption2)
                                         .foregroundColor(.mint)
                                 }
                             }
@@ -357,7 +276,7 @@ struct SummaryView: View {
                         
                         if task.id != todayTasks.prefix(4).last?.id {
                             Divider()
-                                .padding(.leading)
+                                .padding(.leading, 44)
                         }
                     }
                     
@@ -379,7 +298,7 @@ struct SummaryView: View {
         }
     }
     
-    // MARK: - 心情概览
+    // MARK: - Mood Overview
     
     private var moodOverviewSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -391,6 +310,7 @@ struct SummaryView: View {
                     showMoodPicker = true
                 }
                 .font(.subheadline)
+                .foregroundColor(.secondary)
             }
             .padding(.horizontal)
             
@@ -399,24 +319,24 @@ struct SummaryView: View {
                 if recentMoods.isEmpty {
                     Text("近7天无心情记录")
                         .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .frame(maxWidth: .infinity, minHeight: 80)
+                        .foregroundColor(.secondary.opacity(0.6))
+                        .frame(maxWidth: .infinity, minHeight: 60)
                 } else {
                     HStack(alignment: .bottom, spacing: 12) {
                         ForEach(recentMoods) { mood in
                             VStack(spacing: 4) {
                                 Text(mood.emoji)
                                     .font(.title3)
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(Color(hex: mood.color).opacity(0.3))
-                                    .frame(width: 28, height: CGFloat(mood.value) * 12)
+                                RoundedRectangle(cornerRadius: 3)
+                                    .fill(Color(hex: mood.color).opacity(0.35))
+                                    .frame(width: 24, height: CGFloat(mood.value) * 10)
                                 Text(shortDate(mood.date))
-                                    .font(.system(size: 10))
+                                    .font(.system(size: 9))
                                     .foregroundColor(.secondary)
                             }
                         }
                     }
-                    .frame(maxWidth: .infinity, minHeight: 100)
+                    .frame(maxWidth: .infinity, minHeight: 80)
                 }
             }
             .padding()
@@ -427,7 +347,7 @@ struct SummaryView: View {
         }
     }
     
-    // MARK: - 本周趋势
+    // MARK: - Weekly Trend
     
     private var weeklyTrendSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -435,38 +355,30 @@ struct SummaryView: View {
                 .font(.title3.bold())
                 .padding(.horizontal)
             
-            VStack(spacing: 12) {
-                HStack(spacing: 12) {
-                    statItem(value: "\(weeklyStats.totalTasks)", label: "总任务", color: .indigo)
-                    statItem(value: "\(weeklyStats.completedTasks)", label: "已完成", color: .mint)
-                }
-                
-                HStack(spacing: 12) {
-                    statItem(value: "\(Int(weeklyStats.completionRate))%", label: "完成率", color: Color(red: 0.5, green: 0.72, blue: 0.85))
-                    statItem(value: "\(weeklyStats.dailyData.filter { $0.total > 0 }.count)天", label: "活跃天数", color: Color(red: 0.6, green: 0.5, blue: 0.9))
-                }
+            HStack(spacing: 10) {
+                miniStat(value: "\(weeklyStats.totalTasks)", label: "总任务", color: .indigo)
+                miniStat(value: "\(weeklyStats.completedTasks)", label: "已完成", color: .mint)
+                miniStat(value: "\(Int(weeklyStats.completionRate))%", label: "完成率", color: Color(red: 0.5, green: 0.72, blue: 0.85))
+                miniStat(value: "\(weeklyStats.dailyData.filter { $0.total > 0 }.count)", label: "活跃天", color: Color(red: 0.6, green: 0.5, blue: 0.9))
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(16)
-            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
             .padding(.horizontal)
         }
     }
     
-    private func statItem(value: String, label: String, color: Color) -> some View {
+    private func miniStat(value: String, label: String, color: Color) -> some View {
         VStack(spacing: 4) {
             Text(value)
-                .font(.title2.bold())
+                .font(.system(size: 18, weight: .bold))
                 .foregroundColor(color)
             Text(label)
-                .font(.caption)
+                .font(.system(size: 11))
                 .foregroundColor(.secondary)
         }
         .frame(maxWidth: .infinity)
         .padding(.vertical, 12)
-        .background(Color(.systemGray6))
-        .cornerRadius(12)
+        .background(Color(.systemBackground))
+        .cornerRadius(14)
+        .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
     }
     
     // MARK: - Helpers
@@ -479,5 +391,3 @@ struct SummaryView: View {
         return formatter.string(from: date)
     }
 }
-
-
