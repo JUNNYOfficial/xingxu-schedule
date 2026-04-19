@@ -307,27 +307,17 @@ struct SummaryView: View {
             
             VStack(spacing: 0) {
                 if todayTasks.isEmpty {
-                    VStack(spacing: 12) {
-                        Image(systemName: "checklist")
-                            .font(.system(size: 36))
-                            .foregroundColor(.secondary.opacity(0.3))
-                        
-                        Button(action: { showAddTask = true }) {
-                            HStack(spacing: 6) {
-                                Image(systemName: "plus")
-                                    .font(.caption.bold())
-                                Text("添加今日第一个任务")
-                                    .font(.subheadline.bold())
-                            }
-                            .foregroundColor(.white)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .background(Color.mint)
-                            .cornerRadius(10)
-                        }
-                        .buttonStyle(PlainButtonStyle())
+                    HStack(spacing: 10) {
+                        Image(systemName: "doc.text")
+                            .font(.system(size: 20))
+                            .foregroundColor(.secondary.opacity(0.4))
+                        Text("今日暂无日程")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary.opacity(0.6))
+                        Spacer()
                     }
-                    .frame(maxWidth: .infinity, minHeight: 120)
+                    .padding()
+                    .frame(maxWidth: .infinity, minHeight: 60)
                 } else {
                     ForEach(todayTasks.prefix(4)) { task in
                         Button(action: {
