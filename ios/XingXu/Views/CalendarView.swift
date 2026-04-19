@@ -126,7 +126,7 @@ struct CalendarView: View {
                                 
                                 if hasTasks {
                                     Circle()
-                                        .fill(allCompleted ? Color.mint : Color(red: 1.0, green: 0.7, blue: 0.3))
+                                        .fill(allCompleted ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.4))
                                         .frame(width: 6, height: 6)
                                         .offset(y: 12)
                                 }
@@ -161,9 +161,13 @@ struct CalendarView: View {
             }
             
             if tasksForSelectedDate.isEmpty {
-                Text("暂无任务")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, minHeight: 60)
+                EmptyStateView(
+                    icon: "calendar.badge.plus",
+                    title: "\(formattedSelectedDate) 暂无任务",
+                    subtitle: "点击右上角 + 添加任务",
+                    action: { showAddTask = true },
+                    actionTitle: "添加任务"
+                )
             } else {
                 ForEach(tasksForSelectedDate) { task in
                     TaskRow(task: task, onToggle: {

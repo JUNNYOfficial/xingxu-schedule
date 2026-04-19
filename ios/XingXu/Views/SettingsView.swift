@@ -25,7 +25,6 @@ struct SettingsView: View {
                 }
                 
                 Section("辅助功能") {
-                    Toggle("儿童模式", isOn: $dataManager.settings.childModeEnabled)
                     Toggle("高对比度", isOn: $dataManager.settings.highContrastEnabled)
                     Toggle("颜色编码", isOn: $dataManager.settings.colorCodingEnabled)
                 }
@@ -49,16 +48,100 @@ struct SettingsView: View {
                     }
                 }
                 
-                Section("通知") {
-                    Toggle("启用提醒", isOn: $dataManager.settings.notificationsEnabled)
+                Section {
+                    Toggle("同步到 Apple 健康", isOn: Binding(
+                        get: { dataManager.settings.healthSyncEnabled },
+                        set: { newValue in
+                            if newValue {
+                                Task {
+                                    let granted = await HealthManager.shared.requestAuthorization()
+                                    await MainActor.run {
+                                        dataManager.settings.healthSyncEnabled = granted
+                                        dataManager.saveSettings()
+                                    }
+                                }
+                            } else {
+                                dataManager.settings.healthSyncEnabled = false
+                                dataManager.saveSettings()
+                            }
+                        }
+                    ))
+                    if !HealthManager.shared.isAvailable {
+                        Text("当前设备不支持 Apple 健康")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                } header: {
+                    Text("健康")
+                } footer: {
+                    Text("将正念时间和心情记录同步到 Apple 健康，帮助您更全面地了解身心状态")
+                        .font(.caption)
+                }
+                
+                Section {
+                    Toggle("启用提醒", isOn: Binding(
+                        get: { dataManager.settings.notificationsEnabled },
+                        set: { newValue in
+                            if newValue {
+                                requestNotificationPermission { granted in
+                                    dataManager.settings.notificationsEnabled = granted
+                                    dataManager.saveSettings()
+                                }
+                            } else {
+                                dataManager.settings.notificationsEnabled = false
+                                dataManager.saveSettings()
+                            }
+                        }
+                    ))
                     if dataManager.settings.notificationsEnabled {
-                        Picker("提前提醒", selection: $dataManager.settings.notificationMinutes) {
+                        Picker("默认提前", selection: $dataManager.settings.notificationMinutes) {
                             Text("5分钟").tag(5)
                             Text("10分钟").tag(10)
                             Text("15分钟").tag(15)
                             Text("30分钟").tag(30)
                         }
+                        
+                        Toggle("只提醒重要任务", isOn: $dataManager.settings.onlyRemindImportant)
+                        
+                        HStack {
+                            Text("勿扰时段")
+                            Spacer()
+                            Text("\(dataManager.settings.doNotDisturbStartHour):00 — \(dataManager.settings.doNotDisturbEndHour):00")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                        }
+                        
+                        HStack {
+                            Text("开始")
+                            Spacer()
+                            Picker("", selection: $dataManager.settings.doNotDisturbStartHour) {
+                                ForEach(18..<24, id: \.self) { h in
+                                    Text("\(h):00").tag(h)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .frame(width: 100)
+                        }
+                        
+                        HStack {
+                            Text("结束")
+                            Spacer()
+                            Picker("", selection: $dataManager.settings.doNotDisturbEndHour) {
+                                ForEach(5..<12, id: \.self) { h in
+                                    Text("\(h):00").tag(h)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                            .frame(width: 100)
+                        }
                     }
+                } header: {
+                    Text("通知")
+                } footer: {
+                    Text(dataManager.settings.notificationsEnabled
+                         ? "只有明确设置了提醒的任务才会通知"
+                         : "通知默认关闭，需要时请在添加任务时手动开启")
+                        .font(.caption)
                 }
                 
                 Section("数据") {
@@ -137,9 +220,11 @@ struct SettingsView: View {
                 dataManager.tasks = export.tasks
                 dataManager.moods = export.moods
                 dataManager.settings = export.settings
+                dataManager.customTemplates = export.customTemplates
                 dataManager.saveTasks()
                 dataManager.saveMoods()
                 dataManager.saveSettings()
+                dataManager.saveCustomTemplates()
                 
             } catch {
                 importError = "解析失败: \(error.localizedDescription)"
@@ -147,6 +232,14 @@ struct SettingsView: View {
             
         case .failure(let error):
             importError = "选择文件失败: \(error.localizedDescription)"
+        }
+    }
+    
+    private func requestNotificationPermission(completion: @escaping (Bool) -> Void) {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge]) { granted, _ in
+            DispatchQueue.main.async {
+                completion(granted)
+            }
         }
     }
     
@@ -160,7 +253,8 @@ struct SettingsView: View {
         let export = ExportData(
             tasks: dataManager.tasks,
             moods: dataManager.moods,
-            settings: dataManager.settings
+            settings: dataManager.settings,
+            customTemplates: dataManager.customTemplates
         )
         
         do {

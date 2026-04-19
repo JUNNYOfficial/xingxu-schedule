@@ -13,12 +13,13 @@ struct TaskItem: Codable, Identifiable, Equatable {
     var repeatPattern: String
     var remindMinutes: Int?
     var imageData: Data?
+    var sortOrder: Int
     var createdAt: Date
     var modifiedAt: Date
     
     enum CodingKeys: String, CodingKey {
         case id, name, time, endTime, icon, completed, date, tag
-        case repeatPattern, remindMinutes, imageData, createdAt, modifiedAt
+        case repeatPattern, remindMinutes, imageData, sortOrder, createdAt, modifiedAt
     }
     
     init(from decoder: Decoder) throws {
@@ -34,6 +35,7 @@ struct TaskItem: Codable, Identifiable, Equatable {
         repeatPattern = try container.decodeIfPresent(String.self, forKey: .repeatPattern) ?? "none"
         remindMinutes = try container.decodeIfPresent(Int.self, forKey: .remindMinutes)
         imageData = try container.decodeIfPresent(Data.self, forKey: .imageData)
+        sortOrder = try container.decodeIfPresent(Int.self, forKey: .sortOrder) ?? 0
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
         modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt) ?? Date()
     }
@@ -49,7 +51,8 @@ struct TaskItem: Codable, Identifiable, Equatable {
         tag: String = "",
         repeatPattern: String = "none",
         remindMinutes: Int? = nil,
-        imageData: Data? = nil
+        imageData: Data? = nil,
+        sortOrder: Int = 0
     ) {
         self.id = id
         self.name = name
@@ -62,6 +65,7 @@ struct TaskItem: Codable, Identifiable, Equatable {
         self.repeatPattern = repeatPattern
         self.remindMinutes = remindMinutes
         self.imageData = imageData
+        self.sortOrder = sortOrder
         self.createdAt = Date()
         self.modifiedAt = Date()
     }
@@ -82,16 +86,17 @@ struct TaskItem: Codable, Identifiable, Equatable {
         return time
     }
     
-    /// 标签颜色
+    /// 标签颜色 — 自闭症友好：统一柔和蓝灰色系
     var tagColor: String {
+        // 不同标签用不同明度的蓝灰区分，保持低饱和度统一感
         switch tag {
-        case "工作": return "#3B82F6"
-        case "学习": return "#8B5CF6"
-        case "生活": return "#10B981"
-        case "健康": return "#F59E0B"
-        case "娱乐": return "#EC4899"
-        case "重要": return "#EF4444"
-        default: return "#6B7280"
+        case "工作": return "#5A7A94"
+        case "学习": return "#6B8BA3"
+        case "生活": return "#7BA3C4"
+        case "健康": return "#8FB8D4"
+        case "娱乐": return "#A3CDE4"
+        case "重要": return "#4A6A84"
+        default: return "#9CA3AF"
         }
     }
 }
@@ -100,11 +105,11 @@ struct TaskItem: Codable, Identifiable, Equatable {
 struct TaskTags {
     static let all = ["工作", "学习", "生活", "健康", "娱乐", "重要"]
     static let colors: [String: String] = [
-        "工作": "#3B82F6",
-        "学习": "#8B5CF6",
-        "生活": "#10B981",
-        "健康": "#F59E0B",
-        "娱乐": "#EC4899",
-        "重要": "#EF4444"
+        "工作": "#5A7A94",
+        "学习": "#6B8BA3",
+        "生活": "#7BA3C4",
+        "健康": "#8FB8D4",
+        "娱乐": "#A3CDE4",
+        "重要": "#4A6A84"
     ]
 }

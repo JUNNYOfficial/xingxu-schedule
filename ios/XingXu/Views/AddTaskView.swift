@@ -57,6 +57,8 @@ struct AddTaskView: View {
         }
     }
     
+
+    
     var body: some View {
         NavigationView {
             Form {
@@ -119,7 +121,11 @@ struct AddTaskView: View {
                                                         Text(emoji)
                                                             .font(.title3)
                                                             .frame(width: 36, height: 36)
-                                                            .background(icon == emoji ? Color(.systemGray5) : Color.clear)
+                                                            .background(icon == emoji ? Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.15) : Color.clear)
+                                                            .overlay(
+                                                                RoundedRectangle(cornerRadius: 8)
+                                                                    .stroke(icon == emoji ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.clear, lineWidth: 1.5)
+                                                            )
                                                             .cornerRadius(8)
                                                     }
                                                     .buttonStyle(PlainButtonStyle())
@@ -152,12 +158,19 @@ struct AddTaskView: View {
                     }
                 }
                 
-                Section("提醒") {
+                Section {
                     Picker("提醒时间", selection: $remindMinutes) {
                         ForEach(remindOptions, id: \.0) { option in
                             Text(option.1).tag(option.0)
                         }
                     }
+                } header: {
+                    Text("提醒")
+                } footer: {
+                    Text(remindMinutes == nil
+                         ? "不发送通知，需要时可在设置中开启"
+                         : "将在任务开始前发送温和提醒")
+                        .font(.caption)
                 }
                 
                 Section("重复") {
@@ -195,10 +208,39 @@ struct AddTaskView: View {
                         .accessibilityHint(name.isEmpty ? "请先填写任务名称" : "双击保存任务")
                 }
             }
+            .alert("时间冲突", isPresented: $showTimeConflictAlert) {
+                Button("取消", role: .cancel) {}
+                Button("仍要添加") {
+                    showTimeConflictAlert = false
+                    forceSaveTask()
+                }
+            } message: {
+                Text("该时段与「\(conflictTaskName)」有重叠，是否仍要添加？")
+            }
         }
     }
     
+    @State private var showTimeConflictAlert = false
+    @State private var conflictTaskName = ""
+    
     private func saveTask() {
+        // 时间冲突检测
+        if editingTask == nil {
+            let newStart = timeValue(time)
+            let newEnd = endTime.isEmpty ? newStart + 1 : timeValue(endTime)
+            let dayTasks = dataManager.tasksForDate(date)
+            for existing in dayTasks {
+                if existing.id == editingTask?.id { continue }
+                let existStart = timeValue(existing.time)
+                let existEnd = existing.endTime.map(timeValue) ?? existStart + 1
+                if max(newStart, existStart) < min(newEnd, existEnd) {
+                    conflictTaskName = existing.name
+                    showTimeConflictAlert = true
+                    return
+                }
+            }
+        }
+        
         let task = TaskItem(
             id: editingTask?.id ?? UUID().uuidString,
             name: name.trimmingCharacters(in: .whitespaces),
@@ -218,6 +260,35 @@ struct AddTaskView: View {
             dataManager.addTask(task)
         }
         dismiss()
+    }
+    
+    private func forceSaveTask() {
+        let task = TaskItem(
+            id: editingTask?.id ?? UUID().uuidString,
+            name: name.trimmingCharacters(in: .whitespaces),
+            time: time,
+            endTime: endTime.isEmpty ? nil : endTime,
+            icon: icon,
+            completed: editingTask?.completed ?? false,
+            date: date,
+            tag: tag,
+            repeatPattern: repeatPattern,
+            remindMinutes: remindMinutes
+        )
+        
+        if editingTask != nil {
+            dataManager.updateTask(task)
+        } else {
+            dataManager.addTask(task)
+        }
+        dismiss()
+    }
+    
+    private func timeValue(_ timeStr: String) -> Int {
+        let parts = timeStr.split(separator: ":")
+        let h = Int(parts.first ?? "0") ?? 0
+        let m = Int(parts.last ?? "0") ?? 0
+        return h * 60 + m
     }
     
     private func timeDate(from string: String) -> Date {

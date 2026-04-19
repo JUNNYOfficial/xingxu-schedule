@@ -6,6 +6,10 @@ struct SummaryView: View {
     @State private var showMoodPicker = false
     @State private var editingTask: TaskItem? = nil
     @State private var showTodayDetail = false
+    @State private var showAnalytics = false
+    @State private var showTemplateLibrary = false
+    @State private var showSettings = false
+    @StateObject private var healthManager = HealthManager.shared
     
     // 自闭症友好：统一柔和色系
     private let primaryTint = Color(red: 0.48, green: 0.61, blue: 0.75)
@@ -58,6 +62,7 @@ struct SummaryView: View {
                     quickAccessGrid
                     todayScheduleSection
                     moodOverviewSection
+                    healthOverviewSection
                     weeklyTrendSection
                 }
                 .padding(.vertical)
@@ -80,12 +85,26 @@ struct SummaryView: View {
             .sheet(isPresented: $showMoodPicker) {
                 MoodPickerView(date: dataManager.currentDate)
             }
-            .background(
-                NavigationLink(destination: TodayView(), isActive: $showTodayDetail) {
-                    EmptyView()
+            .sheet(isPresented: $showAnalytics) {
+                AnalyticsView()
+                    .environmentObject(dataManager)
+            }
+            .sheet(isPresented: $showTemplateLibrary) {
+                TemplateLibraryView()
+                    .environmentObject(dataManager)
+            }
+            .sheet(isPresented: $showSettings) {
+                SettingsView()
+                    .environmentObject(dataManager)
+            }
+            .navigationDestination(isPresented: $showTodayDetail) {
+                TodayView()
+            }
+            .onAppear {
+                Task {
+                    await healthManager.refreshAllData()
                 }
-                .hidden()
-            )
+            }
         }
     }
     
@@ -172,10 +191,10 @@ struct SummaryView: View {
             HStack(spacing: 0) {
                 quickItem(title: "日历", icon: "calendar") { showTodayDetail = true }
                 quickItem(title: "心情", icon: "heart.fill") { showMoodPicker = true }
-                quickItem(title: "分析", icon: "chart.bar.fill") {}
-                quickItem(title: "模板", icon: "doc.on.doc") {}
+                quickItem(title: "分析", icon: "chart.bar.fill") { showAnalytics = true }
+                quickItem(title: "模板", icon: "doc.on.doc") { showTemplateLibrary = true }
                 quickItem(title: "添加", icon: "plus.circle.fill") { showAddTask = true }
-                quickItem(title: "设置", icon: "gearshape.fill") {}
+                quickItem(title: "设置", icon: "gearshape.fill") { showSettings = true }
             }
             .padding(.horizontal)
         }
@@ -219,15 +238,13 @@ struct SummaryView: View {
             
             VStack(spacing: 0) {
                 if todayTasks.isEmpty {
-                    HStack(spacing: 10) {
-                        Image(systemName: "doc.text")
-                            .font(.system(size: 18))
-                            .foregroundColor(.secondary.opacity(0.4))
-                        Text("今日暂无日程")
-                            .font(.subheadline)
-                            .foregroundColor(.secondary.opacity(0.6))
-                        Spacer()
-                    }
+                    EmptyStateView(
+                        icon: "doc.text",
+                        title: "今日暂无日程",
+                        subtitle: "点击右上角 + 添加第一个任务",
+                        action: { showAddTask = true },
+                        actionTitle: "添加任务"
+                    )
                     .padding()
                 } else {
                     ForEach(todayTasks.prefix(4)) { task in
@@ -307,10 +324,13 @@ struct SummaryView: View {
             VStack(spacing: 16) {
                 let recentMoods = weeklyStats.moods.suffix(7)
                 if recentMoods.isEmpty {
-                    Text("近7天无心情记录")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary.opacity(0.6))
-                        .frame(maxWidth: .infinity, minHeight: 60)
+                    EmptyStateView(
+                        icon: "face.smiling",
+                        title: "近7天无心情记录",
+                        subtitle: "记录心情有助于了解自己的情绪变化",
+                        action: { showMoodPicker = true },
+                        actionTitle: "记录心情"
+                    )
                 } else {
                     HStack(alignment: .bottom, spacing: 12) {
                         ForEach(recentMoods) { mood in
@@ -335,6 +355,71 @@ struct SummaryView: View {
             .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
             .padding(.horizontal)
         }
+    }
+    
+    // MARK: - Health Overview
+    
+    private var healthOverviewSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("健康概览")
+                    .font(.title3.bold())
+                Spacer()
+                if !healthManager.isAvailable {
+                    Text("不支持")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal)
+            
+            HStack(spacing: 12) {
+                healthCard(
+                    icon: "figure.walk",
+                    title: "运动",
+                    value: healthManager.todayExerciseMinutes > 0
+                        ? "\(Int(healthManager.todayExerciseMinutes))分钟"
+                        : "--",
+                    color: primaryTint
+                )
+                healthCard(
+                    icon: "brain.head.profile",
+                    title: "正念",
+                    value: healthManager.todayMindfulMinutes > 0
+                        ? "\(Int(healthManager.todayMindfulMinutes))分钟"
+                        : "--",
+                    color: primaryTint
+                )
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    private func healthCard(icon: String, title: String, value: String, color: Color) -> some View {
+        VStack(spacing: 8) {
+            HStack {
+                Image(systemName: icon)
+                    .font(.title3)
+                    .foregroundColor(color)
+                Spacer()
+            }
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(value)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text(title)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
     }
     
     // MARK: - Weekly Trend

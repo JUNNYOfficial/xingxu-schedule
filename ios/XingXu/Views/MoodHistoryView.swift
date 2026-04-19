@@ -103,7 +103,7 @@ struct MoodHistoryView: View {
             VStack(spacing: 4) {
                 Text("\(filteredMoods.count)")
                     .font(.system(size: 48, weight: .bold))
-                    .foregroundColor(.indigo)
+                    .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
                 Text("记录次数")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -125,9 +125,11 @@ struct MoodHistoryView: View {
                 .font(.headline)
             
             if filteredMoods.isEmpty {
-                Text("暂无数据")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, minHeight: 100)
+                EmptyStateView(
+                    icon: "chart.bar",
+                    title: "暂无心情趋势",
+                    subtitle: "连续记录心情后，可查看情绪变化趋势"
+                )
             } else {
                 HStack(alignment: .bottom, spacing: 8) {
                     ForEach(filteredMoods) { mood in
@@ -162,9 +164,11 @@ struct MoodHistoryView: View {
                 .font(.headline)
             
             if filteredMoods.isEmpty {
-                Text("暂无心情记录")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, minHeight: 60)
+                EmptyStateView(
+                    icon: "heart.text.square",
+                    title: "暂无心情记录",
+                    subtitle: "每天花几秒记录心情，帮助了解自己"
+                )
             } else {
                 VStack(spacing: 0) {
                     ForEach(filteredMoods) { mood in
@@ -214,10 +218,10 @@ struct MoodHistoryView: View {
     
     private func moodColor(for value: Double) -> Color {
         switch value {
-        case 0..<2: return Color(red: 0.9, green: 0.5, blue: 0.5)
-        case 2..<3: return Color(red: 1.0, green: 0.7, blue: 0.3)
-        case 3..<4: return .mint
-        default: return Color(red: 0.5, green: 0.72, blue: 0.85)
+        case 0..<2: return Color(red: 0.35, green: 0.48, blue: 0.62)
+        case 2..<3: return Color(red: 0.40, green: 0.53, blue: 0.67)
+        case 3..<4: return Color(red: 0.48, green: 0.61, blue: 0.75)
+        default: return Color(red: 0.56, green: 0.69, blue: 0.83)
         }
     }
     

@@ -83,7 +83,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "准备出门", time: "08:00", icon: "🎒", tag: "生活")
             ],
             isDefault: true,
-            color: "#F5A623"
+            color: "#5A7A94"
         ),
         ScheduleTemplate(
             id: "evening",
@@ -98,7 +98,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🛏️", tag: "生活")
             ],
             isDefault: true,
-            color: "#5B7CF5"
+            color: "#6B8BA3"
         ),
         ScheduleTemplate(
             id: "school",
@@ -120,7 +120,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
             isDefault: true,
-            color: "#34C759"
+            color: "#7BA3C4"
         ),
         ScheduleTemplate(
             id: "weekend",
@@ -139,7 +139,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
             isDefault: true,
-            color: "#FF6B8A"
+            color: "#8FB8D4"
         ),
         ScheduleTemplate(
             id: "hospital",
@@ -159,7 +159,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "吃午餐", time: "12:00", icon: "🍱", tag: "生活")
             ],
             isDefault: true,
-            color: "#5AC8FA"
+            color: "#7BA3C4"
         ),
         ScheduleTemplate(
             id: "sensory",
@@ -180,7 +180,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
             isDefault: true,
-            color: "#AF52DE"
+            color: "#6B8BA3"
         ),
         ScheduleTemplate(
             id: "home",
@@ -202,7 +202,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
             isDefault: true,
-            color: "#C69C6D"
+            color: "#8FB8D4"
         ),
         ScheduleTemplate(
             id: "outing",
@@ -224,7 +224,7 @@ extension ScheduleTemplate {
                 TemplateTask(name: "睡觉", time: "20:30", icon: "🌙", tag: "生活")
             ],
             isDefault: true,
-            color: "#30D158"
+            color: "#A3CDE4"
         )
     ]
 }

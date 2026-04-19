@@ -57,7 +57,7 @@ struct SmallWidgetView: View {
                 VStack(spacing: 4) {
                     Image(systemName: "checkmark.circle")
                         .font(.system(size: 28))
-                        .foregroundColor(.mint)
+                        .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
                     Text("今日无任务")
                         .font(.system(size: 12))
                         .foregroundColor(.secondary)
@@ -70,7 +70,7 @@ struct SmallWidgetView: View {
                     Circle()
                         .trim(from: 0, to: progress)
                         .stroke(
-                            progress >= 1.0 ? Color.mint : Color(red: 0.5, green: 0.72, blue: 0.85),
+                            progress >= 1.0 ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.6),
                             style: StrokeStyle(lineWidth: 8, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -137,7 +137,7 @@ struct MediumWidgetView: View {
                     Circle()
                         .trim(from: 0, to: progress)
                         .stroke(
-                            progress >= 1.0 ? Color.mint : Color(red: 0.5, green: 0.72, blue: 0.85),
+                            progress >= 1.0 ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.6),
                             style: StrokeStyle(lineWidth: 6, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -172,7 +172,7 @@ struct MediumWidgetView: View {
                         HStack(spacing: 6) {
                             Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
                                 .font(.system(size: 12))
-                                .foregroundColor(task.completed ? .mint : .gray)
+                                .foregroundColor(task.completed ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.gray.opacity(0.4))
                             
                             Text(task.icon ?? "")
                                 .font(.system(size: 12))
@@ -255,7 +255,7 @@ struct LargeWidgetView: View {
                     Text("\(data.completedTasks)/\(data.totalTasks)")
                         .font(.system(size: 14, weight: .semibold))
                     ProgressView(value: progress)
-                        .progressViewStyle(LinearProgressViewStyle(tint: progress >= 1.0 ? .mint : Color(red: 0.5, green: 0.72, blue: 0.85)))
+                        .progressViewStyle(LinearProgressViewStyle(tint: progress >= 1.0 ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.6)))
                         .frame(width: 60)
                 }
             }
@@ -335,7 +335,7 @@ struct TaskRowView: View {
             // 状态图标
             Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
                 .font(.system(size: 18))
-                .foregroundColor(task.completed ? .green : .gray.opacity(0.5))
+                .foregroundColor(task.completed ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.gray.opacity(0.4))
                 .frame(width: 28)
             
             // 图标和名称
@@ -375,16 +375,10 @@ struct TaskRowView: View {
         .widgetURL(URL(string: "xingxu://toggleTask?id=\(task.id)"))
     }
     
+    private let widgetTint = Color(red: 0.48, green: 0.61, blue: 0.75)
+    
     private func tagColor(_ tag: String) -> Color {
-        switch tag {
-        case "工作": return .blue
-        case "学习": return .purple
-        case "生活": return .green
-        case "健康": return .orange
-        case "娱乐": return .pink
-        case "重要": return .red
-        default: return .gray
-        }
+        return widgetTint
     }
 }
 

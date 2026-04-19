@@ -7,6 +7,7 @@ struct TodayView: View {
     @State private var showMoodPicker = false
     @State private var showTemplateLibrary = false
     @State private var showNotificationAlert = false
+    @State private var animateCompleteId: String? = nil
     
     private var todayTasks: [TaskItem] {
         dataManager.tasksForDate(dataManager.currentDate)
@@ -21,26 +22,50 @@ struct TodayView: View {
     }
     
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                // 日期头部
-                dateHeader
-                
-                // 进度环
-                if !todayTasks.isEmpty {
-                    progressSection
+        ZStack(alignment: .bottomTrailing) {
+            ScrollView {
+                VStack(spacing: 16) {
+                    // 日期头部
+                    dateHeader
+                    
+                    // 进度环
+                    if !todayTasks.isEmpty {
+                        progressSection
+                    }
+                    
+                    // 心情记录
+                    moodSection
+                    
+                    // 快速添加
+                    quickAddButton
+                    
+                    // 任务列表
+                    taskListSection
                 }
-                
-                // 心情记录
-                moodSection
-                
-                // 快速添加
-                quickAddButton
-                
-                // 任务列表
-                taskListSection
+                .padding()
             }
-            .padding()
+            
+            // 回到今天浮动按钮
+            if !isToday {
+                Button(action: backToToday) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "arrow.uturn.backward")
+                            .font(.caption)
+                        Text("今天")
+                            .font(.caption.bold())
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color(red: 0.48, green: 0.61, blue: 0.75))
+                    .clipShape(Capsule())
+                    .shadow(color: Color.black.opacity(0.15), radius: 6, x: 0, y: 3)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .padding(.trailing, 16)
+                .padding(.bottom, 16)
+                .transition(.scale.combined(with: .opacity))
+            }
         }
         .navigationTitle("今日日程")
         .navigationBarTitleDisplayMode(.large)
@@ -143,7 +168,7 @@ struct TodayView: View {
                 if completedCount == todayTasks.count && !todayTasks.isEmpty {
                     Label("全部完成！", systemImage: "checkmark.seal.fill")
                         .font(.subheadline)
-                        .foregroundColor(.mint)
+                        .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
                 } else {
                     Text("还剩 \(todayTasks.count - completedCount) 个任务")
                         .font(.subheadline)
@@ -224,18 +249,13 @@ struct TodayView: View {
     private var taskListSection: some View {
         VStack(spacing: 12) {
             if todayTasks.isEmpty {
-                VStack(spacing: 12) {
-                    Image(systemName: "checklist")
-                        .font(.system(size: 48))
-                        .foregroundColor(.secondary.opacity(0.5))
-                    Text("今日暂无任务")
-                        .font(.headline)
-                        .foregroundColor(.secondary)
-                    Text("点击上方按钮添加")
-                        .font(.caption)
-                        .foregroundColor(.secondary.opacity(0.7))
-                }
-                .frame(maxWidth: .infinity, minHeight: 200)
+                EmptyStateView(
+                    icon: "checklist",
+                    title: "今日暂无任务",
+                    subtitle: "添加任务来规划你的一天",
+                    action: { showAddTask = true },
+                    actionTitle: "添加任务"
+                )
                 .padding()
             } else {
                 ForEach(todayTasks) { task in
@@ -247,6 +267,9 @@ struct TodayView: View {
                         dataManager.deleteTask(id: task.id)
                     })
                 }
+                .onMove { indices, offset in
+                    dataManager.moveTask(for: dataManager.currentDate, from: indices, to: offset)
+                }
             }
         }
     }
@@ -254,9 +277,10 @@ struct TodayView: View {
     // MARK: - Helpers
     
     private var completionColor: Color {
-        if progress >= 1.0 { return .mint }
-        if progress >= 0.6 { return Color(red: 0.5, green: 0.72, blue: 0.85) }
-        return Color(red: 1.0, green: 0.7, blue: 0.3)
+        let tint = Color(red: 0.48, green: 0.61, blue: 0.75)
+        if progress >= 1.0 { return tint }
+        if progress >= 0.6 { return tint.opacity(0.7) }
+        return tint.opacity(0.4)
     }
     
     private func formattedDate(_ dateString: String) -> String {
@@ -295,5 +319,19 @@ struct TodayView: View {
         guard let date = formatter.date(from: dataManager.currentDate) else { return }
         let newDate = Calendar.current.date(byAdding: .day, value: 1, to: date)!
         dataManager.currentDate = formatter.string(from: newDate)
+    }
+    
+    private var isToday: Bool {
+        dataManager.currentDate == {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            return formatter.string(from: Date())
+        }()
+    }
+    
+    private func backToToday() {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        dataManager.currentDate = formatter.string(from: Date())
     }
 }

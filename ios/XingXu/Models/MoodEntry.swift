@@ -49,13 +49,14 @@ struct MoodEntry: Codable, Identifiable, Equatable {
     }
     
     var color: String {
+        // 自闭症友好：统一柔和蓝灰色系，不同明度区分
         switch value {
-        case 1: return "#EF4444"
-        case 2: return "#F59E0B"
-        case 3: return "#9CA3AF"
-        case 4: return "#10B981"
-        case 5: return "#3B82F6"
-        default: return "#9CA3AF"
+        case 1: return "#5A7A94"   // 深
+        case 2: return "#6B8BA3"   // 较深
+        case 3: return "#7BA3C4"   // 中（标准蓝灰）
+        case 4: return "#8FB8D4"   // 较浅
+        case 5: return "#A3CDE4"   // 浅
+        default: return "#7BA3C4"
         }
     }
 }

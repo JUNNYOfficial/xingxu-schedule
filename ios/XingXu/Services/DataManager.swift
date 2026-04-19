@@ -34,6 +34,31 @@ class DataManager: ObservableObject {
         loadAll()
         loadCustomTemplates()
         generateRepeatingTasksIfNeeded()
+        insertSampleDataIfNeeded()
+    }
+    
+    // MARK: - Sample Data
+    
+    private func insertSampleDataIfNeeded() {
+        guard let defaults = defaults else { return }
+        let key = "xingxu_has_launched_before"
+        guard !defaults.bool(forKey: key) else { return }
+        
+        let today = currentDate
+        tasks = [
+            TaskItem(name: "起床整理", time: "07:30", icon: "🛏️", completed: true, date: today, tag: "生活"),
+            TaskItem(name: "刷牙洗脸", time: "07:45", icon: "🪥", completed: true, date: today, tag: "健康"),
+            TaskItem(name: "吃早餐", time: "08:00", icon: "🍳", date: today, tag: "生活"),
+            TaskItem(name: "上学", time: "08:30", icon: "🎒", date: today, tag: "学习")
+        ]
+        
+        moods = [
+            MoodEntry(date: today, value: 4, note: "今天心情不错")
+        ]
+        
+        saveTasks()
+        saveMoods()
+        defaults.set(true, forKey: key)
     }
     
     // MARK: - Load
@@ -157,7 +182,13 @@ class DataManager: ObservableObject {
     // MARK: - Task Operations
     
     func tasksForDate(_ date: String) -> [TaskItem] {
-        tasks.filter { $0.date == date }.sorted { $0.timeValue < $1.timeValue }
+        tasks.filter { $0.date == date }
+            .sorted {
+                if $0.sortOrder != $1.sortOrder {
+                    return $0.sortOrder < $1.sortOrder
+                }
+                return $0.timeValue < $1.timeValue
+            }
     }
     
     func addTask(_ task: TaskItem) {
@@ -184,19 +215,46 @@ class DataManager: ObservableObject {
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
     }
     
+    func moveTask(for date: String, from indices: IndexSet, to offset: Int) {
+        var dayTasks = tasks.filter { $0.date == date }
+        dayTasks.sort {
+            if $0.sortOrder != $1.sortOrder {
+                return $0.sortOrder < $1.sortOrder
+            }
+            return $0.timeValue < $1.timeValue
+        }
+        dayTasks.move(fromOffsets: indices, toOffset: offset)
+        for (index, task) in dayTasks.enumerated() {
+            if let i = tasks.firstIndex(where: { $0.id == task.id }) {
+                tasks[i].sortOrder = index
+                tasks[i].modifiedAt = Date()
+            }
+        }
+        saveTasks()
+    }
+    
     func toggleComplete(id: String) {
         if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].completed.toggle()
             tasks[index].modifiedAt = Date()
             saveTasks()
+            
+            if tasks[index].completed {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [id])
+            } else {
+                scheduleNotification(for: tasks[index])
+            }
+            
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
         }
     }
     
     func clearTasksForDate(_ date: String) {
+        let idsToRemove = tasks.filter { $0.date == date }.map(\.id)
         tasks.removeAll { $0.date == date }
         saveTasks()
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: idsToRemove)
     }
     
     // MARK: - Mood Operations
@@ -211,6 +269,13 @@ class DataManager: ObservableObject {
         moods.removeAll { $0.date == updated.date }
         moods.append(updated)
         saveMoods()
+        
+        // 同步到 HealthKit
+        if settings.healthSyncEnabled {
+            Task {
+                await HealthManager.shared.syncMoodToHealth(updated)
+            }
+        }
     }
     
     // MARK: - Statistics
@@ -398,6 +463,9 @@ class DataManager: ObservableObject {
               let remind = task.remindMinutes,
               !task.completed else { return }
         
+        // 只提醒重要任务
+        if settings.onlyRemindImportant && task.tag != "重要" { return }
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd HH:mm"
         guard let taskDateTime = formatter.date(from: "\(task.date) \(task.time)") else { return }
@@ -405,9 +473,22 @@ class DataManager: ObservableObject {
         let remindDate = Calendar.current.date(byAdding: .minute, value: -remind, to: taskDateTime)!
         guard remindDate > Date() else { return }
         
+        // 勿扰时段检查
+        let hour = Calendar.current.component(.hour, from: remindDate)
+        let start = settings.doNotDisturbStartHour
+        let end = settings.doNotDisturbEndHour
+        let inDND: Bool
+        if start > end {
+            // 跨午夜，如 22:00-08:00
+            inDND = hour >= start || hour < end
+        } else {
+            inDND = hour >= start && hour < end
+        }
+        guard !inDND else { return }
+        
         let content = UNMutableNotificationContent()
-        content.title = "星序 - 任务提醒"
-        content.body = "任务「\(task.name)」将在 \(remind) 分钟后开始"
+        content.title = "星序"
+        content.body = "「\(task.name)」快要开始了"
         content.sound = .default
         
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: remindDate)

@@ -8,12 +8,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        UNUserNotificationCenter.current().requestAuthorization(
-            options: [.alert, .sound, .badge]
-        ) { granted, _ in
-            print("[App] 通知权限: \(granted ? "已授权" : "未授权")")
-            UserDefaults.standard.set(!granted, forKey: "xingxu_notification_denied")
-        }
         UNUserNotificationCenter.current().delegate = self
         return true
     }

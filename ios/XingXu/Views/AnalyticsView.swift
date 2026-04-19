@@ -55,13 +55,15 @@ struct AnalyticsView: View {
         }
     }
     
+    private let tint = Color(red: 0.48, green: 0.61, blue: 0.75)
+    
     private var overviewCards: some View {
         let s = stats
-        let cards: [(String, String, Color)] = [
-            ("\(s.totalTasks)", "总任务", .indigo),
-            ("\(s.completedTasks)", "已完成", .mint),
-            ("\(Int(s.completionRate))%", "完成率", Color(red: 0.5, green: 0.72, blue: 0.85)),
-            ("\(s.dailyData.filter { $0.total > 0 }.count)天", "活跃天数", Color(red: 0.6, green: 0.5, blue: 0.9))
+        let cards: [(String, String)] = [
+            ("\(s.totalTasks)", "总任务"),
+            ("\(s.completedTasks)", "已完成"),
+            ("\(Int(s.completionRate))%", "完成率"),
+            ("\(s.dailyData.filter { $0.total > 0 }.count)天", "活跃天数")
         ]
         
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -69,7 +71,7 @@ struct AnalyticsView: View {
                 VStack(spacing: 4) {
                     Text(card.0)
                         .font(.title2.bold())
-                        .foregroundColor(card.2)
+                        .foregroundColor(tint)
                     Text(card.1)
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -88,9 +90,11 @@ struct AnalyticsView: View {
                 .font(.headline)
             
             if stats.dailyData.allSatisfy({ $0.total == 0 }) {
-                Text("暂无数据")
-                    .foregroundColor(.secondary)
-                    .frame(maxWidth: .infinity, minHeight: 100)
+                EmptyStateView(
+                    icon: "chart.bar",
+                    title: "暂无趋势数据",
+                    subtitle: "添加并完成任务后，这里会显示完成率趋势"
+                )
             } else {
                 HStack(alignment: .bottom, spacing: 4) {
                     ForEach(stats.dailyData, id: \.date) { day in
@@ -98,7 +102,7 @@ struct AnalyticsView: View {
                             if day.total > 0 {
                                 let rate = Double(day.completed) / Double(day.total)
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(rate >= 1.0 ? Color.mint : rate >= 0.5 ? Color(red: 0.5, green: 0.72, blue: 0.85) : Color(red: 1.0, green: 0.7, blue: 0.3))
+                                    .fill(tint.opacity(rate >= 0.5 ? 0.8 : 0.4))
                                     .frame(height: max(4, rate * 120))
                             } else {
                                 RoundedRectangle(cornerRadius: 4)
@@ -128,8 +132,11 @@ struct AnalyticsView: View {
             let displayHours = 6...22
             let hasAnyData = displayHours.contains { stats.hourStats[$0]?.total ?? 0 > 0 }
             if !hasAnyData {
-                Text("暂无数据")
-                    .foregroundColor(.secondary)
+                EmptyStateView(
+                    icon: "clock",
+                    title: "暂无时段数据",
+                    subtitle: "添加带时间的任务后，可查看哪个时段效率最高"
+                )
             } else {
                 HStack(alignment: .bottom, spacing: 2) {
                     ForEach(Array(displayHours), id: \.self) { hour in
@@ -137,7 +144,7 @@ struct AnalyticsView: View {
                         let rate = stat.total > 0 ? Double(stat.completed) / Double(stat.total) : 0
                         VStack(spacing: 2) {
                             RoundedRectangle(cornerRadius: 2)
-                                .fill(stat.total == 0 ? Color.gray.opacity(0.1) : (rate >= 0.8 ? Color.mint : rate >= 0.5 ? Color(red: 0.5, green: 0.72, blue: 0.85) : Color(red: 1.0, green: 0.7, blue: 0.3)))
+                                .fill(stat.total == 0 ? Color.gray.opacity(0.1) : tint.opacity(rate >= 0.8 ? 0.9 : rate >= 0.5 ? 0.6 : 0.3))
                                 .frame(height: max(4, CGFloat(stat.total) * 15))
                             Text("\(hour)")
                                 .font(.system(size: 8))
@@ -160,11 +167,17 @@ struct AnalyticsView: View {
                 .font(.headline)
             
             if stats.tagStats.isEmpty {
-                Text("暂无数据")
-                    .foregroundColor(.secondary)
+                EmptyStateView(
+                    icon: "tag",
+                    title: "暂无标签数据",
+                    subtitle: "为任务添加标签后，可查看各类任务的分布"
+                )
             } else {
                 let sortedTags = stats.tagStats.sorted(by: { $0.value > $1.value })
-                let tagColors: [Color] = [.mint, Color(red: 0.5, green: 0.72, blue: 0.85), .indigo, Color(red: 0.9, green: 0.6, blue: 0.4), Color(red: 0.6, green: 0.5, blue: 0.9), .teal, Color(red: 0.95, green: 0.65, blue: 0.7)]
+                let tagColors: [Color] = [
+                    tint, tint.opacity(0.8), tint.opacity(0.6),
+                    tint.opacity(0.5), tint.opacity(0.4), tint.opacity(0.3), tint.opacity(0.25)
+                ]
                 ForEach(Array(sortedTags.enumerated()), id: \.offset) { index, item in
                     let (tag, count) = item
                     HStack(spacing: 12) {

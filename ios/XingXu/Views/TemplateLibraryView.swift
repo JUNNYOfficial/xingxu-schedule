@@ -84,12 +84,12 @@ struct TemplateLibraryView: View {
         }) {
             HStack(spacing: 12) {
                 RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.mint.opacity(0.15))
+                    .fill(Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.15))
                     .frame(width: 48, height: 48)
                     .overlay(
                         Image(systemName: "plus.square.fill")
                             .font(.title2)
-                            .foregroundColor(.mint)
+                            .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
                     )
                 
                 VStack(alignment: .leading, spacing: 2) {
@@ -495,12 +495,13 @@ struct TemplateApplyView: View {
     }
     
     private func tagColor(_ tag: String) -> Color {
+        // 自闭症友好：统一柔和蓝灰，不同明度区分
         switch tag {
-        case "生活": return .orange
-        case "学习": return .blue
-        case "娱乐": return .green
-        case "健康": return .pink
-        default: return .gray
+        case "生活": return Color(red: 0.48, green: 0.61, blue: 0.75)
+        case "学习": return Color(red: 0.42, green: 0.55, blue: 0.69)
+        case "娱乐": return Color(red: 0.56, green: 0.69, blue: 0.83)
+        case "健康": return Color(red: 0.35, green: 0.48, blue: 0.62)
+        default: return Color(red: 0.48, green: 0.61, blue: 0.75)
         }
     }
 }
@@ -517,7 +518,7 @@ struct SaveTemplateSheet: View {
             VStack(spacing: 20) {
                 Image(systemName: "doc.badge.plus")
                     .font(.system(size: 48))
-                    .foregroundColor(.mint)
+                    .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
                     .padding(.top, 20)
                 
                 Text("保存为模板")

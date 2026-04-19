@@ -20,18 +20,31 @@ struct TaskRow: View {
         settings.highContrastEnabled ? 3 : (task.completed ? 1 : 2)
     }
     
+    @State private var animateCheck = false
+    
     var body: some View {
         HStack(spacing: settings.childModeEnabled ? 16 : 12) {
             // 完成按钮
-            Button(action: onToggle) {
+            Button(action: {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
+                    animateCheck = true
+                }
+                onToggle()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    animateCheck = false
+                }
+            }) {
                 ZStack {
                     Circle()
-                        .stroke(task.completed ? Color.mint : Color.gray.opacity(settings.highContrastEnabled ? 1.0 : 0.4), lineWidth: settings.childModeEnabled ? 3 : 2)
+                        .stroke(task.completed ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.gray.opacity(settings.highContrastEnabled ? 1.0 : 0.4), lineWidth: settings.childModeEnabled ? 3 : 2)
                         .frame(width: settings.childModeEnabled ? 36 : 28, height: settings.childModeEnabled ? 36 : 28)
+                        .scaleEffect(animateCheck ? 1.2 : 1.0)
                     if task.completed {
                         Image(systemName: "checkmark")
                             .font(.system(size: settings.childModeEnabled ? 18 : 14, weight: .bold))
-                            .foregroundColor(.mint)
+                            .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                            .scaleEffect(animateCheck ? 1.3 : 1.0)
+                            .rotationEffect(.degrees(animateCheck ? 10 : 0))
                     }
                 }
             }

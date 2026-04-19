@@ -118,8 +118,8 @@ class iCloudSyncManager: ObservableObject {
         cloud: [T]
     ) -> [T] where T: HasModifiedAt {
         var result: [T] = []
-        var localDict = Dictionary(grouping: local, by: { $0.id })
-        var cloudDict = Dictionary(grouping: cloud, by: { $0.id })
+        let localDict = Dictionary(grouping: local, by: { $0.id })
+        let cloudDict = Dictionary(grouping: cloud, by: { $0.id })
         
         let allIds = Set(localDict.keys).union(cloudDict.keys)
         

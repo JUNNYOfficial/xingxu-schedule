@@ -7,26 +7,38 @@ struct AppSettings: Codable, Equatable {
     var fontSize: FontSize
     var notificationsEnabled: Bool
     var notificationMinutes: Int
+    var onlyRemindImportant: Bool
+    var doNotDisturbStartHour: Int
+    var doNotDisturbEndHour: Int
     var childModeEnabled: Bool
     var highContrastEnabled: Bool
     var colorCodingEnabled: Bool
+    var healthSyncEnabled: Bool
     
     init(
         theme: AppTheme = .system,
         fontSize: FontSize = .normal,
-        notificationsEnabled: Bool = true,
-        notificationMinutes: Int = 5,
+        notificationsEnabled: Bool = false,
+        notificationMinutes: Int = 10,
+        onlyRemindImportant: Bool = false,
+        doNotDisturbStartHour: Int = 22,
+        doNotDisturbEndHour: Int = 8,
         childModeEnabled: Bool = false,
         highContrastEnabled: Bool = false,
-        colorCodingEnabled: Bool = true
+        colorCodingEnabled: Bool = true,
+        healthSyncEnabled: Bool = false
     ) {
         self.theme = theme
         self.fontSize = fontSize
         self.notificationsEnabled = notificationsEnabled
         self.notificationMinutes = notificationMinutes
+        self.onlyRemindImportant = onlyRemindImportant
+        self.doNotDisturbStartHour = doNotDisturbStartHour
+        self.doNotDisturbEndHour = doNotDisturbEndHour
         self.childModeEnabled = childModeEnabled
         self.highContrastEnabled = highContrastEnabled
         self.colorCodingEnabled = colorCodingEnabled
+        self.healthSyncEnabled = healthSyncEnabled
     }
 }
 
@@ -62,7 +74,7 @@ enum AppTheme: String, Codable, CaseIterable {
     var tintColor: Color? {
         switch self {
         case .blue: return Color(red: 0.4, green: 0.6, blue: 0.9)
-        case .green: return .mint
+        case .green: return Color(red: 0.48, green: 0.61, blue: 0.75)
         case .warm: return Color(red: 0.95, green: 0.65, blue: 0.4)
         case .highContrast: return .black
         default: return nil
@@ -75,6 +87,7 @@ struct ExportData: Codable {
     let tasks: [TaskItem]
     let moods: [MoodEntry]
     let settings: AppSettings
+    let customTemplates: [ScheduleTemplate]
 }
 
 enum FontSize: String, Codable, CaseIterable {

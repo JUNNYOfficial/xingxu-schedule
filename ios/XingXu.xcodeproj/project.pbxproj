@@ -24,6 +24,7 @@
 		E36E767451085DC998743142 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA2B7A4EB17A57C0B184AFA /* UIKit.framework */; };
 		E716904B2E62243271EA6E58 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2554652AD8C991E62ED3BC /* Entry.swift */; };
 		E7A694512340E4810EE8D6A1 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11EDA863F2D457E98D5EF291 /* UserNotifications.framework */; };
+		298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C822A0D4413D48B092CF2724 /* HealthKit.framework */; };
 		F4C5CE42D642EAE9C77C31FB /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200E3687D89151733610CA6 /* SharedData.swift */; };
 		FF11361711D0961284B8CDEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5CD203DC48EC2F4C10D2252 /* Foundation.framework */; };
 		22DCC227640646E487D598B3 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DCC227640646E487D598B3R /* TaskItem.swift */; };
@@ -32,8 +33,10 @@
 		08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */; };
 		11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B25E23A72E41A0A431CABDR /* DataManager.swift */; };
 				AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
+		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
 		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
 		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
+		8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */; };
 		F5DDEBBE76AA495F97147811 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DDEBBE76AA495F97147811R /* AddTaskView.swift */; };
 		1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1908A7110B084AE985C88D15R /* MoodPickerView.swift */; };
 		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
@@ -44,6 +47,7 @@
 		17FD4E3E5C5F482EA4EE1EC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */; };
 		A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */; };
 		E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */; };
+		AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +76,7 @@
 
 /* Begin PBXFileReference section */
 		051EFB82BFF2F9A989DA2F6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
+		C822A0D4413D48B092CF2724 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		11EDA863F2D457E98D5EF291 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
 		1F0C508626F2C6FC0F962719 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = XingXu/Info.plist; sourceTree = "<group>"; };
 		2E2554652AD8C991E62ED3BC /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = XingXuWidget/Entry.swift; sourceTree = "<group>"; };
@@ -98,8 +103,10 @@
 		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
 		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
 				AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
+		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
 		651E9BC7BCD44D5390D6C866R /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = XingXu/Views/ContentView.swift; sourceTree = "<group>"; };
 		6156274E582A4A71BB4E1950R /* TodayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = XingXu/Views/TodayView.swift; sourceTree = "<group>"; };
+		8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingView.swift; path = XingXu/Views/OnboardingView.swift; sourceTree = "<group>"; };
 		F5DDEBBE76AA495F97147811R /* AddTaskView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskView.swift; path = XingXu/Views/AddTaskView.swift; sourceTree = "<group>"; };
 		1908A7110B084AE985C88D15R /* MoodPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodPickerView.swift; path = XingXu/Views/MoodPickerView.swift; sourceTree = "<group>"; };
 		B478AE92320843D8A83A436CR /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalendarView.swift; path = XingXu/Views/CalendarView.swift; sourceTree = "<group>"; };
@@ -110,6 +117,7 @@
 		17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = XingXu/Views/SettingsView.swift; sourceTree = "<group>"; };
 		A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateLibraryView.swift; path = XingXu/Views/TemplateLibraryView.swift; sourceTree = "<group>"; };
 		E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskRow.swift; path = XingXu/Views/Components/TaskRow.swift; sourceTree = "<group>"; };
+		AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = XingXu/Views/Components/EmptyStateView.swift; sourceTree = "<group>"; };
 		AA1111111111111111111111 /* Models */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Models; path = XingXu/Models; sourceTree = "<group>"; };
 		BB2222222222222222222222 /* Views */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Views; path = XingXu/Views; sourceTree = "<group>"; };
 		CC3333333333333333333333 /* Services */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Services; path = XingXu/Services; sourceTree = "<group>"; };
@@ -124,6 +132,7 @@
 				FF11361711D0961284B8CDEA /* Foundation.framework in Frameworks */,
 				A42CD6DB0FF90649DF7433B0 /* WidgetKit.framework in Frameworks */,
 				187C9124EF63E45EBE767AF0 /* SwiftUI.framework in Frameworks */,
+					298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -151,6 +160,7 @@
 				11EDA863F2D457E98D5EF291 /* UserNotifications.framework */,
 				AE2331054A197DE0C3A517CF /* WidgetKit.framework */,
 				051EFB82BFF2F9A989DA2F6E /* SwiftUI.framework */,
+				C822A0D4413D48B092CF2724 /* HealthKit.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -318,9 +328,11 @@
 				08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */,
 				08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */,
 					AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */,
+				B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */,
 				11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */,
 				651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */,
 				6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */,
+				8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */,
 				F5DDEBBE76AA495F97147811 /* AddTaskView.swift in Sources */,
 				1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */,
 				B478AE92320843D8A83A436C /* CalendarView.swift in Sources */,
@@ -331,6 +343,7 @@
 				17FD4E3E5C5F482EA4EE1EC0 /* SettingsView.swift in Sources */,
 				A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */,
 				E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */,
+				AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
