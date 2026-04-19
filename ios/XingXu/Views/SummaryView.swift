@@ -3,8 +3,9 @@ import SwiftUI
 struct SummaryView: View {
     @EnvironmentObject var dataManager: DataManager
     @State private var showAddTask = false
-    @State private var showTodayDetail = false
+    @State private var showMoodPicker = false
     @State private var editingTask: TaskItem? = nil
+    @State private var showTodayDetail = false
     
     private var todayTasks: [TaskItem] {
         dataManager.tasksForDate(dataManager.currentDate)
@@ -26,12 +27,37 @@ struct SummaryView: View {
         dataManager.stats(forDays: 7)
     }
     
+    // MARK: - 问候语
+    private var greeting: String {
+        let hour = Calendar.current.component(.hour, from: Date())
+        switch hour {
+        case 5..<12: return "早上好"
+        case 12..<14: return "中午好"
+        case 14..<18: return "下午好"
+        case 18..<22: return "晚上好"
+        default: return "夜深了"
+        }
+    }
+    
+    private var todayDateText: String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateFormat = "EEEE · M月d日"
+        return formatter.string(from: Date())
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 24) {
-                    // 收藏夹
-                    favoritesSection
+                VStack(spacing: 20) {
+                    // 顶部问候
+                    headerGreeting
+                    
+                    // 核心数据大卡片
+                    coreDataCard
+                    
+                    // 六宫格快捷入口
+                    quickAccessGrid
                     
                     // 今日日程
                     todayScheduleSection
@@ -44,8 +70,7 @@ struct SummaryView: View {
                 }
                 .padding(.vertical)
             }
-            .navigationTitle("摘要")
-            .navigationBarTitleDisplayMode(.large)
+            .background(Color(.systemGroupedBackground))
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showAddTask = true }) {
@@ -60,6 +85,9 @@ struct SummaryView: View {
             .sheet(item: $editingTask) { task in
                 AddTaskView(task: task)
             }
+            .sheet(isPresented: $showMoodPicker) {
+                MoodPickerView(date: dataManager.currentDate)
+            }
             .background(
                 NavigationLink(destination: TodayView(), isActive: $showTodayDetail) {
                     EmptyView()
@@ -69,130 +97,197 @@ struct SummaryView: View {
         }
     }
     
-    // MARK: - 收藏夹
+    // MARK: - 顶部问候
     
-    private var favoritesSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("收藏夹")
-                .font(.title2.bold())
-                .padding(.horizontal)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    progressCard
-                    moodCard
-                    completionCard
-                    activeDaysCard
-                }
-                .padding(.horizontal)
+    private var headerGreeting: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(greeting) 👋")
+                    .font(.title2.bold())
+                Text(todayDateText)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             }
+            Spacer()
         }
+        .padding(.horizontal)
     }
     
-    private var progressCard: some View {
-        VStack(spacing: 8) {
+    // MARK: - 核心数据大卡片
+    
+    private var coreDataCard: some View {
+        HStack(spacing: 20) {
+            // 左侧大圆环
             ZStack {
                 Circle()
-                    .stroke(Color.gray.opacity(0.15), lineWidth: 10)
-                    .frame(width: 80, height: 80)
+                    .stroke(Color.gray.opacity(0.12), lineWidth: 12)
+                    .frame(width: 100, height: 100)
                 Circle()
                     .trim(from: 0, to: progress)
                     .stroke(
-                        progress >= 1.0 ? Color.mint : progress >= 0.6 ? Color(red: 0.5, green: 0.72, blue: 0.85) : Color(red: 1.0, green: 0.7, blue: 0.3),
-                        style: StrokeStyle(lineWidth: 10, lineCap: .round)
+                        progressRingColor,
+                        style: StrokeStyle(lineWidth: 12, lineCap: .round)
                     )
                     .rotationEffect(.degrees(-90))
-                    .frame(width: 80, height: 80)
+                    .frame(width: 100, height: 100)
                 
                 VStack(spacing: 0) {
                     Text("\(Int(progress * 100))%")
-                        .font(.system(size: 20, weight: .bold))
+                        .font(.system(size: 24, weight: .bold))
+                    Text("完成")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
                 }
             }
             
-            Text("今日进度")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-        }
-        .frame(width: 160, height: 160)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-    }
-    
-    private var moodCard: some View {
-        VStack(spacing: 8) {
-            if let mood = todayMood {
-                Text(mood.emoji)
-                    .font(.system(size: 48))
-                Text("\(mood.value)/5")
-                    .font(.title3.bold())
-                Text("今日心情")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            } else {
-                Image(systemName: "face.smiling")
-                    .font(.system(size: 40))
-                    .foregroundColor(.secondary.opacity(0.5))
-                Text("未记录")
-                    .font(.title3.bold())
-                Text("今日心情")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-        }
-        .frame(width: 160, height: 160)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-    }
-    
-    private var completionCard: some View {
-        VStack(spacing: 8) {
-            Text("\(Int(weeklyStats.completionRate))%")
-                .font(.system(size: 36, weight: .bold))
-                .foregroundColor(Color(red: 0.5, green: 0.72, blue: 0.85))
-            
-            Text("本周完成率")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            HStack(spacing: 4) {
-                ForEach(0..<7) { i in
-                    let dayData = weeklyStats.dailyData[safe: i]
-                    let hasData = dayData?.total ?? 0 > 0
-                    let rate = hasData ? Double(dayData!.completed) / Double(dayData!.total) : 0
-                    RoundedRectangle(cornerRadius: 2)
-                        .fill(hasData ? (rate >= 1.0 ? Color.mint : Color(red: 0.5, green: 0.72, blue: 0.85)) : Color.gray.opacity(0.1))
-                        .frame(width: 12, height: max(4, rate * 30))
+            // 右侧数据列
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: 6) {
+                    Text("\(completedCount)/\(todayTasks.count)")
+                        .font(.title3.bold())
+                    Text("任务")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                
+                Divider()
+                
+                HStack(spacing: 6) {
+                    if let mood = todayMood {
+                        Text(mood.emoji)
+                            .font(.title3)
+                        Text("\(mood.value)/5")
+                            .font(.subheadline.bold())
+                    } else {
+                        Image(systemName: "face.smiling")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                        Text("未记录")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Text("心情")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                
+                Button(action: { showTodayDetail = true }) {
+                    HStack(spacing: 4) {
+                        Text("查看日程")
+                            .font(.caption.bold())
+                        Image(systemName: "chevron.right")
+                            .font(.caption2)
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(progressRingColor)
+                    .cornerRadius(8)
                 }
             }
+            
+            Spacer()
         }
-        .frame(width: 160, height: 160)
+        .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .cornerRadius(20)
+        .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 3)
+        .padding(.horizontal)
     }
     
-    private var activeDaysCard: some View {
-        VStack(spacing: 8) {
-            Text("\(weeklyStats.dailyData.filter { $0.total > 0 }.count)")
-                .font(.system(size: 36, weight: .bold))
-                .foregroundColor(.indigo)
+    private var progressRingColor: Color {
+        if progress >= 1.0 { return .mint }
+        if progress >= 0.6 { return Color(red: 0.5, green: 0.72, blue: 0.85) }
+        return Color(red: 1.0, green: 0.7, blue: 0.3)
+    }
+    
+    // MARK: - 六宫格快捷入口
+    
+    private var quickAccessGrid: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("快捷入口")
+                .font(.title3.bold())
+                .padding(.horizontal)
             
-            Text("活跃天数")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-            
-            Text("本周")
-                .font(.caption)
-                .foregroundColor(.secondary.opacity(0.7))
-                .padding(.top, 4)
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 12) {
+                quickAccessItem(
+                    title: "日程日历",
+                    icon: "calendar",
+                    color: Color(red: 1.0, green: 0.55, blue: 0.35),
+                    destination: AnyView(CalendarView())
+                )
+                quickAccessItem(
+                    title: "心情记录",
+                    icon: "heart.fill",
+                    color: Color(red: 1.0, green: 0.5, blue: 0.6),
+                    destination: AnyView(MoodHistoryView())
+                )
+                quickAccessItem(
+                    title: "数据分析",
+                    icon: "chart.bar.fill",
+                    color: .mint,
+                    destination: AnyView(AnalyticsView())
+                )
+                quickAccessItem(
+                    title: "模板库",
+                    icon: "doc.text.fill",
+                    color: Color(red: 0.4, green: 0.6, blue: 0.95),
+                    destination: AnyView(TemplateLibraryView())
+                )
+                quickAccessButton(
+                    title: "添加任务",
+                    icon: "plus.circle.fill",
+                    color: Color(red: 1.0, green: 0.7, blue: 0.3)
+                ) {
+                    showAddTask = true
+                }
+                quickAccessItem(
+                    title: "设置",
+                    icon: "gearshape.fill",
+                    color: Color(red: 0.5, green: 0.65, blue: 0.8),
+                    destination: AnyView(SettingsView())
+                )
+            }
+            .padding(.horizontal)
         }
-        .frame(width: 160, height: 160)
-        .background(Color(.systemBackground))
-        .cornerRadius(16)
-        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+    }
+    
+    private func quickAccessItem(title: String, icon: String, color: Color, destination: AnyView) -> some View {
+        NavigationLink(destination: destination) {
+            VStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(color.opacity(0.15))
+                    .frame(height: 60)
+                    .overlay(
+                        Image(systemName: icon)
+                            .font(.title2)
+                            .foregroundColor(color)
+                    )
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.primary)
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+    
+    private func quickAccessButton(title: String, icon: String, color: Color, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            VStack(spacing: 10) {
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(color.opacity(0.15))
+                    .frame(height: 60)
+                    .overlay(
+                        Image(systemName: icon)
+                            .font(.title2)
+                            .foregroundColor(color)
+                    )
+                Text(title)
+                    .font(.caption)
+                    .foregroundColor(.primary)
+            }
+        }
+        .buttonStyle(PlainButtonStyle())
     }
     
     // MARK: - 今日日程
@@ -201,7 +296,7 @@ struct SummaryView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("今日日程")
-                    .font(.title2.bold())
+                    .font(.title3.bold())
                 Spacer()
                 Button("查看全部") {
                     showTodayDetail = true
@@ -282,7 +377,7 @@ struct SummaryView: View {
             }
             .background(Color(.systemBackground))
             .cornerRadius(16)
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
             .padding(.horizontal)
         }
     }
@@ -293,10 +388,10 @@ struct SummaryView: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("心情概览")
-                    .font(.title2.bold())
+                    .font(.title3.bold())
                 Spacer()
                 Button("记录") {
-                    // 打开心情选择 sheet
+                    showMoodPicker = true
                 }
                 .font(.subheadline)
             }
@@ -330,7 +425,7 @@ struct SummaryView: View {
             .padding()
             .background(Color(.systemBackground))
             .cornerRadius(16)
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
             .padding(.horizontal)
         }
     }
@@ -340,16 +435,16 @@ struct SummaryView: View {
     private var weeklyTrendSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("本周趋势")
-                .font(.title2.bold())
+                .font(.title3.bold())
                 .padding(.horizontal)
             
             VStack(spacing: 12) {
-                HStack(spacing: 16) {
+                HStack(spacing: 12) {
                     statItem(value: "\(weeklyStats.totalTasks)", label: "总任务", color: .indigo)
                     statItem(value: "\(weeklyStats.completedTasks)", label: "已完成", color: .mint)
                 }
                 
-                HStack(spacing: 16) {
+                HStack(spacing: 12) {
                     statItem(value: "\(Int(weeklyStats.completionRate))%", label: "完成率", color: Color(red: 0.5, green: 0.72, blue: 0.85))
                     statItem(value: "\(weeklyStats.dailyData.filter { $0.total > 0 }.count)天", label: "活跃天数", color: Color(red: 0.6, green: 0.5, blue: 0.9))
                 }
@@ -357,7 +452,7 @@ struct SummaryView: View {
             .padding()
             .background(Color(.systemBackground))
             .cornerRadius(16)
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
             .padding(.horizontal)
         }
     }
@@ -388,10 +483,4 @@ struct SummaryView: View {
     }
 }
 
-// MARK: - Safe Array Access
 
-extension Array {
-    subscript(safe index: Int) -> Element? {
-        indices.contains(index) ? self[index] : nil
-    }
-}
