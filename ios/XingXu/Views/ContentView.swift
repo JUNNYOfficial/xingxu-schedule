@@ -3,38 +3,26 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var dataManager = DataManager.shared
     @State private var selectedTab = 0
-    @State private var showAddTask = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
-            TodayView()
+            SummaryView()
                 .tabItem {
-                    Label("今日", systemImage: "checklist")
+                    Label("摘要", systemImage: "heart.text.square.fill")
                 }
                 .tag(0)
             
-            CalendarView()
+            BrowseView()
                 .tabItem {
-                    Label("日历", systemImage: "calendar")
+                    Label("浏览", systemImage: "square.grid.2x2")
                 }
                 .tag(1)
-            
-            AnalyticsView()
-                .tabItem {
-                    Label("分析", systemImage: "chart.bar")
-                }
-                .tag(2)
-            
-            SettingsView()
-                .tabItem {
-                    Label("设置", systemImage: "gear")
-                }
-                .tag(3)
         }
         .environmentObject(dataManager)
-        .accentColor(.primary)
+        .dynamicTypeSize(dataManager.settings.fontSize.dynamicTypeSize)
+        .preferredColorScheme(dataManager.settings.theme.colorScheme)
+        .tint(dataManager.settings.theme.tintColor)
         .onAppear {
-            // iOS 15+ tab bar appearance
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
             UITabBar.appearance().scrollEdgeAppearance = appearance

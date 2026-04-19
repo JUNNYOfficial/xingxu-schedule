@@ -51,6 +51,7 @@ struct CalendarView: View {
                 Image(systemName: "chevron.left")
                     .font(.title3)
             }
+            .accessibilityLabel("上一个月")
             
             Spacer()
             
@@ -63,14 +64,23 @@ struct CalendarView: View {
                 Image(systemName: "chevron.right")
                     .font(.title3)
             }
+            .accessibilityLabel("下一个月")
         }
         .padding(.horizontal)
     }
     
     private var calendarGrid: some View {
         let daysInMonth = calendar.range(of: .day, in: .month, for: selectedDate)!.count
-        let firstWeekday = calendar.component(.weekday, from: firstDayOfMonth()) - 1
-        let weekdays = ["日", "一", "二", "三", "四", "五", "六"]
+        let firstDay = firstDayOfMonth()
+        let weekdayOfFirst = calendar.component(.weekday, from: firstDay)
+        let offset = (weekdayOfFirst - calendar.firstWeekday + 7) % 7
+        
+        // 根据用户设置动态排序星期标题
+        let allWeekdays = ["日", "一", "二", "三", "四", "五", "六"]
+        let weekdays: [String] = (0..<7).map { index in
+            let dayIndex = (calendar.firstWeekday - 1 + index) % 7
+            return allWeekdays[dayIndex]
+        }
         
         return VStack(spacing: 8) {
             // 星期标题
@@ -83,45 +93,53 @@ struct CalendarView: View {
                 }
             }
             
-            // 日期网格
+            // 日期网格：合并为一个 ForEach 避免 id 冲突
+            let totalCells = offset + daysInMonth
+            let rows = Int(ceil(Double(totalCells) / 7.0))
+            let totalGridCells = rows * 7
+            let dayValues: [Int?] = Array(repeating: nil, count: offset)
+                + (1...daysInMonth).map { Int($0) }
+                + Array(repeating: nil, count: totalGridCells - totalCells)
+            
             LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
-                // 空白填充
-                ForEach(0..<firstWeekday, id: \.self) { _ in
-                    Text("")
-                        .frame(height: 40)
-                }
-                
-                ForEach(1...daysInMonth, id: \.self) { day in
-                    let dateStr = dateString(day: day)
-                    let isSelected = dateStr == selectedDateString
-                    let isToday = dateStr == todayString
-                    let dayTasks = dataManager.tasksForDate(dateStr)
-                    let hasTasks = !dayTasks.isEmpty
-                    let allCompleted = hasTasks && dayTasks.allSatisfy(\.completed)
-                    
-                    Button(action: {
-                        selectedDate = dateFrom(day: day)
-                    }) {
-                        ZStack {
-                            Circle()
-                                .fill(isSelected ? Color.primary : Color.clear)
-                                .frame(width: 36, height: 36)
-                            
-                            Text("\(day)")
-                                .font(.body)
-                                .foregroundColor(isSelected ? Color(.systemBackground) : (isToday ? .primary : .primary))
-                                .fontWeight(isToday ? .bold : .regular)
-                            
-                            if hasTasks {
+                ForEach(Array(dayValues.enumerated()), id: \.offset) { index, day in
+                    if let day = day {
+                        let dateStr = dateString(day: day)
+                        let isSelected = dateStr == selectedDateString
+                        let isToday = dateStr == todayString
+                        let dayTasks = dataManager.tasksForDate(dateStr)
+                        let hasTasks = !dayTasks.isEmpty
+                        let allCompleted = hasTasks && dayTasks.allSatisfy(\.completed)
+                        
+                        Button(action: {
+                            selectedDate = dateFrom(day: day)
+                        }) {
+                            ZStack {
                                 Circle()
-                                    .fill(allCompleted ? Color.green : Color.orange)
-                                    .frame(width: 6, height: 6)
-                                    .offset(y: 12)
+                                    .fill(isSelected ? Color.primary : Color.clear)
+                                    .frame(width: 36, height: 36)
+                                
+                                Text("\(day)")
+                                    .font(.body)
+                                    .foregroundColor(isSelected ? Color(.systemBackground) : (isToday ? .primary : .primary))
+                                    .fontWeight(isToday ? .bold : .regular)
+                                
+                                if hasTasks {
+                                    Circle()
+                                        .fill(allCompleted ? Color.mint : Color(red: 1.0, green: 0.7, blue: 0.3))
+                                        .frame(width: 6, height: 6)
+                                        .offset(y: 12)
+                                }
                             }
+                            .frame(height: 40)
                         }
-                        .frame(height: 40)
+                        .buttonStyle(PlainButtonStyle())
+                        .accessibilityLabel("\(day)日\(hasTasks ? "，有\(dayTasks.count)个任务\(allCompleted ? "，全部完成" : "")" : "")\(isToday ? "，今天" : "")")
+                        .accessibilityAddTraits(isSelected ? .isSelected : [])
+                    } else {
+                        Text("")
+                            .frame(height: 40)
                     }
-                    .buttonStyle(PlainButtonStyle())
                 }
             }
         }

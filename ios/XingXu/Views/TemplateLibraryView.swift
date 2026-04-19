@@ -29,9 +29,13 @@ struct TemplateLibraryView: View {
         
         var displayLabel: String {
             let formatter = DateFormatter()
+            formatter.dateFormat = "yyyy-MM-dd"
+            guard let dateObj = formatter.date(from: dateString) else {
+                return "📅 \(rawValue)"
+            }
             formatter.dateFormat = "M月d日"
-            let date = formatter.string(from: date(from: dateString))
-            return "📅 \(rawValue) (\(date))"
+            let dateStr = formatter.string(from: dateObj)
+            return "📅 \(rawValue) (\(dateStr))"
         }
     }
     

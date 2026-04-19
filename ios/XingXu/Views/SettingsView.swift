@@ -1,8 +1,11 @@
 import SwiftUI
+import UniformTypeIdentifiers
 
 struct SettingsView: View {
     @EnvironmentObject var dataManager: DataManager
     @State private var showClearAlert = false
+    @State private var showFileImporter = false
+    @State private var importError: String? = nil
     
     var body: some View {
         NavigationView {
@@ -51,6 +54,12 @@ struct SettingsView: View {
                     } label: {
                         Label("导出数据", systemImage: "square.and.arrow.up")
                     }
+                    
+                    Button {
+                        showFileImporter = true
+                    } label: {
+                        Label("导入数据", systemImage: "square.and.arrow.down")
+                    }
                 }
                 
                 Section("关于") {
@@ -69,6 +78,17 @@ struct SettingsView: View {
             .onChange(of: dataManager.settings) { _ in
                 dataManager.saveSettings()
             }
+            .fileImporter(isPresented: $showFileImporter, allowedContentTypes: [.json], allowsMultipleSelection: false) { result in
+                handleImport(result: result)
+            }
+            .alert("导入失败", isPresented: Binding(
+                get: { importError != nil },
+                set: { if !$0 { importError = nil } }
+            )) {
+                Button("确定", role: .cancel) {}
+            } message: {
+                Text(importError ?? "")
+            }
             .alert("确认清空", isPresented: $showClearAlert) {
                 Button("取消", role: .cancel) {}
                 Button("清空", role: .destructive) {
@@ -80,16 +100,46 @@ struct SettingsView: View {
         }
     }
     
+    private func handleImport(result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            
+            guard url.startAccessingSecurityScopedResource() else {
+                importError = "无法访问选中的文件"
+                return
+            }
+            defer { url.stopAccessingSecurityScopedResource() }
+            
+            do {
+                let data = try Data(contentsOf: url)
+                let export = try JSONDecoder().decode(ExportData.self, from: data)
+                
+                dataManager.tasks = export.tasks
+                dataManager.moods = export.moods
+                dataManager.settings = export.settings
+                dataManager.saveTasks()
+                dataManager.saveMoods()
+                dataManager.saveSettings()
+                
+            } catch {
+                importError = "解析失败: \(error.localizedDescription)"
+            }
+            
+        case .failure(let error):
+            importError = "选择文件失败: \(error.localizedDescription)"
+        }
+    }
+    
     private func exportData() {
-        let export = [
-            "tasks": dataManager.tasks,
-            "moods": dataManager.moods,
-            "settings": dataManager.settings
-        ] as [String: Any]
+        let export = ExportData(
+            tasks: dataManager.tasks,
+            moods: dataManager.moods,
+            settings: dataManager.settings
+        )
         
         do {
-            let jsonData = try JSONSerialization.data(withJSONObject: export, options: .prettyPrinted)
-            let jsonString = String(data: jsonData, encoding: .utf8) ?? "{}"
+            let jsonData = try JSONEncoder().encode(export)
             
             let formatter = DateFormatter()
             formatter.dateFormat = "yyyy-MM-dd"
@@ -97,7 +147,7 @@ struct SettingsView: View {
             
             #if os(iOS)
             let tempURL = FileManager.default.temporaryDirectory.appendingPathComponent(filename)
-            try jsonString.write(to: tempURL, atomically: true, encoding: .utf8)
+            try jsonData.write(to: tempURL)
             
             let activityVC = UIActivityViewController(activityItems: [tempURL], applicationActivities: nil)
             if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

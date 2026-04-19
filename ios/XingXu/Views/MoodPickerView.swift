@@ -9,11 +9,11 @@ struct MoodPickerView: View {
     @State private var note = ""
     
     private let moods = [
-        (1, "😢", "很难过", Color.red),
-        (2, "😔", "有点低落", Color.orange),
+        (1, "😢", "很难过", Color(red: 0.9, green: 0.5, blue: 0.5)),
+        (2, "😔", "有点低落", Color(red: 1.0, green: 0.7, blue: 0.3)),
         (3, "😐", "一般", Color.gray),
-        (4, "🙂", "还不错", Color.green),
-        (5, "😊", "很开心", Color.blue)
+        (4, "🙂", "还不错", Color.mint),
+        (5, "😊", "很开心", Color(red: 0.5, green: 0.72, blue: 0.85))
     ]
     
     var body: some View {
@@ -72,6 +72,7 @@ struct MoodPickerView: View {
                         .background(Color.primary)
                         .cornerRadius(16)
                 }
+                .accessibilityLabel("保存心情记录")
                 .padding(.horizontal)
                 .padding(.bottom)
             }

@@ -14,6 +14,15 @@ struct AddTaskView: View {
     @State private var tag = ""
     @State private var repeatPattern = "none"
     @State private var remindMinutes: Int? = nil
+    @State private var showEmojiPicker = false
+    
+    private let emojiGroups: [(String, [String])] = [
+        ("日常", ["🛏️", "🪥", "🍽️", "🚿", "👕", "🎒", "🚶", "🏠", "🧹", "🥣"]),
+        ("学习", ["📚", "✏️", "🎨", "🎹", "🧩", "📖", "🔢", "📝", "🎓", "🔬"]),
+        ("健康", ["🏃", "🏥", "🛁", "💊", "😴", "🍎", "🦷", "🧘", "💪", "🩺"]),
+        ("娱乐", ["🎮", "🎡", "🎬", "🎵", "🏖️", "✈️", "🎪", "🎯", "🏸", "🧸"]),
+        ("其他", ["⭐", "⏰", "📱", "💡", "🎁", "🌟", "❤️", "🔔", "☀️", "🌙"])
+    ]
     
     private let repeatOptions = [
         ("none", "不重复"),
@@ -78,7 +87,60 @@ struct AddTaskView: View {
                         }
                     }
                     
-                    TextField("图标 (emoji)", text: $icon)
+                    // Emoji 选择器
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("图标")
+                            Spacer()
+                            if !icon.isEmpty {
+                                Text(icon)
+                                    .font(.title2)
+                            }
+                            Button(showEmojiPicker ? "收起" : "选择") {
+                                showEmojiPicker.toggle()
+                            }
+                            .font(.subheadline)
+                        }
+                        
+                        if showEmojiPicker {
+                            ScrollView {
+                                VStack(alignment: .leading, spacing: 12) {
+                                    ForEach(emojiGroups, id: \.0) { group in
+                                        VStack(alignment: .leading, spacing: 6) {
+                                            Text(group.0)
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                            LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 8), spacing: 8) {
+                                                ForEach(group.1, id: \.self) { emoji in
+                                                    Button(action: {
+                                                        icon = emoji
+                                                        showEmojiPicker = false
+                                                    }) {
+                                                        Text(emoji)
+                                                            .font(.title3)
+                                                            .frame(width: 36, height: 36)
+                                                            .background(icon == emoji ? Color(.systemGray5) : Color.clear)
+                                                            .cornerRadius(8)
+                                                    }
+                                                    .buttonStyle(PlainButtonStyle())
+                                                }
+                                            }
+                                        }
+                                    }
+                                    
+                                    if !icon.isEmpty {
+                                        Button("清除图标") {
+                                            icon = ""
+                                        }
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                        .frame(maxWidth: .infinity, alignment: .center)
+                                    }
+                                }
+                            }
+                            .frame(height: 280)
+                        }
+                    }
                 }
                 
                 Section("分类") {
@@ -129,6 +191,8 @@ struct AddTaskView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("保存") { saveTask() }
                         .disabled(name.isEmpty)
+                        .accessibilityLabel("保存任务")
+                        .accessibilityHint(name.isEmpty ? "请先填写任务名称" : "双击保存任务")
                 }
             }
         }

@@ -57,7 +57,7 @@ struct SmallWidgetView: View {
                 VStack(spacing: 4) {
                     Image(systemName: "checkmark.circle")
                         .font(.system(size: 28))
-                        .foregroundColor(.green)
+                        .foregroundColor(.mint)
                     Text("今日无任务")
                         .font(.system(size: 12))
                         .foregroundColor(.secondary)
@@ -70,7 +70,7 @@ struct SmallWidgetView: View {
                     Circle()
                         .trim(from: 0, to: progress)
                         .stroke(
-                            progress >= 1.0 ? Color.green : Color.blue,
+                            progress >= 1.0 ? Color.mint : Color(red: 0.5, green: 0.72, blue: 0.85),
                             style: StrokeStyle(lineWidth: 8, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -137,7 +137,7 @@ struct MediumWidgetView: View {
                     Circle()
                         .trim(from: 0, to: progress)
                         .stroke(
-                            progress >= 1.0 ? Color.green : Color.blue,
+                            progress >= 1.0 ? Color.mint : Color(red: 0.5, green: 0.72, blue: 0.85),
                             style: StrokeStyle(lineWidth: 6, lineCap: .round)
                         )
                         .rotationEffect(.degrees(-90))
@@ -172,7 +172,7 @@ struct MediumWidgetView: View {
                         HStack(spacing: 6) {
                             Image(systemName: task.completed ? "checkmark.circle.fill" : "circle")
                                 .font(.system(size: 12))
-                                .foregroundColor(task.completed ? .green : .gray)
+                                .foregroundColor(task.completed ? .mint : .gray)
                             
                             Text(task.icon ?? "")
                                 .font(.system(size: 12))
@@ -255,7 +255,7 @@ struct LargeWidgetView: View {
                     Text("\(data.completedTasks)/\(data.totalTasks)")
                         .font(.system(size: 14, weight: .semibold))
                     ProgressView(value: progress)
-                        .progressViewStyle(LinearProgressViewStyle(tint: progress >= 1.0 ? .green : .blue))
+                        .progressViewStyle(LinearProgressViewStyle(tint: progress >= 1.0 ? .mint : Color(red: 0.5, green: 0.72, blue: 0.85)))
                         .frame(width: 60)
                 }
             }
@@ -372,6 +372,7 @@ struct TaskRowView: View {
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 8)
+        .widgetURL(URL(string: "xingxu://toggleTask?id=\(task.id)"))
     }
     
     private func tagColor(_ tag: String) -> Color {

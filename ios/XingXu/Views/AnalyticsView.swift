@@ -56,10 +56,10 @@ struct AnalyticsView: View {
     private var overviewCards: some View {
         let s = stats
         let cards: [(String, String, Color)] = [
-            ("\(s.totalTasks)", "总任务", .blue),
-            ("\(s.completedTasks)", "已完成", .green),
-            ("\(Int(s.completionRate))%", "完成率", .orange),
-            ("\(s.dailyData.filter { $0.total > 0 }.count)天", "活跃天数", .purple)
+            ("\(s.totalTasks)", "总任务", .indigo),
+            ("\(s.completedTasks)", "已完成", .mint),
+            ("\(Int(s.completionRate))%", "完成率", Color(red: 0.5, green: 0.72, blue: 0.85)),
+            ("\(s.dailyData.filter { $0.total > 0 }.count)天", "活跃天数", Color(red: 0.6, green: 0.5, blue: 0.9))
         ]
         
         return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
@@ -96,7 +96,7 @@ struct AnalyticsView: View {
                             if day.total > 0 {
                                 let rate = Double(day.completed) / Double(day.total)
                                 RoundedRectangle(cornerRadius: 4)
-                                    .fill(rate >= 1.0 ? Color.green : rate >= 0.5 ? Color.orange : Color.red)
+                                    .fill(rate >= 1.0 ? Color.mint : rate >= 0.5 ? Color(red: 0.5, green: 0.72, blue: 0.85) : Color(red: 1.0, green: 0.7, blue: 0.3))
                                     .frame(height: max(4, rate * 120))
                             } else {
                                 RoundedRectangle(cornerRadius: 4)
@@ -123,17 +123,19 @@ struct AnalyticsView: View {
             Text("时段分析")
                 .font(.headline)
             
-            let activeHours = stats.hourStats.filter { $0.value.total > 0 }
-            if activeHours.isEmpty {
+            let displayHours = 6...22
+            let hasAnyData = displayHours.contains { stats.hourStats[$0]?.total ?? 0 > 0 }
+            if !hasAnyData {
                 Text("暂无数据")
                     .foregroundColor(.secondary)
             } else {
                 HStack(alignment: .bottom, spacing: 2) {
-                    ForEach(activeHours.sorted(by: { $0.key < $1.key }), id: \.key) { hour, stat in
-                        let rate = Double(stat.completed) / Double(stat.total)
+                    ForEach(Array(displayHours), id: \.self) { hour in
+                        let stat = stats.hourStats[hour] ?? (total: 0, completed: 0)
+                        let rate = stat.total > 0 ? Double(stat.completed) / Double(stat.total) : 0
                         VStack(spacing: 2) {
                             RoundedRectangle(cornerRadius: 2)
-                                .fill(rate >= 0.8 ? Color.green : rate >= 0.5 ? Color.orange : Color.red)
+                                .fill(stat.total == 0 ? Color.gray.opacity(0.1) : (rate >= 0.8 ? Color.mint : rate >= 0.5 ? Color(red: 0.5, green: 0.72, blue: 0.85) : Color(red: 1.0, green: 0.7, blue: 0.3)))
                                 .frame(height: max(4, CGFloat(stat.total) * 15))
                             Text("\(hour)")
                                 .font(.system(size: 8))
@@ -159,8 +161,14 @@ struct AnalyticsView: View {
                 Text("暂无数据")
                     .foregroundColor(.secondary)
             } else {
-                ForEach(stats.tagStats.sorted(by: { $0.value > $1.value }), id: \.key) { tag, count in
-                    HStack {
+                let sortedTags = stats.tagStats.sorted(by: { $0.value > $1.value })
+                let tagColors: [Color] = [.mint, Color(red: 0.5, green: 0.72, blue: 0.85), .indigo, Color(red: 0.9, green: 0.6, blue: 0.4), Color(red: 0.6, green: 0.5, blue: 0.9), .teal, Color(red: 0.95, green: 0.65, blue: 0.7)]
+                ForEach(Array(sortedTags.enumerated()), id: \.offset) { index, item in
+                    let (tag, count) = item
+                    HStack(spacing: 12) {
+                        Circle()
+                            .fill(tagColors[index % tagColors.count])
+                            .frame(width: 10, height: 10)
                         Text(tag.isEmpty ? "未分类" : tag)
                             .font(.subheadline)
                         Spacer()
@@ -168,7 +176,7 @@ struct AnalyticsView: View {
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-                    .padding(.vertical, 4)
+                    .padding(.vertical, 6)
                 }
             }
         }
@@ -177,32 +185,36 @@ struct AnalyticsView: View {
         .cornerRadius(16)
     }
     
+    private var insightTexts: [String] {
+        let s = stats
+        var result: [String] = []
+        
+        if s.totalTasks == 0 {
+            result.append("继续使用，数据积累后会生成个性化分析建议。")
+        } else {
+            if s.completionRate >= 85 {
+                result.append("🌟 表现优秀：完成率高达 \(Int(s.completionRate))%，可以适量增加挑战性任务。")
+            } else if s.completionRate >= 60 {
+                result.append("👍 表现良好：完成率 \(Int(s.completionRate))%，继续保持！")
+            } else {
+                result.append("💪 有待提升：完成率 \(Int(s.completionRate))%，建议减少每日任务数量，聚焦重点。")
+            }
+            
+            let activeDays = s.dailyData.filter { $0.total > 0 }.count
+            if activeDays < rangeDays / 2 {
+                result.append("📅 使用频率：近 \(rangeDays) 天中只有 \(activeDays) 天有记录，建议养成每日查看日程的习惯。")
+            }
+        }
+        
+        return result
+    }
+    
     private var insights: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("💡 智能建议")
                 .font(.headline)
             
-            let s = stats
-            var insights: [String] = []
-            
-            if s.totalTasks == 0 {
-                insights.append("继续使用，数据积累后会生成个性化分析建议。")
-            } else {
-                if s.completionRate >= 85 {
-                    insights.append("🌟 表现优秀：完成率高达 \(Int(s.completionRate))%，可以适量增加挑战性任务。")
-                } else if s.completionRate >= 60 {
-                    insights.append("👍 表现良好：完成率 \(Int(s.completionRate))%，继续保持！")
-                } else {
-                    insights.append("💪 有待提升：完成率 \(Int(s.completionRate))%，建议减少每日任务数量，聚焦重点。")
-                }
-                
-                let activeDays = s.dailyData.filter { $0.total > 0 }.count
-                if activeDays < rangeDays / 2 {
-                    insights.append("📅 使用频率：近 \(rangeDays) 天中只有 \(activeDays) 天有记录，建议养成每日查看日程的习惯。")
-                }
-            }
-            
-            ForEach(insights, id: \.self) { insight in
+            ForEach(insightTexts, id: \.self) { insight in
                 Text(insight)
                     .font(.subheadline)
                     .padding()

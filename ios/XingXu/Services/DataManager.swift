@@ -1,6 +1,7 @@
 import Foundation
 import WidgetKit
 import UserNotifications
+import UIKit
 
 /// 核心数据管理器
 @MainActor
@@ -12,6 +13,7 @@ class DataManager: ObservableObject {
     private let moodsKey = "xingxu_moods"
     private let settingsKey = "xingxu_settings"
     private let currentDateKey = "xingxu_current_date"
+    private let lastRepeatGenKey = "xingxu_last_repeat_gen"
     
     private var defaults: UserDefaults? {
         UserDefaults(suiteName: suiteName)
@@ -28,6 +30,7 @@ class DataManager: ObservableObject {
     
     private init() {
         loadAll()
+        generateRepeatingTasksIfNeeded()
     }
     
     // MARK: - Load
@@ -119,6 +122,8 @@ class DataManager: ObservableObject {
         if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].completed.toggle()
             saveTasks()
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
         }
     }
     
@@ -198,7 +203,7 @@ class DataManager: ObservableObject {
     
     // MARK: - Widget Sync
     
-    private func syncToWidget() {
+    func syncToWidget() {
         let dayTasks = tasksForDate(currentDate)
         let widgetData = WidgetScheduleData(
             date: currentDate,
@@ -220,28 +225,101 @@ class DataManager: ObservableObject {
         WidgetCenter.shared.reloadTimelines(ofKind: "XingXuWidget")
     }
     
-    // MARK: - Widget Sync
+    // MARK: - Repeating Tasks
     
-    func syncToWidget() {
-        let dayTasks = tasksForDate(currentDate)
-        let widgetData = WidgetScheduleData(
-            date: currentDate,
-            tasks: dayTasks.map {
-                WidgetTask(
-                    id: $0.id,
-                    name: $0.name,
-                    time: $0.time,
-                    completed: $0.completed,
-                    tag: $0.tag,
-                    icon: $0.icon
+    func generateRepeatingTasksIfNeeded() {
+        guard let defaults = defaults else { return }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let today = Date()
+        
+        let sourceTasks = tasks.filter { $0.repeatPattern != "none" }
+        guard !sourceTasks.isEmpty else { return }
+        
+        // 确定生成起始日期
+        let lastGenString = defaults.string(forKey: lastRepeatGenKey) ?? ""
+        var startDate: Date
+        if let lastGen = formatter.date(from: lastGenString) {
+            startDate = Calendar.current.date(byAdding: .day, value: 1, to: lastGen)!
+        } else {
+            // 首次运行：从最早母任务的日期开始
+            if let earliest = sourceTasks.compactMap({ formatter.date(from: $0.date) }).min() {
+                startDate = earliest
+            } else {
+                return
+            }
+        }
+        
+        // 生成到未来 7 天
+        let endDate = Calendar.current.date(byAdding: .day, value: 7, to: today)!
+        guard startDate <= endDate else { return }
+        
+        var current = startDate
+        var generatedCount = 0
+        
+        while current <= endDate {
+            let dateStr = formatter.string(from: current)
+            
+            for source in sourceTasks {
+                guard shouldGenerateRepeat(for: dateStr, source: source) else { continue }
+                
+                // 检查是否已存在同名同时间的任务（排除母任务本身）
+                let exists = tasks.contains {
+                    $0.name == source.name && $0.time == source.time && $0.date == dateStr
+                }
+                if exists { continue }
+                
+                let newTask = TaskItem(
+                    name: source.name,
+                    time: source.time,
+                    endTime: source.endTime,
+                    icon: source.icon,
+                    completed: false,
+                    date: dateStr,
+                    tag: source.tag,
+                    repeatPattern: "none",
+                    remindMinutes: source.remindMinutes
                 )
-            },
-            totalTasks: dayTasks.count,
-            completedTasks: dayTasks.filter(\.completed).count,
-            updatedAt: Date()
-        )
-        SharedDataManager.shared.saveScheduleData(widgetData)
-        WidgetCenter.shared.reloadTimelines(ofKind: "XingXuWidget")
+                tasks.append(newTask)
+                generatedCount += 1
+            }
+            
+            current = Calendar.current.date(byAdding: .day, value: 1, to: current)!
+        }
+        
+        if generatedCount > 0 {
+            saveTasks()
+        }
+        defaults.set(formatter.string(from: today), forKey: lastRepeatGenKey)
+    }
+    
+    private func shouldGenerateRepeat(for dateString: String, source: TaskItem) -> Bool {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let date = formatter.date(from: dateString),
+              let sourceDate = formatter.date(from: source.date) else { return false }
+        
+        // 不覆盖母任务当天
+        if Calendar.current.isDate(date, inSameDayAs: sourceDate) { return false }
+        
+        let calendar = Calendar.current
+        let weekday = calendar.component(.weekday, from: date)
+        let isWeekend = (weekday == 1 || weekday == 7)
+        
+        switch source.repeatPattern {
+        case "daily":
+            return true
+        case "weekly":
+            return calendar.component(.weekday, from: date) == calendar.component(.weekday, from: sourceDate)
+        case "workdays":
+            return !isWeekend
+        case "weekends":
+            return isWeekend
+        case "monthly":
+            return calendar.component(.day, from: date) == calendar.component(.day, from: sourceDate)
+        default:
+            return false
+        }
     }
     
     // MARK: - Notifications

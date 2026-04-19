@@ -50,6 +50,31 @@ enum AppTheme: String, Codable, CaseIterable {
         case .highContrast: return "高对比度"
         }
     }
+    
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .light, .highContrast: return .light
+        case .dark: return .dark
+        case .system, .blue, .green, .warm: return nil
+        }
+    }
+    
+    var tintColor: Color? {
+        switch self {
+        case .blue: return Color(red: 0.4, green: 0.6, blue: 0.9)
+        case .green: return .mint
+        case .warm: return Color(red: 0.95, green: 0.65, blue: 0.4)
+        case .highContrast: return .black
+        default: return nil
+        }
+    }
+}
+
+/// 数据导出/导入结构
+struct ExportData: Codable {
+    let tasks: [TaskItem]
+    let moods: [MoodEntry]
+    let settings: AppSettings
 }
 
 enum FontSize: String, Codable, CaseIterable {
@@ -73,6 +98,15 @@ enum FontSize: String, Codable, CaseIterable {
         case .normal: return 1.0
         case .large: return 1.15
         case .extraLarge: return 1.3
+        }
+    }
+    
+    var dynamicTypeSize: DynamicTypeSize {
+        switch self {
+        case .small: return .small
+        case .normal: return .large
+        case .large: return .xxLarge
+        case .extraLarge: return .accessibility3
         }
     }
 }

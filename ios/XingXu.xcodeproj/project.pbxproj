@@ -11,7 +11,6 @@
 		0F1E507E461FC84C9762CEA1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53D743D55BB54E3DBF2891E /* SceneDelegate.swift */; };
 		187C9124EF63E45EBE767AF0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 051EFB82BFF2F9A989DA2F6E /* SwiftUI.framework */; };
 		1CB70490B81DD5FCD220FF9B /* XingXuWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8105E3B4C44D233FE1E39DC9 /* XingXuWidgetBundle.swift */; };
-		34CB58B1CA5B2AF29ED37DFB /* WebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28C5165E8003441004213CF2 /* WebViewController.swift */; };
 		34EF9553B071D5DC84E775E3 /* XingXuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020AAC044812CF3726128B1 /* XingXuWidget.swift */; };
 		63B7E9571617AA67A120CDB0 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A682D32E7CC01AE664A5C23 /* Provider.swift */; };
 		721C9F7DAA106DC916DE4665 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */; };
@@ -38,6 +37,9 @@
 		1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1908A7110B084AE985C88D15R /* MoodPickerView.swift */; };
 		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
 		2BA3C56807AB4C1E9CB6C441 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */; };
+		D49896F719214D1C80940075 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F719214D1C80940075R /* SummaryView.swift */; };
+		27DE56753FF54732BD3B7A2C /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DE56753FF54732BD3B7A2CR /* BrowseView.swift */; };
+		3AE7A42E50A148D4862E4ACB /* MoodHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */; };
 		17FD4E3E5C5F482EA4EE1EC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */; };
 		A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */; };
 		E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */; };
@@ -71,7 +73,6 @@
 		051EFB82BFF2F9A989DA2F6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		11EDA863F2D457E98D5EF291 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
 		1F0C508626F2C6FC0F962719 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = XingXu/Info.plist; sourceTree = "<group>"; };
-		28C5165E8003441004213CF2 /* WebViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WebViewController.swift; path = XingXu/WebViewController.swift; sourceTree = "<group>"; };
 		2E2554652AD8C991E62ED3BC /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = XingXuWidget/Entry.swift; sourceTree = "<group>"; };
 		3C71537FC9DAB77414DA593E /* XingXu.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = XingXu.entitlements; sourceTree = "<group>"; };
 		4EA2B7A4EB17A57C0B184AFA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
@@ -101,6 +102,9 @@
 		1908A7110B084AE985C88D15R /* MoodPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodPickerView.swift; path = XingXu/Views/MoodPickerView.swift; sourceTree = "<group>"; };
 		B478AE92320843D8A83A436CR /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalendarView.swift; path = XingXu/Views/CalendarView.swift; sourceTree = "<group>"; };
 		2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsView.swift; path = XingXu/Views/AnalyticsView.swift; sourceTree = "<group>"; };
+		D49896F719214D1C80940075R /* SummaryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SummaryView.swift; path = XingXu/Views/SummaryView.swift; sourceTree = "<group>"; };
+		27DE56753FF54732BD3B7A2CR /* BrowseView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowseView.swift; path = XingXu/Views/BrowseView.swift; sourceTree = "<group>"; };
+		3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodHistoryView.swift; path = XingXu/Views/MoodHistoryView.swift; sourceTree = "<group>"; };
 		17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = XingXu/Views/SettingsView.swift; sourceTree = "<group>"; };
 		A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateLibraryView.swift; path = XingXu/Views/TemplateLibraryView.swift; sourceTree = "<group>"; };
 		E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskRow.swift; path = XingXu/Views/Components/TaskRow.swift; sourceTree = "<group>"; };
@@ -154,7 +158,6 @@
 			children = (
 				DDF128991EA269DD7BDF8423 /* AppDelegate.swift */,
 				E53D743D55BB54E3DBF2891E /* SceneDelegate.swift */,
-				28C5165E8003441004213CF2 /* WebViewController.swift */,
 				EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */,
 				1F0C508626F2C6FC0F962719 /* Info.plist */,
 				9388AF1776C039D18A214EBF /* Assets.xcassets */,
@@ -307,7 +310,6 @@
 			files = (
 				9D06BDB568EC83F4029C2D50 /* AppDelegate.swift in Sources */,
 				0F1E507E461FC84C9762CEA1 /* SceneDelegate.swift in Sources */,
-				34CB58B1CA5B2AF29ED37DFB /* WebViewController.swift in Sources */,
 				07365785FD4E575DC286BBCA /* SharedData.swift in Sources */,
 				22DCC227640646E487D598B3 /* TaskItem.swift in Sources */,
 				F88E9E06D2AD429CAD984C4E /* MoodEntry.swift in Sources */,
@@ -320,6 +322,9 @@
 				1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */,
 				B478AE92320843D8A83A436C /* CalendarView.swift in Sources */,
 				2BA3C56807AB4C1E9CB6C441 /* AnalyticsView.swift in Sources */,
+				D49896F719214D1C80940075 /* SummaryView.swift in Sources */,
+				27DE56753FF54732BD3B7A2C /* BrowseView.swift in Sources */,
+				3AE7A42E50A148D4862E4ACB /* MoodHistoryView.swift in Sources */,
 				17FD4E3E5C5F482EA4EE1EC0 /* SettingsView.swift in Sources */,
 				A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */,
 				E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */,
