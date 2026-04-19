@@ -315,6 +315,14 @@
                             <path d="M2 12l10 5 10-5"></path>
                         </svg>
                     </button>
+                    <button class="icon-btn" onclick="openTemplateLibrary()" title="日程模板">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                        </svg>
+                    </button>
                     <button class="icon-btn" onclick="openSettingsModal()" title="设置">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="3"></circle>
@@ -499,16 +507,22 @@
                     <label>快速模板</label>
                     <div class="template-list" id="quick-templates">
                         <button class="template-btn" onclick="applyTemplate('morning')" title="早晨 routine">
-                            🌅 早晨全套
-                        </button>
-                        <button class="template-btn" onclick="applyTemplate('evening')" title="睡前 routine">
-                            🌙 睡前全套
+                            🌅 早晨
                         </button>
                         <button class="template-btn" onclick="applyTemplate('school')" title="上学日">
-                            🎒 上学日全套
+                            🎒 上学
                         </button>
-                        <button class="template-btn" onclick="openTemplateManager()" title="管理模板">
-                            ⚙️ 管理
+                        <button class="template-btn" onclick="applyTemplate('weekend')" title="周末">
+                            🎡 周末
+                        </button>
+                        <button class="template-btn" onclick="applyTemplate('hospital')" title="去医院">
+                            🏥 医院
+                        </button>
+                        <button class="template-btn" onclick="applyTemplate('evening')" title="睡前 routine">
+                            🌙 睡前
+                        </button>
+                        <button class="template-btn" onclick="openTemplateLibrary()" title="更多模板">
+                            📋 更多
                         </button>
                     </div>
                 </div>
@@ -1654,6 +1668,88 @@
                 <div class="settings-footer">
                     <button class="btn-secondary" onclick="closeTemplateModal()">取消</button>
                     <button class="btn-primary" onclick="saveTemplate()">保存模板</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 模板库弹窗 -->
+        <div id="template-library-modal" class="modal" onclick="closeTemplateLibraryModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 680px;">
+                <div class="modal-header">
+                    <h2>📋 日程模板库</h2>
+                    <button class="close-btn" onclick="closeTemplateLibraryModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <!-- 模板选择网格 -->
+                    <div id="template-library-grid">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;">
+                            <button class="template-card" onclick="previewTemplate('morning')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🌅</span>
+                                <span style="font-weight: 600; font-size: 14px;">早晨 routine</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">5 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('evening')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🌙</span>
+                                <span style="font-weight: 600; font-size: 14px;">睡前 routine</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">5 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('school')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🎒</span>
+                                <span style="font-weight: 600; font-size: 14px;">上学日</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">12 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('weekend')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🎡</span>
+                                <span style="font-weight: 600; font-size: 14px;">周末</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">9 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('hospital')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🏥</span>
+                                <span style="font-weight: 600; font-size: 14px;">去医院</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">10 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('sensory')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🏃</span>
+                                <span style="font-weight: 600; font-size: 14px;">感统训练日</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">11 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('home')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">🏠</span>
+                                <span style="font-weight: 600; font-size: 14px;">居家日</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">12 个任务</span>
+                            </button>
+                            <button class="template-card" onclick="previewTemplate('outing')" style="display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 20px 12px; border: 2px solid var(--border); border-radius: var(--radius-lg); background: var(--bg); cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+                                <span style="font-size: 32px;">✈️</span>
+                                <span style="font-weight: 600; font-size: 14px;">外出日</span>
+                                <span style="font-size: 12px; color: var(--text-secondary);">12 个任务</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- 模板预览区域 -->
+                    <div id="template-preview-area" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div id="template-preview-title" style="font-weight: 600; font-size: 16px;"></div>
+                            <button class="text-btn" onclick="backToTemplateGrid()" style="font-size: 13px;">← 返回选择</button>
+                        </div>
+                        
+                        <!-- 日期选择 -->
+                        <div style="margin-bottom: 16px; padding: 12px; background: var(--bg-secondary); border-radius: var(--radius);">
+                            <div style="font-size: 13px; font-weight: 500; color: var(--text-secondary); margin-bottom: 8px;">应用到哪一天？</div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button class="date-pick-btn active" data-date="today" onclick="selectTemplateDate(this, 'today')" style="padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); cursor: pointer; font-size: 13px;">📅 今天</button>
+                                <button class="date-pick-btn" data-date="tomorrow" onclick="selectTemplateDate(this, 'tomorrow')" style="padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); cursor: pointer; font-size: 13px;">📅 明天</button>
+                                <button class="date-pick-btn" data-date="dayafter" onclick="selectTemplateDate(this, 'dayafter')" style="padding: 8px 16px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); cursor: pointer; font-size: 13px;">📅 后天</button>
+                            </div>
+                        </div>
+                        
+                        <div id="template-preview-list" style="max-height: 300px; overflow-y: auto;"></div>
+                        
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button class="btn-secondary" onclick="backToTemplateGrid()" style="flex: 1;">返回</button>
+                            <button class="btn-primary" onclick="confirmApplyTemplate()" style="flex: 1;">确认应用</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

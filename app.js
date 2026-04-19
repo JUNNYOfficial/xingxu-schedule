@@ -161,11 +161,112 @@ function showRegister() {
                 icon: '🎒',
                 isDefault: true,
                 tasks: [
+                    { name: '起床', icon: '🛏️', time: '07:00' },
+                    { name: '刷牙洗脸', icon: '🪥', time: '07:15' },
+                    { name: '吃早餐', icon: '🍽️', time: '07:30' },
+                    { name: '出门上学', icon: '🚶', time: '08:00' },
                     { name: '到校', icon: '🏫', time: '08:30' },
                     { name: '课间休息', icon: '🏃', time: '10:00' },
                     { name: '午餐时间', icon: '🍱', time: '12:00' },
                     { name: '放学', icon: '🏠', time: '16:00' },
-                    { name: '做作业', icon: '✏️', time: '16:30' }
+                    { name: '做作业', icon: '✏️', time: '16:30' },
+                    { name: '吃晚餐', icon: '🍽️', time: '18:00' },
+                    { name: '洗澡', icon: '🛁', time: '19:30' },
+                    { name: '睡觉', icon: '🌙', time: '20:30' }
+                ]
+            },
+            weekend: {
+                id: 'weekend',
+                name: '周末',
+                icon: '🎡',
+                isDefault: true,
+                tasks: [
+                    { name: '起床', icon: '🛏️', time: '08:00' },
+                    { name: '刷牙洗脸', icon: '🪥', time: '08:15' },
+                    { name: '吃早餐', icon: '🍽️', time: '08:30' },
+                    { name: '去公园玩', icon: '🎡', time: '09:30' },
+                    { name: '吃午餐', icon: '🍱', time: '12:00' },
+                    { name: '玩游戏/玩具', icon: '🎮', time: '14:00' },
+                    { name: '吃晚餐', icon: '🍽️', time: '18:00' },
+                    { name: '洗澡', icon: '🛁', time: '19:30' },
+                    { name: '睡觉', icon: '🌙', time: '20:30' }
+                ]
+            },
+            hospital: {
+                id: 'hospital',
+                name: '去医院',
+                icon: '🏥',
+                isDefault: true,
+                tasks: [
+                    { name: '起床', icon: '🛏️', time: '07:00' },
+                    { name: '刷牙洗脸', icon: '🪥', time: '07:15' },
+                    { name: '吃早餐', icon: '🍽️', time: '07:30' },
+                    { name: '准备出门', icon: '🎒', time: '08:00' },
+                    { name: '去医院', icon: '🏥', time: '08:30' },
+                    { name: '候诊等待', icon: '🪑', time: '09:00' },
+                    { name: '看医生', icon: '👨‍⚕️', time: '09:30' },
+                    { name: '回家', icon: '🏠', time: '11:00' },
+                    { name: '休息', icon: '😴', time: '11:30' },
+                    { name: '吃午餐', icon: '🍱', time: '12:00' }
+                ]
+            },
+            sensory: {
+                id: 'sensory',
+                name: '感统训练日',
+                icon: '🏃',
+                isDefault: true,
+                tasks: [
+                    { name: '起床', icon: '🛏️', time: '07:00' },
+                    { name: '刷牙洗脸', icon: '🪥', time: '07:15' },
+                    { name: '吃早餐', icon: '🍽️', time: '07:30' },
+                    { name: '出门', icon: '🚶', time: '08:30' },
+                    { name: '感统训练课', icon: '🏃', time: '09:00' },
+                    { name: '吃午餐', icon: '🍱', time: '12:00' },
+                    { name: '午休', icon: '😴', time: '12:45' },
+                    { name: '做作业', icon: '✏️', time: '14:30' },
+                    { name: '吃晚餐', icon: '🍽️', time: '18:00' },
+                    { name: '洗澡', icon: '🛁', time: '19:30' },
+                    { name: '睡觉', icon: '🌙', time: '20:30' }
+                ]
+            },
+            home: {
+                id: 'home',
+                name: '居家日',
+                icon: '🏠',
+                isDefault: true,
+                tasks: [
+                    { name: '起床', icon: '🛏️', time: '08:00' },
+                    { name: '刷牙洗脸', icon: '🪥', time: '08:15' },
+                    { name: '吃早餐', icon: '🍽️', time: '08:30' },
+                    { name: '学习时间', icon: '📚', time: '09:00' },
+                    { name: '吃点心', icon: '🍪', time: '10:00' },
+                    { name: '自由游戏', icon: '🎮', time: '10:30' },
+                    { name: '吃午餐', icon: '🍱', time: '12:00' },
+                    { name: '午休', icon: '😴', time: '12:45' },
+                    { name: '画画/手工', icon: '🎨', time: '14:00' },
+                    { name: '吃晚餐', icon: '🍽️', time: '18:00' },
+                    { name: '洗澡', icon: '🛁', time: '19:30' },
+                    { name: '睡觉', icon: '🌙', time: '20:30' }
+                ]
+            },
+            outing: {
+                id: 'outing',
+                name: '外出日',
+                icon: '✈️',
+                isDefault: true,
+                tasks: [
+                    { name: '起床', icon: '🛏️', time: '07:30' },
+                    { name: '刷牙洗脸', icon: '🪥', time: '07:45' },
+                    { name: '吃早餐', icon: '🍽️', time: '08:00' },
+                    { name: '准备出门', icon: '🎒', time: '08:30' },
+                    { name: '外出活动', icon: '✈️', time: '09:00' },
+                    { name: '吃午餐', icon: '🍱', time: '12:00' },
+                    { name: '继续活动', icon: '🎡', time: '13:30' },
+                    { name: '回家', icon: '🏠', time: '16:00' },
+                    { name: '休息', icon: '😴', time: '16:30' },
+                    { name: '吃晚餐', icon: '🍽️', time: '18:00' },
+                    { name: '洗澡', icon: '🛁', time: '19:30' },
+                    { name: '睡觉', icon: '🌙', time: '20:30' }
                 ]
             }
         };
@@ -2637,6 +2738,127 @@ _________________________________<br>
             saveTasks();
             renderAll();
             showToast(`已应用模板：${template.name}`);
+        }
+        
+        // ========== 模板库功能 ==========
+        let selectedTemplateId = null;
+        let selectedTemplateDate = 'today';
+        
+        function openTemplateLibrary() {
+            document.getElementById('template-library-modal').classList.remove('hidden');
+            backToTemplateGrid();
+        }
+        
+        function closeTemplateLibraryModal(e) {
+            if (!e || e.target.id === 'template-library-modal') {
+                document.getElementById('template-library-modal').classList.add('hidden');
+            }
+        }
+        
+        function previewTemplate(templateId) {
+            const templates = getTemplates();
+            const template = templates[templateId];
+            if (!template) return;
+            
+            selectedTemplateId = templateId;
+            selectedTemplateDate = 'today';
+            
+            // 更新预览标题
+            document.getElementById('template-preview-title').innerHTML = 
+                `<span style="font-size: 24px; margin-right: 8px;">${template.icon}</span>${template.name}`;
+            
+            // 渲染任务列表
+            const listEl = document.getElementById('template-preview-list');
+            listEl.innerHTML = template.tasks.map((task, idx) => `
+                <div style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 6px;">
+                    <span style="font-size: 20px;">${task.icon || '•'}</span>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 500; font-size: 14px;">${task.name}</div>
+                        <div style="font-size: 12px; color: var(--text-secondary);">🕐 ${task.time}</div>
+                    </div>
+                    <span style="font-size: 12px; color: var(--text-muted); background: var(--bg-secondary); padding: 2px 8px; border-radius: 4px;">#${idx + 1}</span>
+                </div>
+            `).join('');
+            
+            // 重置日期选择
+            document.querySelectorAll('.date-pick-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.style.background = 'var(--bg)';
+                btn.style.borderColor = 'var(--border)';
+            });
+            const todayBtn = document.querySelector('.date-pick-btn[data-date="today"]');
+            if (todayBtn) {
+                todayBtn.classList.add('active');
+                todayBtn.style.background = 'var(--accent)';
+                todayBtn.style.color = 'white';
+                todayBtn.style.borderColor = 'var(--accent)';
+            }
+            
+            // 显示预览区域
+            document.getElementById('template-library-grid').style.display = 'none';
+            document.getElementById('template-preview-area').style.display = 'block';
+        }
+        
+        function backToTemplateGrid() {
+            selectedTemplateId = null;
+            selectedTemplateDate = 'today';
+            document.getElementById('template-library-grid').style.display = 'block';
+            document.getElementById('template-preview-area').style.display = 'none';
+        }
+        
+        function selectTemplateDate(btn, dateType) {
+            selectedTemplateDate = dateType;
+            document.querySelectorAll('.date-pick-btn').forEach(b => {
+                b.classList.remove('active');
+                b.style.background = 'var(--bg)';
+                b.style.color = '';
+                b.style.borderColor = 'var(--border)';
+            });
+            btn.classList.add('active');
+            btn.style.background = 'var(--accent)';
+            btn.style.color = 'white';
+            btn.style.borderColor = 'var(--accent)';
+        }
+        
+        function confirmApplyTemplate() {
+            if (!selectedTemplateId) return;
+            
+            const templates = getTemplates();
+            const template = templates[selectedTemplateId];
+            if (!template) return;
+            
+            // 计算目标日期
+            let targetDate = new Date();
+            if (selectedTemplateDate === 'tomorrow') {
+                targetDate.setDate(targetDate.getDate() + 1);
+            } else if (selectedTemplateDate === 'dayafter') {
+                targetDate.setDate(targetDate.getDate() + 2);
+            }
+            const dateStr = targetDate.toISOString().split('T')[0];
+            
+            // 添加任务
+            template.tasks.forEach((task, index) => {
+                const newTask = {
+                    id: Date.now().toString() + '_' + index,
+                    name: task.name,
+                    time: task.time,
+                    icon: task.icon || '',
+                    image: task.image || '',
+                    date: dateStr,
+                    completed: false
+                };
+                
+                if (appSettings.teamMode && appSettings.currentMemberId) {
+                    newTask.memberId = appSettings.currentMemberId;
+                }
+                
+                tasks.push(newTask);
+            });
+            
+            saveTasks();
+            renderAll();
+            closeTemplateLibraryModal();
+            showToast(`已应用「${template.name}」到 ${dateStr}`);
         }
         
         function openTemplateManager() {
