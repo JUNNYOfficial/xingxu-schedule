@@ -8606,6 +8606,13 @@
                             <line x1="8" y1="23" x2="16" y2="23"></line>
                         </svg>
                     </button>
+                    <button class="icon-btn" onclick="openAIAssistant()" title="AI 智能生成">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </button>
                     <button class="icon-btn" onclick="openSettingsModal()" title="设置">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="12" cy="12" r="3"></circle>
@@ -9700,6 +9707,52 @@
                             <li>支持中文语音输入</li>
                             <li>录音时长限制为60秒</li>
                         </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI 智能日程助手弹窗 -->
+        <div id="ai-assistant-modal" class="modal" onclick="closeAIAssistantModal(event)">
+            <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 640px;">
+                <div class="modal-header">
+                    <h2>🤖 AI 智能日程助手</h2>
+                    <button class="close-btn" onclick="closeAIAssistantModal()">×</button>
+                </div>
+                <div class="modal-body">
+                    <!-- 输入区域 -->
+                    <div id="ai-input-area">
+                        <div class="form-group">
+                            <label>描述你的一天安排</label>
+                            <textarea id="ai-schedule-input" rows="6" style="width: 100%; padding: 16px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 15px; resize: vertical; line-height: 1.8;" placeholder="例如：&#10;明天早上去医院做感统评估，下午2点上感统课，晚上7点洗澡睡觉。&#10;&#10;或者：&#10;下周一上午9点开会，下午去公园玩，晚上吃饭后看动画片。"></textarea>
+                        </div>
+                        <div style="display: flex; gap: 12px; margin-top: 16px;">
+                            <button class="btn-secondary" onclick="resetAIAssistant()" style="flex: 1;">清空</button>
+                            <button class="btn-primary" onclick="parseAISchedule()" style="flex: 1;">智能解析</button>
+                        </div>
+                        
+                        <div class="ai-tips" style="margin-top: 24px; padding: 16px; background: var(--bg-secondary); border-radius: var(--radius);">
+                            <div style="font-weight: 600; margin-bottom: 10px; font-size: 14px;">💡 支持的说法</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; color: var(--text-secondary); line-height: 1.8;">
+                                <div>• 相对日期：明天、后天、下周一</div>
+                                <div>• 时间段：上午、下午、晚上</div>
+                                <div>• 具体时间：3点、14:30</div>
+                                <div>• 活动类型：自动识别标签</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 解析结果预览 -->
+                    <div id="ai-preview-area" style="display: none;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                            <div style="font-weight: 600; font-size: 16px;">📋 解析结果</div>
+                            <div id="ai-parse-summary" style="font-size: 13px; color: var(--text-secondary);"></div>
+                        </div>
+                        <div id="ai-task-list" style="max-height: 360px; overflow-y: auto;"></div>
+                        <div style="display: flex; gap: 12px; margin-top: 20px;">
+                            <button class="btn-secondary" onclick="backToAIInput()" style="flex: 1;">返回修改</button>
+                            <button class="btn-primary" onclick="confirmAIImport()" style="flex: 1;">确认添加</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -11131,6 +11184,160 @@
             renderAll();
             closeVoiceModal();
             showToast('任务创建成功：' + taskName);
+        }
+        
+        // ========== AI 智能日程助手 ==========
+        let aiParsedTasks = [];
+        
+        function openAIAssistant() {
+            document.getElementById('ai-assistant-modal').classList.remove('hidden');
+            resetAIAssistant();
+            document.getElementById('ai-schedule-input').focus();
+        }
+        
+        function closeAIAssistantModal(e) {
+            if (!e || e.target.id === 'ai-assistant-modal') {
+                document.getElementById('ai-assistant-modal').classList.add('hidden');
+            }
+        }
+        
+        function resetAIAssistant() {
+            aiParsedTasks = [];
+            document.getElementById('ai-schedule-input').value = '';
+            document.getElementById('ai-input-area').style.display = 'block';
+            document.getElementById('ai-preview-area').style.display = 'none';
+        }
+        
+        function backToAIInput() {
+            document.getElementById('ai-input-area').style.display = 'block';
+            document.getElementById('ai-preview-area').style.display = 'none';
+        }
+        
+        function parseAISchedule() {
+            const text = document.getElementById('ai-schedule-input').value.trim();
+            if (!text) {
+                showToast('请输入日程描述');
+                return;
+            }
+            
+            aiParsedTasks = parseSmartSchedule(text);
+            
+            if (aiParsedTasks.length === 0) {
+                showToast('未识别到有效任务，请尝试更具体的描述');
+                return;
+            }
+            
+            renderAIPreview();
+            document.getElementById('ai-input-area').style.display = 'none';
+            document.getElementById('ai-preview-area').style.display = 'block';
+        }
+        
+        function renderAIPreview() {
+            const container = document.getElementById('ai-task-list');
+            const summary = document.getElementById('ai-parse-summary');
+            
+            const dates = [...new Set(aiParsedTasks.map(t => t.date))].sort();
+            summary.textContent = `共 ${aiParsedTasks.length} 个任务，${dates.length} 个日期`;
+            
+            let html = '';
+            dates.forEach(dateStr => {
+                const dateTasks = aiParsedTasks.filter(t => t.date === dateStr);
+                const dateLabel = getRelativeDateLabel(dateStr);
+                html += `<div style="margin-bottom: 16px;"><div style="font-weight: 600; font-size: 14px; color: var(--accent); margin-bottom: 8px; padding: 6px 10px; background: var(--bg-secondary); border-radius: var(--radius);">${dateLabel}</div>`;
+                html += dateTasks.map((task, idx) => {
+                    const globalIdx = aiParsedTasks.indexOf(task);
+                    const timeDisplay = task.endTime ? `${task.time} - ${task.endTime}` : task.time;
+                    const tagHtml = task.tag ? `<span style="display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 8px; background: ${getTagColor(task.tag)}20; color: ${getTagColor(task.tag)};">${task.tag}</span>` : '';
+                    return `
+                        <div style="display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; ${task.timeInferred ? 'border-left: 3px solid var(--warning);' : ''}">
+                            <input type="checkbox" id="ai-task-${globalIdx}" checked onchange="aiParsedTasks[${globalIdx}].selected = this.checked" style="width: 18px; height: 18px; flex-shrink: 0;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-weight: 500; font-size: 15px; margin-bottom: 2px;">${escapeHtml(task.name)} ${tagHtml}</div>
+                                <div style="font-size: 13px; color: var(--text-secondary);">
+                                    🕐 ${timeDisplay} ${task.timeInferred ? '<span style="color: var(--warning);">(推断)</span>' : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                html += '</div>';
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        function getTagColor(tag) {
+            const colors = {
+                '工作': '#3B82F6', '学习': '#8B5CF6', '生活': '#10B981',
+                '健康': '#F59E0B', '娱乐': '#EC4899', '重要': '#EF4444',
+                '医院': '#EF4444', '感统': '#8B5CF6', '作业': '#3B82F6',
+                '运动': '#10B981', '吃饭': '#F59E0B', '睡觉': '#818CF8',
+                '默认': '#6B7280'
+            };
+            return colors[tag] || colors['默认'];
+        }
+        
+        function getRelativeDateLabel(dateStr) {
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date(Date.now() + 86400000).toISOString().split('T')[0];
+            const dayAfter = new Date(Date.now() + 172800000).toISOString().split('T')[0];
+            
+            if (dateStr === today) return '📅 今天 (' + dateStr + ')';
+            if (dateStr === tomorrow) return '📅 明天 (' + dateStr + ')';
+            if (dateStr === dayAfter) return '📅 后天 (' + dateStr + ')';
+            
+            const date = new Date(dateStr);
+            const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+            return `📅 ${dateStr} ${weekdays[date.getDay()]}`;
+        }
+        
+        async function confirmAIImport() {
+            const toImport = aiParsedTasks.filter(t => t.selected !== false);
+            if (toImport.length === 0) {
+                showToast('未选择任何任务');
+                return;
+            }
+            
+            let addedCount = 0;
+            toImport.forEach(task => {
+                const allTasks = Storage.getAllTasks ? Storage.getAllTasks() : (typeof tasks !== 'undefined' ? tasks : []);
+                const taskToSave = {
+                    id: 'ai-' + Date.now().toString() + '-' + Math.random().toString(36).substr(2, 5),
+                    name: task.name,
+                    time: task.time,
+                    endTime: task.endTime || '',
+                    icon: task.icon || '',
+                    completed: false,
+                    date: task.date,
+                    tag: task.tag || '',
+                    repeat: 'none',
+                    remind: ''
+                };
+                
+                // 使用全局 Storage 或回退到本地存储
+                if (typeof Storage !== 'undefined' && Storage.saveTask) {
+                    Storage.saveTask(taskToSave);
+                } else {
+                    // 回退：直接操作 localStorage
+                    const key = 'schedule-unified-v2';
+                    const data = localStorage.getItem(key);
+                    let all = data ? JSON.parse(data) : [];
+                    all.push(taskToSave);
+                    localStorage.setItem(key, JSON.stringify(all));
+                }
+                addedCount++;
+            });
+            
+            // 刷新当前视图
+            if (typeof updateAllViews === 'function') {
+                tasks = Storage.getTasks ? Storage.getTasks(currentDate) : tasks;
+                await updateAllViews();
+            } else if (typeof renderAll === 'function') {
+                renderAll();
+            }
+            
+            closeAIAssistantModal();
+            showToast(`成功添加 ${addedCount} 个任务`);
         }
         
         function updateSettingsUI() {

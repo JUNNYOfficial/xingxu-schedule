@@ -2010,3 +2010,412 @@ document.addEventListener('DOMContentLoaded', async () => {
         await toggleChildMode(true);
     }
 });
+
+
+// ===== AI 智能日程解析引擎 =====
+
+/**
+ * 智能解析自然语言描述的日程安排
+ * 支持：相对日期、时间段推断、智能标签匹配、多日期任务
+ */
+function parseSmartSchedule(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+    const parsedTasks = [];
+    let currentBaseDate = new Date().toISOString().split('T')[0]; // 默认今天
+    
+    lines.forEach((line, idx) => {
+        // 1. 检测整行是否为日期指示器
+        const dateIndicator = extractDateIndicator(line);
+        if (dateIndicator) {
+            currentBaseDate = dateIndicator;
+            return; // 这一行只设置日期，不产生任务
+        }
+        
+        // 2. 从行中提取任务信息
+        const taskInfo = extractTaskFromLine(line, currentBaseDate);
+        if (taskInfo) {
+            parsedTasks.push(taskInfo);
+        }
+    });
+    
+    // 3. 为没有明确时间的任务推断时间
+    inferMissingTimes(parsedTasks);
+    
+    // 4. 按日期和时间排序
+    parsedTasks.sort((a, b) => {
+        if (a.date !== b.date) return a.date.localeCompare(b.date);
+        return a.time.localeCompare(b.time);
+    });
+    
+    return parsedTasks;
+}
+
+/**
+ * 提取日期指示器，如"明天"、"后天"、"下周一"等
+ */
+function extractDateIndicator(text) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const patterns = [
+        // 明天/后天/大后天
+        { regex: /明[天日]/, offset: 1 },
+        { regex: /后[天日]/, offset: 2 },
+        { regex: /大后[天日]/, offset: 3 },
+        // N天后
+        { regex: /(\d+)\s*天后/, type: 'days' },
+        { regex: /(\d+)\s*天以后/, type: 'days' },
+        // 周几
+        { regex: /本?周([一二三四五六日天])/, type: 'thisWeek' },
+        { regex: /下*周([一二三四五六日天])/, type: 'nextWeek' },
+        // 具体日期 YYYY-MM-DD
+        { regex: /(\d{4})[-\/.年](\d{1,2})[-\/.月](\d{1,2})/, type: 'exact' }
+    ];
+    
+    for (const p of patterns) {
+        const match = text.match(p.regex);
+        if (match) {
+            // 确保整行主要是日期指示（不是混在任务描述中的）
+            const isStandalone = text.length <= 15 || /^\s*[\d一二三四五六七八九十]+/.test(text);
+            if (!isStandalone) continue;
+            
+            if (p.offset !== undefined) {
+                const date = new Date(today);
+                date.setDate(date.getDate() + p.offset);
+                return date.toISOString().split('T')[0];
+            }
+            
+            if (p.type === 'days') {
+                const days = parseInt(match[1]);
+                const date = new Date(today);
+                date.setDate(date.getDate() + days);
+                return date.toISOString().split('T')[0];
+            }
+            
+            if (p.type === 'thisWeek') {
+                const weekdayMap = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 0, '天': 0};
+                const targetDay = weekdayMap[match[1]];
+                if (targetDay !== undefined) {
+                    return getWeekdayDate(targetDay, 0);
+                }
+            }
+            
+            if (p.type === 'nextWeek') {
+                const weekdayMap = {'一': 1, '二': 2, '三': 3, '四': 4, '五': 5, '六': 6, '日': 0, '天': 0};
+                const targetDay = weekdayMap[match[1]];
+                if (targetDay !== undefined) {
+                    // 检查是否是"下周"
+                    const isNextWeek = text.includes('下周') || text.includes('下星期');
+                    return getWeekdayDate(targetDay, isNextWeek ? 1 : 0);
+                }
+            }
+            
+            if (p.type === 'exact') {
+                const year = match[1];
+                const month = String(match[2]).padStart(2, '0');
+                const day = String(match[3]).padStart(2, '0');
+                return `${year}-${month}-${day}`;
+            }
+        }
+    }
+    
+    return null;
+}
+
+/**
+ * 获取指定周几的日期
+ * weekOffset: 0=本周, 1=下周
+ */
+function getWeekdayDate(targetDay, weekOffset = 0) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const currentDay = today.getDay();
+    let diff = targetDay - currentDay;
+    if (diff <= 0) diff += 7;
+    diff += weekOffset * 7;
+    const date = new Date(today);
+    date.setDate(date.getDate() + diff);
+    return date.toISOString().split('T')[0];
+}
+
+/**
+ * 从单行文本中提取任务信息
+ */
+function extractTaskFromLine(line, baseDate) {
+    // 先尝试提取时间
+    const timeInfo = extractSmartTime(line);
+    
+    // 提取任务名称（移除时间部分）
+    let name = line;
+    if (timeInfo && timeInfo.matchedText) {
+        name = name.replace(timeInfo.matchedText, '');
+    }
+    
+    // 清理名称
+    name = name
+        .replace(/^[,，\s\-–—~～、]+/, '')
+        .replace(/[,，\s\-–—~～、]+$/, '')
+        .replace(/^(然后|接着|之后|最后|首先|先|再)\s*/, '')
+        .trim();
+    
+    // 如果清理后名字太短，可能是纯日期行，忽略
+    if (name.length < 2) return null;
+    
+    // 限制名称长度
+    name = name.slice(0, 80);
+    
+    // 智能标签匹配
+    const tag = inferTag(name);
+    
+    // 推断图标
+    const icon = inferIcon(name);
+    
+    return {
+        id: 'smart-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5),
+        name: name,
+        time: timeInfo ? timeInfo.time : '09:00',
+        endTime: timeInfo ? timeInfo.endTime : '',
+        date: baseDate,
+        tag: tag,
+        icon: icon,
+        timeInferred: timeInfo ? timeInfo.inferred : true,
+        selected: true
+    };
+}
+
+/**
+ * 智能提取时间
+ * 支持：具体时间、时间段、上午/下午/晚上/早上等模糊时间
+ */
+function extractSmartTime(text) {
+    // 先尝试匹配具体时间 HH:MM 或 H点M分
+    const specificPatterns = [
+        // HH:MM - HH:MM 时间段
+        { regex: /(\d{1,2})[:：](\d{2})\s*[\-–—~～到至]\s*(\d{1,2})[:：](\d{2})/, type: 'range' },
+        // H点 - H点 时间段
+        { regex: /(\d{1,2})\s*点\s*(\d{0,2})?\s*分?\s*[\-–—~～到至]\s*(\d{1,2})\s*点\s*(\d{0,2})?\s*分?/, type: 'rangeChinese' },
+        // HH:MM
+        { regex: /(\d{1,2})[:：](\d{2})/, type: 'specific' },
+        // H点M分 / H点
+        { regex: /(\d{1,2})\s*点\s*(\d{1,2})?\s*分?/, type: 'chinese' },
+        // 上午/下午 H点
+        { regex: /(上午|早上|am)\s*(\d{1,2})\s*[:：点]?\s*(\d{0,2})?\s*分?/i, type: 'ampm', offset: 0 },
+        { regex: /(下午|晚上|pm)\s*(\d{1,2})\s*[:：点]?\s*(\d{0,2})?\s*分?/i, type: 'ampm', offset: 12 }
+    ];
+    
+    for (const p of specificPatterns) {
+        const match = text.match(p.regex);
+        if (match) {
+            const matchedText = match[0];
+            
+            if (p.type === 'range') {
+                const startHour = parseInt(match[1]);
+                const startMin = parseInt(match[2]);
+                const endHour = parseInt(match[3]);
+                const endMin = parseInt(match[4]);
+                if (isValidTime(startHour, startMin) && isValidTime(endHour, endMin)) {
+                    return {
+                        time: `${pad(startHour)}:${pad(startMin)}`,
+                        endTime: `${pad(endHour)}:${pad(endMin)}`,
+                        matchedText: matchedText,
+                        inferred: false
+                    };
+                }
+            }
+            
+            if (p.type === 'rangeChinese') {
+                const startHour = parseInt(match[1]);
+                const startMin = parseInt(match[2] || 0);
+                const endHour = parseInt(match[3]);
+                const endMin = parseInt(match[4] || 0);
+                if (isValidTime(startHour, startMin) && isValidTime(endHour, endMin)) {
+                    return {
+                        time: `${pad(startHour)}:${pad(startMin)}`,
+                        endTime: `${pad(endHour)}:${pad(endMin)}`,
+                        matchedText: matchedText,
+                        inferred: false
+                    };
+                }
+            }
+            
+            if (p.type === 'specific') {
+                const hour = parseInt(match[1]);
+                const min = parseInt(match[2]);
+                if (isValidTime(hour, min)) {
+                    return {
+                        time: `${pad(hour)}:${pad(min)}`,
+                        matchedText: matchedText,
+                        inferred: false
+                    };
+                }
+            }
+            
+            if (p.type === 'chinese') {
+                const hour = parseInt(match[1]);
+                const min = parseInt(match[2] || 0);
+                if (isValidTime(hour, min)) {
+                    return {
+                        time: `${pad(hour)}:${pad(min)}`,
+                        matchedText: matchedText,
+                        inferred: false
+                    };
+                }
+            }
+            
+            if (p.type === 'ampm') {
+                let hour = parseInt(match[2]);
+                const min = parseInt(match[3] || 0);
+                if (hour < 12 && p.offset === 12) hour += 12;
+                if (isValidTime(hour, min)) {
+                    return {
+                        time: `${pad(hour)}:${pad(min)}`,
+                        matchedText: matchedText,
+                        inferred: false
+                    };
+                }
+            }
+        }
+    }
+    
+    // 模糊时间匹配（无具体时间）
+    const fuzzyPatterns = [
+        { regex: /早上|早晨|清晨|早/, time: '08:00' },
+        { regex: /上午/, time: '09:30' },
+        { regex: /中午|午饭|午餐/, time: '12:00' },
+        { regex: /下午/, time: '14:30' },
+        { regex: /傍晚|黄昏/, time: '17:30' },
+        { regex: /晚上|晚间|夜晚/, time: '19:30' },
+        { regex: /睡前|睡觉|入睡/, time: '21:30' },
+        { regex: /凌晨/, time: '05:00' }
+    ];
+    
+    for (const p of fuzzyPatterns) {
+        if (p.regex.test(text)) {
+            return {
+                time: p.time,
+                matchedText: text.match(p.regex)[0],
+                inferred: true
+            };
+        }
+    }
+    
+    return null;
+}
+
+function isValidTime(hour, minute) {
+    return hour >= 0 && hour <= 23 && minute >= 0 && minute <= 59;
+}
+
+function pad(n) {
+    return String(n).padStart(2, '0');
+}
+
+/**
+ * 为没有明确时间的任务推断合理的时间
+ * 按照任务顺序和上下文推断
+ */
+function inferMissingTimes(tasks) {
+    const defaultTimes = ['08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00'];
+    let timeIndex = 0;
+    
+    tasks.forEach((task, idx) => {
+        if (task.timeInferred && !task.endTime) {
+            // 如果有前面的任务，尝试在后面安排
+            if (idx > 0 && tasks[idx - 1].date === task.date) {
+                const prevTask = tasks[idx - 1];
+                const [prevHour, prevMin] = prevTask.time.split(':').map(Number);
+                let nextHour = prevHour + 2;
+                if (nextHour > 21) nextHour = 21;
+                task.time = `${pad(nextHour)}:00`;
+            } else {
+                // 使用默认时间序列
+                task.time = defaultTimes[timeIndex % defaultTimes.length];
+                timeIndex++;
+            }
+        }
+    });
+}
+
+/**
+ * 根据任务名称智能推断标签
+ */
+function inferTag(name) {
+    const tagRules = [
+        // 健康
+        { keywords: ['医院', '医生', '看病', '复查', '体检', '感统', '康复', '治疗', '吃药', '疫苗', '牙科', '眼科'], tag: '健康' },
+        // 学习
+        { keywords: ['作业', '写字', '画画', '读书', '上课', '学习', '练习', '钢琴', '乐器', '英语', '数学', '语文', '感统课', '个训'], tag: '学习' },
+        // 工作
+        { keywords: ['开会', '工作', '加班', '出差', '报告', '项目', '客户', '面试'], tag: '工作' },
+        // 生活
+        { keywords: ['洗澡', '刷牙', '洗脸', '穿衣', '整理', '打扫', '收拾', '叠被子'], tag: '生活' },
+        // 娱乐
+        { keywords: ['玩', '游戏', '动画片', '电视', '电影', '公园', '游乐场', '滑梯', '秋千', '玩具'], tag: '娱乐' },
+        // 健康-运动
+        { keywords: ['运动', '跑步', '游泳', '跳绳', '球', '篮球', '足球', '骑车', '散步'], tag: '健康' },
+        // 生活-吃饭
+        { keywords: ['吃饭', '早餐', '午餐', '晚餐', '点心', '水果', '零食', '喝水', '喝牛奶'], tag: '生活' },
+        // 重要
+        { keywords: ['重要', '紧急', '必须', '一定', '别忘了', '记得'], tag: '重要' }
+    ];
+    
+    for (const rule of tagRules) {
+        for (const kw of rule.keywords) {
+            if (name.includes(kw)) {
+                return rule.tag;
+            }
+        }
+    }
+    
+    return '';
+}
+
+/**
+ * 根据任务名称推断合适的图标
+ */
+function inferIcon(name) {
+    const iconRules = [
+        { keywords: ['医院', '医生', '看病'], icon: '🏥' },
+        { keywords: ['吃药', '药'], icon: '💊' },
+        { keywords: ['感统', '康复', '治疗'], icon: '🏃' },
+        { keywords: ['作业', '写字', '练习'], icon: '📝' },
+        { keywords: ['读书', '阅读'], icon: '📚' },
+        { keywords: ['画画', '美术'], icon: '🎨' },
+        { keywords: ['钢琴', '乐器'], icon: '🎹' },
+        { keywords: ['英语'], icon: '🔤' },
+        { keywords: ['数学'], icon: '🔢' },
+        { keywords: ['开会', '会议'], icon: '👥' },
+        { keywords: ['工作', '电脑'], icon: '💻' },
+        { keywords: ['洗澡'], icon: '🛁' },
+        { keywords: ['刷牙'], icon: '🦷' },
+        { keywords: ['穿衣', '换衣服'], icon: '👕' },
+        { keywords: ['整理', '打扫', '收拾'], icon: '🧹' },
+        { keywords: ['玩', '游戏'], icon: '🎮' },
+        { keywords: ['动画片', '电视', '电影'], icon: '📺' },
+        { keywords: ['公园', '游乐场'], icon: '🎡' },
+        { keywords: ['运动', '跑步'], icon: '🏃' },
+        { keywords: ['游泳'], icon: '🏊' },
+        { keywords: ['骑车'], icon: '🚴' },
+        { keywords: ['球', '篮球', '足球'], icon: '⚽' },
+        { keywords: ['散步'], icon: '🚶' },
+        { keywords: ['早餐', '早点'], icon: '🍳' },
+        { keywords: ['午餐'], icon: '🍱' },
+        { keywords: ['晚餐'], icon: '🍽️' },
+        { keywords: ['吃饭'], icon: '🍚' },
+        { keywords: ['水果'], icon: '🍎' },
+        { keywords: ['喝水', '牛奶'], icon: '🥛' },
+        { keywords: ['睡觉', '午睡'], icon: '😴' },
+        { keywords: ['上学'], icon: '🎒' },
+        { keywords: ['放学'], icon: '🏠' }
+    ];
+    
+    for (const rule of iconRules) {
+        for (const kw of rule.keywords) {
+            if (name.includes(kw)) {
+                return rule.icon;
+            }
+        }
+    }
+    
+    return '';
+}
