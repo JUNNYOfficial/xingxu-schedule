@@ -7,6 +7,21 @@ struct MoodEntry: Codable, Identifiable, Equatable {
     var value: Int    // 1-5
     var note: String
     var createdAt: Date
+    var modifiedAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id, date, value, note, createdAt, modifiedAt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        date = try container.decode(String.self, forKey: .date)
+        value = try container.decodeIfPresent(Int.self, forKey: .value) ?? 3
+        note = try container.decodeIfPresent(String.self, forKey: .note) ?? ""
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt) ?? Date()
+    }
     
     init(
         id: String = UUID().uuidString,
@@ -19,6 +34,7 @@ struct MoodEntry: Codable, Identifiable, Equatable {
         self.value = max(1, min(5, value))
         self.note = note
         self.createdAt = Date()
+        self.modifiedAt = Date()
     }
     
     var emoji: String {

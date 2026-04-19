@@ -14,6 +14,29 @@ struct TaskItem: Codable, Identifiable, Equatable {
     var remindMinutes: Int?
     var imageData: Data?
     var createdAt: Date
+    var modifiedAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, time, endTime, icon, completed, date, tag
+        case repeatPattern, remindMinutes, imageData, createdAt, modifiedAt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        time = try container.decode(String.self, forKey: .time)
+        endTime = try container.decodeIfPresent(String.self, forKey: .endTime)
+        icon = try container.decodeIfPresent(String.self, forKey: .icon) ?? ""
+        completed = try container.decodeIfPresent(Bool.self, forKey: .completed) ?? false
+        date = try container.decode(String.self, forKey: .date)
+        tag = try container.decodeIfPresent(String.self, forKey: .tag) ?? ""
+        repeatPattern = try container.decodeIfPresent(String.self, forKey: .repeatPattern) ?? "none"
+        remindMinutes = try container.decodeIfPresent(Int.self, forKey: .remindMinutes)
+        imageData = try container.decodeIfPresent(Data.self, forKey: .imageData)
+        createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
+        modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt) ?? Date()
+    }
     
     init(
         id: String = UUID().uuidString,
@@ -40,6 +63,7 @@ struct TaskItem: Codable, Identifiable, Equatable {
         self.remindMinutes = remindMinutes
         self.imageData = imageData
         self.createdAt = Date()
+        self.modifiedAt = Date()
     }
     
     /// 时间排序用的比较值

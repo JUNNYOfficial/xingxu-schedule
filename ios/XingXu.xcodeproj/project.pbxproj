@@ -31,6 +31,7 @@
 		08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D087871E0D4FC5B06F9D87R /* AppSettings.swift */; };
 		08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */; };
 		11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B25E23A72E41A0A431CABDR /* DataManager.swift */; };
+				AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
 		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
 		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
 		F5DDEBBE76AA495F97147811 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DDEBBE76AA495F97147811R /* AddTaskView.swift */; };
@@ -96,6 +97,7 @@
 		08D087871E0D4FC5B06F9D87R /* AppSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = XingXu/Models/AppSettings.swift; sourceTree = "<group>"; };
 		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
 		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
+				AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
 		651E9BC7BCD44D5390D6C866R /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = XingXu/Views/ContentView.swift; sourceTree = "<group>"; };
 		6156274E582A4A71BB4E1950R /* TodayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = XingXu/Views/TodayView.swift; sourceTree = "<group>"; };
 		F5DDEBBE76AA495F97147811R /* AddTaskView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskView.swift; path = XingXu/Views/AddTaskView.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				F88E9E06D2AD429CAD984C4E /* MoodEntry.swift in Sources */,
 				08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */,
 				08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */,
+					AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */,
 				11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */,
 				651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */,
 				6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */,

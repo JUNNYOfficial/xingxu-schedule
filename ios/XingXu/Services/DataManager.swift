@@ -82,18 +82,21 @@ class DataManager: ObservableObject {
               let encoded = try? JSONEncoder().encode(tasks) else { return }
         defaults.set(encoded, forKey: tasksKey)
         syncToWidget()
+        iCloudSyncManager.shared.syncToCloud()
     }
     
     func saveMoods() {
         guard let defaults = defaults,
               let encoded = try? JSONEncoder().encode(moods) else { return }
         defaults.set(encoded, forKey: moodsKey)
+        iCloudSyncManager.shared.syncToCloud()
     }
     
     func saveSettings() {
         guard let defaults = defaults,
               let encoded = try? JSONEncoder().encode(settings) else { return }
         defaults.set(encoded, forKey: settingsKey)
+        iCloudSyncManager.shared.syncToCloud()
     }
     
     // MARK: - Custom Templates
@@ -112,6 +115,7 @@ class DataManager: ObservableObject {
         guard let defaults = defaults,
               let encoded = try? JSONEncoder().encode(customTemplates) else { return }
         defaults.set(encoded, forKey: customTemplatesKey)
+        iCloudSyncManager.shared.syncToCloud()
     }
     
     func saveCustomTemplate(from date: String, name: String) {
@@ -157,16 +161,20 @@ class DataManager: ObservableObject {
     }
     
     func addTask(_ task: TaskItem) {
-        tasks.append(task)
+        var newTask = task
+        newTask.modifiedAt = Date()
+        tasks.append(newTask)
         saveTasks()
-        scheduleNotification(for: task)
+        scheduleNotification(for: newTask)
     }
     
     func updateTask(_ task: TaskItem) {
         if let index = tasks.firstIndex(where: { $0.id == task.id }) {
-            tasks[index] = task
+            var updated = task
+            updated.modifiedAt = Date()
+            tasks[index] = updated
             saveTasks()
-            scheduleNotification(for: task)
+            scheduleNotification(for: updated)
         }
     }
     
@@ -179,6 +187,7 @@ class DataManager: ObservableObject {
     func toggleComplete(id: String) {
         if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].completed.toggle()
+            tasks[index].modifiedAt = Date()
             saveTasks()
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
@@ -197,8 +206,10 @@ class DataManager: ObservableObject {
     }
     
     func saveMood(_ mood: MoodEntry) {
-        moods.removeAll { $0.date == mood.date }
-        moods.append(mood)
+        var updated = mood
+        updated.modifiedAt = Date()
+        moods.removeAll { $0.date == updated.date }
+        moods.append(updated)
         saveMoods()
     }
     

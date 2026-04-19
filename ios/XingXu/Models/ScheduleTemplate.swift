@@ -11,6 +11,25 @@ struct ScheduleTemplate: Identifiable, Codable, Equatable {
     var isDefault: Bool
     var color: String
     var isUserCreated: Bool
+    var modifiedAt: Date
+    
+    enum CodingKeys: String, CodingKey {
+        case id, name, icon, description, tasks
+        case isDefault, color, isUserCreated, modifiedAt
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(String.self, forKey: .id)
+        name = try container.decode(String.self, forKey: .name)
+        icon = try container.decodeIfPresent(String.self, forKey: .icon) ?? "📋"
+        description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        tasks = try container.decodeIfPresent([TemplateTask].self, forKey: .tasks) ?? []
+        isDefault = try container.decodeIfPresent(Bool.self, forKey: .isDefault) ?? false
+        color = try container.decodeIfPresent(String.self, forKey: .color) ?? "#5B7CF5"
+        isUserCreated = try container.decodeIfPresent(Bool.self, forKey: .isUserCreated) ?? false
+        modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt) ?? Date()
+    }
     
     init(
         id: String = UUID().uuidString,
@@ -30,6 +49,7 @@ struct ScheduleTemplate: Identifiable, Codable, Equatable {
         self.isDefault = isDefault
         self.color = color
         self.isUserCreated = isUserCreated
+        self.modifiedAt = Date()
     }
     
     /// SwiftUI Color from hex string

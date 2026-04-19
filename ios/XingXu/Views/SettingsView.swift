@@ -30,6 +30,25 @@ struct SettingsView: View {
                     Toggle("颜色编码", isOn: $dataManager.settings.colorCodingEnabled)
                 }
                 
+                Section("iCloud") {
+                    Toggle("iCloud 同步", isOn: Binding(
+                        get: { iCloudSyncManager.shared.isSyncEnabled },
+                        set: { iCloudSyncManager.shared.isSyncEnabled = $0 }
+                    ))
+                    if iCloudSyncManager.shared.isSyncEnabled {
+                        if let lastSync = iCloudSyncManager.shared.lastSyncTime {
+                            Text("上次同步：\(formatSyncTime(lastSync))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        if !iCloudSyncManager.shared.isAvailable {
+                            Text("请登录 iCloud 以使用同步功能")
+                                .font(.caption)
+                                .foregroundColor(.orange)
+                        }
+                    }
+                }
+                
                 Section("通知") {
                     Toggle("启用提醒", isOn: $dataManager.settings.notificationsEnabled)
                     if dataManager.settings.notificationsEnabled {
@@ -129,6 +148,12 @@ struct SettingsView: View {
         case .failure(let error):
             importError = "选择文件失败: \(error.localizedDescription)"
         }
+    }
+    
+    private func formatSyncTime(_ date: Date) -> String {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
     
     private func exportData() {
