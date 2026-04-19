@@ -5,6 +5,7 @@ struct TodayView: View {
     @State private var showAddTask = false
     @State private var editingTask: TaskItem? = nil
     @State private var showMoodPicker = false
+    @State private var showTemplateLibrary = false
     
     private var todayTasks: [TaskItem] {
         dataManager.tasksForDate(dataManager.currentDate)
@@ -59,6 +60,9 @@ struct TodayView: View {
             }
             .sheet(isPresented: $showMoodPicker) {
                 MoodPickerView(date: dataManager.currentDate)
+            }
+            .sheet(isPresented: $showTemplateLibrary) {
+                TemplateLibraryView()
             }
         }
     }
@@ -149,19 +153,35 @@ struct TodayView: View {
     }
     
     private var quickAddButton: some View {
-        Button(action: { showAddTask = true }) {
-            HStack {
-                Image(systemName: "plus.circle.fill")
-                    .font(.title2)
-                Text("添加任务")
-                    .font(.headline)
-                Spacer()
+        HStack(spacing: 12) {
+            Button(action: { showAddTask = true }) {
+                HStack {
+                    Image(systemName: "plus.circle.fill")
+                        .font(.title2)
+                    Text("添加任务")
+                        .font(.headline)
+                    Spacer()
+                }
+                .padding()
+                .background(Color.primary.opacity(0.1))
+                .cornerRadius(16)
             }
-            .padding()
-            .background(Color.primary.opacity(0.1))
-            .cornerRadius(16)
+            .buttonStyle(PlainButtonStyle())
+            
+            Button(action: { showTemplateLibrary = true }) {
+                VStack(spacing: 4) {
+                    Image(systemName: "square.grid.2x2")
+                        .font(.title2)
+                    Text("模板")
+                        .font(.caption)
+                }
+                .frame(width: 80)
+                .padding(.vertical, 12)
+                .background(Color(.systemGray6))
+                .cornerRadius(16)
+            }
+            .buttonStyle(PlainButtonStyle())
         }
-        .buttonStyle(PlainButtonStyle())
     }
     
     private var taskListSection: some View {
