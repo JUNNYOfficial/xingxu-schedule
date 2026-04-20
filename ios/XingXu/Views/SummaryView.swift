@@ -212,16 +212,19 @@ struct SummaryView: View {
                 Circle()
                     .stroke(primaryTint.opacity(0.12), lineWidth: 8)
                     .frame(width: 80, height: 80)
-                if progress > 0 {
-                    Circle()
-                        .trim(from: 0, to: progress)
-                        .stroke(primaryTint, style: StrokeStyle(lineWidth: 8, lineCap: .round))
-                        .rotationEffect(.degrees(-90))
-                        .frame(width: 80, height: 80)
-                }
+                
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(primaryTint, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .frame(width: 80, height: 80)
+                    .animation(.easeInOut(duration: 0.5), value: progress)
+                
                 Text(progress > 0 ? "\(Int(progress * 100))%" : "--")
                     .font(.system(size: 18, weight: .bold))
                     .foregroundColor(progress > 0 ? primaryTint : .secondary)
+                    .contentTransition(.numericText())
+                    .animation(.easeInOut(duration: 0.3), value: progress)
             }
             
             VStack(alignment: .leading, spacing: 6) {
