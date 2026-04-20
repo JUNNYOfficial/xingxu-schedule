@@ -16,6 +16,7 @@ struct AppSettings: Codable, Equatable {
     var healthSyncEnabled: Bool
     var cycleTrackingEnabled: Bool
     var cycleReminderEnabled: Bool
+    var fullscreenAlarmEnabled: Bool
     var homeLayout: [HomeSectionItem]
     
     init(
@@ -32,6 +33,7 @@ struct AppSettings: Codable, Equatable {
         healthSyncEnabled: Bool = false,
         cycleTrackingEnabled: Bool = false,
         cycleReminderEnabled: Bool = false,
+        fullscreenAlarmEnabled: Bool = false,
         homeLayout: [HomeSectionItem]? = nil
     ) {
         self.theme = theme
@@ -47,6 +49,7 @@ struct AppSettings: Codable, Equatable {
         self.healthSyncEnabled = healthSyncEnabled
         self.cycleTrackingEnabled = cycleTrackingEnabled
         self.cycleReminderEnabled = cycleReminderEnabled
+        self.fullscreenAlarmEnabled = fullscreenAlarmEnabled
         self.homeLayout = homeLayout ?? HomeSectionItem.defaultLayout
     }
     
@@ -54,7 +57,7 @@ struct AppSettings: Codable, Equatable {
         case theme, fontSize, notificationsEnabled, notificationMinutes
         case onlyRemindImportant, doNotDisturbStartHour, doNotDisturbEndHour
         case childModeEnabled, highContrastEnabled, colorCodingEnabled
-        case healthSyncEnabled, cycleTrackingEnabled, cycleReminderEnabled
+        case healthSyncEnabled, cycleTrackingEnabled, cycleReminderEnabled, fullscreenAlarmEnabled
         case homeLayout
     }
     
@@ -73,6 +76,7 @@ struct AppSettings: Codable, Equatable {
         self.healthSyncEnabled = try container.decodeIfPresent(Bool.self, forKey: .healthSyncEnabled) ?? false
         self.cycleTrackingEnabled = try container.decodeIfPresent(Bool.self, forKey: .cycleTrackingEnabled) ?? false
         self.cycleReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .cycleReminderEnabled) ?? false
+        self.fullscreenAlarmEnabled = try container.decodeIfPresent(Bool.self, forKey: .fullscreenAlarmEnabled) ?? false
         self.homeLayout = try container.decodeIfPresent([HomeSectionItem].self, forKey: .homeLayout) ?? HomeSectionItem.defaultLayout
     }
 }

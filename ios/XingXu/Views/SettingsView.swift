@@ -93,6 +93,17 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Toggle("重要任务全屏闹钟", isOn: $dataManager.settings.fullscreenAlarmEnabled)
+                } header: {
+                    Text("闹钟")
+                } footer: {
+                    Text(dataManager.settings.fullscreenAlarmEnabled
+                         ? "重要任务提醒时将显示全屏闹钟，不易错过"
+                         : "开启后，标记为\"重要\"的任务提醒时会显示全屏闹钟界面")
+                        .font(.caption)
+                }
+                
+                Section {
                     Toggle("启用提醒", isOn: Binding(
                         get: { dataManager.settings.notificationsEnabled },
                         set: { newValue in

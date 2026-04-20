@@ -33,6 +33,16 @@ struct ContentView: View {
         .dynamicTypeSize(dataManager.settings.fontSize.dynamicTypeSize)
         .preferredColorScheme(dataManager.settings.theme.colorScheme)
         .tint(Color(red: 0.48, green: 0.61, blue: 0.75))
+        .overlay(
+            Group {
+                if let alarmTask = dataManager.activeAlarmTask {
+                    AlarmView(task: alarmTask)
+                        .environmentObject(dataManager)
+                        .transition(.opacity)
+                        .zIndex(100)
+                }
+            }
+        )
         .onAppear {
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()

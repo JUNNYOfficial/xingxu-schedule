@@ -26,6 +26,7 @@ class DataManager: ObservableObject {
     @Published var settings: AppSettings = AppSettings()
     @Published var customTemplates: [ScheduleTemplate] = []
     @Published var menstrualRecords: [MenstrualRecord] = []
+    @Published var activeAlarmTask: TaskItem? = nil
     @Published var currentDate: String = {
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
@@ -588,6 +589,12 @@ class DataManager: ObservableObject {
         content.title = "星序"
         content.body = "「\(task.name)」快要开始了"
         content.sound = .default
+        content.userInfo = ["taskId": task.id, "taskName": task.name, "taskTime": task.time]
+        
+        // 重要任务或全屏闹钟开启时，设置更高优先级
+        if settings.fullscreenAlarmEnabled || task.tag == "重要" {
+            content.userInfo["fullscreenAlarm"] = true
+        }
         
         let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: remindDate)
         let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
