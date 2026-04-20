@@ -243,17 +243,6 @@ struct CycleTrackingView: View {
                 .padding(.horizontal)
             
             VStack(spacing: 8) {
-                // 星期标题
-                let weekdays = ["日", "一", "二", "三", "四", "五", "六"]
-                HStack {
-                    ForEach(weekdays, id: \.self) { day in
-                        Text(day)
-                            .font(.caption)
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.secondary)
-                    }
-                }
-                
                 // 日期网格
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
                     ForEach(Array(dayValues.enumerated()), id: \.offset) { index, day in
