@@ -13,6 +13,7 @@ struct SummaryView: View {
     @State private var showLayoutEditor = false
     @State private var showBreathingGuide = false
     @State private var showMindfulness = false
+    @State private var showWaterTracker = false
     @StateObject private var healthManager = HealthManager.shared
     
     // 自闭症友好：统一柔和色系
@@ -176,6 +177,10 @@ struct SummaryView: View {
             }
             .sheet(isPresented: $showMindfulness) {
                 MindfulnessView()
+            }
+            .sheet(isPresented: $showWaterTracker) {
+                WaterTrackerView()
+                    .environmentObject(dataManager)
             }
             .navigationDestination(isPresented: $showTodayDetail) {
                 TodayView()
@@ -536,6 +541,10 @@ struct SummaryView: View {
                     )
                 }
                 .buttonStyle(PlainButtonStyle())
+                Button(action: { showWaterTracker = true }) {
+                    waterCard
+                }
+                .buttonStyle(PlainButtonStyle())
             }
             .padding(.horizontal)
         }
@@ -555,6 +564,37 @@ struct SummaryView: View {
                         .font(.headline)
                         .foregroundColor(.primary)
                     Text(title)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color(.systemBackground))
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+    }
+    
+    private var waterCard: some View {
+        let total = dataManager.todayWaterTotal()
+        let goal = dataManager.settings.dailyWaterGoal
+        let waterBlue = Color(red: 0.42, green: 0.65, blue: 0.85)
+        
+        return VStack(spacing: 8) {
+            HStack {
+                Image(systemName: "drop.fill")
+                    .font(.title3)
+                    .foregroundColor(waterBlue)
+                Spacer()
+            }
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(total > 0 ? "\(total)ml" : "--")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    Text("饮水")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }

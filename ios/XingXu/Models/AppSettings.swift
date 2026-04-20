@@ -20,6 +20,7 @@ struct AppSettings: Codable, Equatable {
     var nickname: String?
     var avatarEmoji: String?
     var userId: String?
+    var dailyWaterGoal: Int
     var homeLayout: [HomeSectionItem]
     
     init(
@@ -40,6 +41,7 @@ struct AppSettings: Codable, Equatable {
         nickname: String? = nil,
         avatarEmoji: String? = nil,
         userId: String? = nil,
+        dailyWaterGoal: Int = 2000,
         homeLayout: [HomeSectionItem]? = nil
     ) {
         self.theme = theme
@@ -59,6 +61,7 @@ struct AppSettings: Codable, Equatable {
         self.nickname = nickname
         self.avatarEmoji = avatarEmoji
         self.userId = userId
+        self.dailyWaterGoal = dailyWaterGoal
         self.homeLayout = homeLayout ?? HomeSectionItem.defaultLayout
     }
     
@@ -67,7 +70,7 @@ struct AppSettings: Codable, Equatable {
         case onlyRemindImportant, doNotDisturbStartHour, doNotDisturbEndHour
         case childModeEnabled, highContrastEnabled, colorCodingEnabled
         case healthSyncEnabled, cycleTrackingEnabled, cycleReminderEnabled, fullscreenAlarmEnabled
-        case nickname, avatarEmoji, userId
+        case nickname, avatarEmoji, userId, dailyWaterGoal
         case homeLayout
     }
     
@@ -90,6 +93,7 @@ struct AppSettings: Codable, Equatable {
         self.nickname = try container.decodeIfPresent(String.self, forKey: .nickname)
         self.avatarEmoji = try container.decodeIfPresent(String.self, forKey: .avatarEmoji)
         self.userId = try container.decodeIfPresent(String.self, forKey: .userId)
+        self.dailyWaterGoal = try container.decodeIfPresent(Int.self, forKey: .dailyWaterGoal) ?? 2000
         self.homeLayout = try container.decodeIfPresent([HomeSectionItem].self, forKey: .homeLayout) ?? HomeSectionItem.defaultLayout
     }
 }

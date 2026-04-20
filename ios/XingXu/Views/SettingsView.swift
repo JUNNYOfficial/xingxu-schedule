@@ -183,6 +183,15 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Stepper("每日目标 \(dataManager.settings.dailyWaterGoal)ml", value: $dataManager.settings.dailyWaterGoal, in: 500...4000, step: 250)
+                } header: {
+                    Text("饮水")
+                } footer: {
+                    Text("建议每日饮水 1500-2500ml")
+                        .font(.caption)
+                }
+                
+                Section {
                     Toggle("启用提醒", isOn: Binding(
                         get: { dataManager.settings.notificationsEnabled },
                         set: { newValue in

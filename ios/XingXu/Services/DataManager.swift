@@ -16,6 +16,7 @@ class DataManager: ObservableObject {
     private let lastRepeatGenKey = "xingxu_last_repeat_gen"
     private let customTemplatesKey = "xingxu_custom_templates"
     private let menstrualRecordsKey = "xingxu_menstrual_records"
+    private let waterRecordsKey = "xingxu_water_records"
     
     private var defaults: UserDefaults? {
         UserDefaults(suiteName: suiteName)
@@ -26,6 +27,7 @@ class DataManager: ObservableObject {
     @Published var settings: AppSettings = AppSettings()
     @Published var customTemplates: [ScheduleTemplate] = []
     @Published var menstrualRecords: [MenstrualRecord] = []
+    @Published var waterRecords: [WaterRecord] = []
     @Published var activeAlarmTask: TaskItem? = nil
     @Published var currentDate: String = {
         let formatter = DateFormatter()
@@ -37,6 +39,7 @@ class DataManager: ObservableObject {
         loadAll()
         loadCustomTemplates()
         loadMenstrualRecords()
+        loadWaterRecords()
         generateRepeatingTasksIfNeeded()
         insertSampleDataIfNeeded()
         insertSampleCycleDataIfNeeded()
@@ -108,6 +111,7 @@ class DataManager: ObservableObject {
         loadSettings()
         loadCustomTemplates()
         loadMenstrualRecords()
+        loadWaterRecords()
     }
     
     func loadTasks() {
@@ -198,6 +202,39 @@ class DataManager: ObservableObject {
               let encoded = try? JSONEncoder().encode(menstrualRecords) else { return }
         defaults.set(encoded, forKey: menstrualRecordsKey)
         scheduleCycleNotification()
+    }
+    
+    func loadWaterRecords() {
+        guard let defaults = defaults,
+              let data = defaults.data(forKey: waterRecordsKey),
+              let decoded = try? JSONDecoder().decode([WaterRecord].self, from: data) else {
+            waterRecords = []
+            return
+        }
+        waterRecords = decoded
+    }
+    
+    func saveWaterRecords() {
+        guard let defaults = defaults,
+              let encoded = try? JSONEncoder().encode(waterRecords) else { return }
+        defaults.set(encoded, forKey: waterRecordsKey)
+    }
+    
+    func addWaterRecord(_ amount: Int = 250) {
+        let record = WaterRecord(date: currentDate, amount: amount)
+        waterRecords.append(record)
+        saveWaterRecords()
+        let generator = UIImpactFeedbackGenerator(style: .light)
+        generator.impactOccurred()
+    }
+    
+    func deleteWaterRecord(id: String) {
+        waterRecords.removeAll { $0.id == id }
+        saveWaterRecords()
+    }
+    
+    func todayWaterTotal() -> Int {
+        waterRecords.filter { $0.date == currentDate }.reduce(0) { $0 + $1.amount }
     }
     
     func addMenstrualRecord(_ record: MenstrualRecord) {

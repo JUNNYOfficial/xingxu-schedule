@@ -40,12 +40,14 @@
 		82C8C012D89CA061C3C43527 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C826BFEF4006D191075F8C14 /* WebKit.framework */; };
 		8BF9F06748DD462F99DF03CA /* MenstrualCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */; };
 		8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */; };
+		94F9B6BE9B84D75812544F03 /* WaterTrackerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9AED5BB89EC61C9258958AA /* WaterTrackerView.swift */; };
 		9D06BDB568EC83F4029C2D50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF128991EA269DD7BDF8423 /* AppDelegate.swift */; };
 		A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */; };
 		A42CD6DB0FF90649DF7433B0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2331054A197DE0C3A517CF /* WidgetKit.framework */; };
 		AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
 		AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */; };
 		AE3F198E9E2BEECC2DEE6B22 /* SiriShortcutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBB6EABE1BC7991F83276B1 /* SiriShortcutsView.swift */; };
+		AEBACE4EC6840715B27F5864 /* WaterRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7701538DA61C6A1207161A3 /* WaterRecord.swift */; };
 		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
 		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
 		BF112E76059D8D429B79CC51 /* BreathingGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0112CA75E848FE496F6A69 /* BreathingGuideView.swift */; };
@@ -128,6 +130,7 @@
 		B478AE92320843D8A83A436CR /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalendarView.swift; path = XingXu/Views/CalendarView.swift; sourceTree = "<group>"; };
 		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
 		B9A53CECF320220875003F06 /* AppleAuthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppleAuthManager.swift; path = XingXu/Services/AppleAuthManager.swift; sourceTree = "<group>"; };
+		C7701538DA61C6A1207161A3 /* WaterRecord.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WaterRecord.swift; path = XingXu/Models/WaterRecord.swift; sourceTree = "<group>"; };
 		C822A0D4413D48B092CF2724 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		C826BFEF4006D191075F8C14 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
 		CE7D815E738E331849E87064 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = XingXuWidget/Info.plist; sourceTree = "<group>"; };
@@ -140,6 +143,7 @@
 		EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = XingXu/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F5DDEBBE76AA495F97147811R /* AddTaskView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskView.swift; path = XingXu/Views/AddTaskView.swift; sourceTree = "<group>"; };
 		F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodEntry.swift; path = XingXu/Models/MoodEntry.swift; sourceTree = "<group>"; };
+		F9AED5BB89EC61C9258958AA /* WaterTrackerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = WaterTrackerView.swift; path = XingXu/Views/WaterTrackerView.swift; sourceTree = "<group>"; };
 		FB1DFA362F33DA837CF1AB7F /* AddTaskIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskIntent.swift; path = XingXu/Siri/AddTaskIntent.swift; sourceTree = "<group>"; };
 		FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleCorrelationAnalyzer.swift; path = XingXu/Services/CycleCorrelationAnalyzer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -171,6 +175,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		062632EF954FE1E04BAE3B6A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C7701538DA61C6A1207161A3 /* WaterRecord.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		0D041AA80EF49BF15B9E159F /* iOS */ = {
 			isa = PBXGroup;
 			children = (
@@ -212,6 +224,7 @@
 				CA0DE6A9216DCF943B18B0E1 /* Views */,
 				412C48229C67DBCA5F3BFE0D /* Services */,
 				218836AF702063D6AF968C01 /* Siri */,
+				062632EF954FE1E04BAE3B6A /* Models */,
 			);
 			name = XingXu;
 			sourceTree = "<group>";
@@ -250,6 +263,7 @@
 				0FA4C1BE2CF38747D4339C17 /* MindfulnessView.swift */,
 				579F63A51AAF42EC4EEB50A8 /* ProfileEditView.swift */,
 				ADBB6EABE1BC7991F83276B1 /* SiriShortcutsView.swift */,
+				F9AED5BB89EC61C9258958AA /* WaterTrackerView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -408,6 +422,8 @@
 				55C44FF7B746990A0B4321A5 /* ProfileEditView.swift in Sources */,
 				401FFB1A32EE6E2F622646DB /* AddTaskIntent.swift in Sources */,
 				AE3F198E9E2BEECC2DEE6B22 /* SiriShortcutsView.swift in Sources */,
+				AEBACE4EC6840715B27F5864 /* WaterRecord.swift in Sources */,
+				94F9B6BE9B84D75812544F03 /* WaterTrackerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
