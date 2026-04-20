@@ -9,6 +9,7 @@ struct SettingsView: View {
     @State private var showFileImporter = false
     @State private var importError: String? = nil
     @State private var showProfileEdit = false
+    @State private var showSiriShortcuts = false
     
     var body: some View {
         NavigationView {
@@ -162,6 +163,26 @@ struct SettingsView: View {
                 }
                 
                 Section {
+                    Button(action: { showSiriShortcuts = true }) {
+                        HStack {
+                            Image(systemName: "mic.fill")
+                                .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                            Text("Siri 快捷指令")
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption)
+                                .foregroundColor(.secondary.opacity(0.5))
+                        }
+                    }
+                    .foregroundColor(.primary)
+                } header: {
+                    Text("语音")
+                } footer: {
+                    Text("\"嘿 Siri，用星序记录明天上午9点数学课\"")
+                        .font(.caption)
+                }
+                
+                Section {
                     Toggle("启用提醒", isOn: Binding(
                         get: { dataManager.settings.notificationsEnabled },
                         set: { newValue in
@@ -263,6 +284,9 @@ struct SettingsView: View {
             .sheet(isPresented: $showProfileEdit) {
                 ProfileEditView()
                     .environmentObject(dataManager)
+            }
+            .sheet(isPresented: $showSiriShortcuts) {
+                SiriShortcutsView()
             }
             .onChange(of: dataManager.settings) { _ in
                 dataManager.saveSettings()

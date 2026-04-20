@@ -27,6 +27,7 @@
 		34EF9553B071D5DC84E775E3 /* XingXuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020AAC044812CF3726128B1 /* XingXuWidget.swift */; };
 		3AE7A42E50A148D4862E4ACB /* MoodHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */; };
 		3D8A55C7030DAC41216825C9 /* AppleAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A53CECF320220875003F06 /* AppleAuthManager.swift */; };
+		401FFB1A32EE6E2F622646DB /* AddTaskIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1DFA362F33DA837CF1AB7F /* AddTaskIntent.swift */; };
 		55C44FF7B746990A0B4321A5 /* ProfileEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 579F63A51AAF42EC4EEB50A8 /* ProfileEditView.swift */; };
 		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
 		63B7E9571617AA67A120CDB0 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A682D32E7CC01AE664A5C23 /* Provider.swift */; };
@@ -44,6 +45,7 @@
 		A42CD6DB0FF90649DF7433B0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2331054A197DE0C3A517CF /* WidgetKit.framework */; };
 		AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
 		AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */; };
+		AE3F198E9E2BEECC2DEE6B22 /* SiriShortcutsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADBB6EABE1BC7991F83276B1 /* SiriShortcutsView.swift */; };
 		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
 		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
 		BF112E76059D8D429B79CC51 /* BreathingGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0112CA75E848FE496F6A69 /* BreathingGuideView.swift */; };
@@ -119,6 +121,7 @@
 		A82CEE3871070D4828FEA22D /* XingXuWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = XingXuWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
 		AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = XingXu/Views/Components/EmptyStateView.swift; sourceTree = "<group>"; };
+		ADBB6EABE1BC7991F83276B1 /* SiriShortcutsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SiriShortcutsView.swift; path = XingXu/Views/SiriShortcutsView.swift; sourceTree = "<group>"; };
 		AE2331054A197DE0C3A517CF /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		B020AAC044812CF3726128B1 /* XingXuWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = XingXuWidget.swift; path = XingXuWidget/XingXuWidget.swift; sourceTree = "<group>"; };
 		B200E3687D89151733610CA6 /* SharedData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedData.swift; path = Shared/SharedData.swift; sourceTree = "<group>"; };
@@ -137,6 +140,7 @@
 		EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = XingXu/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F5DDEBBE76AA495F97147811R /* AddTaskView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskView.swift; path = XingXu/Views/AddTaskView.swift; sourceTree = "<group>"; };
 		F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodEntry.swift; path = XingXu/Models/MoodEntry.swift; sourceTree = "<group>"; };
+		FB1DFA362F33DA837CF1AB7F /* AddTaskIntent.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskIntent.swift; path = XingXu/Siri/AddTaskIntent.swift; sourceTree = "<group>"; };
 		FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleCorrelationAnalyzer.swift; path = XingXu/Services/CycleCorrelationAnalyzer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -181,6 +185,14 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		218836AF702063D6AF968C01 /* Siri */ = {
+			isa = PBXGroup;
+			children = (
+				FB1DFA362F33DA837CF1AB7F /* AddTaskIntent.swift */,
+			);
+			name = Siri;
+			sourceTree = "<group>";
+		};
 		412C48229C67DBCA5F3BFE0D /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +211,7 @@
 				9388AF1776C039D18A214EBF /* Assets.xcassets */,
 				CA0DE6A9216DCF943B18B0E1 /* Views */,
 				412C48229C67DBCA5F3BFE0D /* Services */,
+				218836AF702063D6AF968C01 /* Siri */,
 			);
 			name = XingXu;
 			sourceTree = "<group>";
@@ -236,6 +249,7 @@
 				49CAE587F550506895BEAE39 /* AlarmView.swift */,
 				0FA4C1BE2CF38747D4339C17 /* MindfulnessView.swift */,
 				579F63A51AAF42EC4EEB50A8 /* ProfileEditView.swift */,
+				ADBB6EABE1BC7991F83276B1 /* SiriShortcutsView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -392,6 +406,8 @@
 				2862B22AB859405BFFA563CF /* MindfulnessView.swift in Sources */,
 				3D8A55C7030DAC41216825C9 /* AppleAuthManager.swift in Sources */,
 				55C44FF7B746990A0B4321A5 /* ProfileEditView.swift in Sources */,
+				401FFB1A32EE6E2F622646DB /* AddTaskIntent.swift in Sources */,
+				AE3F198E9E2BEECC2DEE6B22 /* SiriShortcutsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
