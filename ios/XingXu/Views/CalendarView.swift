@@ -20,6 +20,10 @@ struct CalendarView: View {
         Calendar.current
     }
     
+    private var cyclePrediction: CyclePrediction {
+        CyclePredictor.predict(records: dataManager.menstrualRecords)
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -110,11 +114,26 @@ struct CalendarView: View {
                         let dayTasks = dataManager.tasksForDate(dateStr)
                         let hasTasks = !dayTasks.isEmpty
                         let allCompleted = hasTasks && dayTasks.allSatisfy(\.completed)
+                        let cyclePhase = cyclePhaseForDate(dateStr)
                         
                         Button(action: {
                             selectedDate = dateFrom(day: day)
                         }) {
                             ZStack {
+                                // 周期阶段背景
+                                if let phase = cyclePhase {
+                                    Circle()
+                                        .fill(phase == .menstruation ? Color(hex: "#C27BA0").opacity(0.2) : Color(hex: "#D4886A").opacity(0.12))
+                                        .frame(width: 38, height: 38)
+                                }
+                                
+                                // 预测窗口边框
+                                if isInPredictedWindow(dateStr) && cyclePhase != .menstruation {
+                                    Circle()
+                                        .stroke(Color(hex: "#D4886A").opacity(0.4), lineWidth: 1.5)
+                                        .frame(width: 36, height: 36)
+                                }
+                                
                                 Circle()
                                     .fill(isSelected ? Color.primary : Color.clear)
                                     .frame(width: 36, height: 36)
@@ -124,12 +143,20 @@ struct CalendarView: View {
                                     .foregroundColor(isSelected ? Color(.systemBackground) : (isToday ? .primary : .primary))
                                     .fontWeight(isToday ? .bold : .regular)
                                 
-                                if hasTasks {
-                                    Circle()
-                                        .fill(allCompleted ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.4))
-                                        .frame(width: 6, height: 6)
-                                        .offset(y: 12)
+                                // 底部标记：任务圆点 + 周期小点
+                                HStack(spacing: 3) {
+                                    if hasTasks {
+                                        Circle()
+                                            .fill(allCompleted ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.4))
+                                            .frame(width: 5, height: 5)
+                                    }
+                                    if cyclePhase == .menstruation {
+                                        Circle()
+                                            .fill(Color(hex: "#C27BA0"))
+                                            .frame(width: 5, height: 5)
+                                    }
                                 }
+                                .offset(y: 12)
                             }
                             .frame(height: 40)
                         }
@@ -219,6 +246,34 @@ struct CalendarView: View {
         var comp = calendar.dateComponents([.year, .month], from: selectedDate)
         comp.day = day
         return calendar.date(from: comp)!
+    }
+    
+    private func dateFromString(_ dateStr: String) -> Date? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.date(from: dateStr)
+    }
+    
+    /// 判断某日期是否在已知经期中
+    private func cyclePhaseForDate(_ dateStr: String) -> CyclePhase? {
+        guard let date = dateFromString(dateStr) else { return nil }
+        
+        // 检查是否在已知经期
+        for record in dataManager.menstrualRecords {
+            let endDate = record.endDate ?? Calendar.current.date(byAdding: .day, value: record.durationDays - 1, to: record.startDate)!
+            if date >= record.startDate && date <= endDate {
+                return .menstruation
+            }
+        }
+        return nil
+    }
+    
+    /// 判断某日期是否在预测窗口中
+    private func isInPredictedWindow(_ dateStr: String) -> Bool {
+        guard let date = dateFromString(dateStr) else { return false }
+        guard let earliest = cyclePrediction.nextWindowEarliest,
+              let latest = cyclePrediction.nextWindowLatest else { return false }
+        return date >= earliest && date <= latest
     }
     
     private func previousMonth() {
