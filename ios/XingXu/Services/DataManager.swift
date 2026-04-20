@@ -196,6 +196,7 @@ class DataManager: ObservableObject {
         guard let defaults = defaults,
               let encoded = try? JSONEncoder().encode(menstrualRecords) else { return }
         defaults.set(encoded, forKey: menstrualRecordsKey)
+        scheduleCycleNotification()
     }
     
     func addMenstrualRecord(_ record: MenstrualRecord) {
@@ -563,6 +564,88 @@ class DataManager: ObservableObject {
         let request = UNNotificationRequest(identifier: task.id, content: content, trigger: trigger)
         
         UNUserNotificationCenter.current().add(request)
+    }
+    
+    /// 调度经前预警通知
+    private func scheduleCycleNotification() {
+        guard settings.notificationsEnabled,
+              settings.cycleReminderEnabled,
+              !menstrualRecords.isEmpty else { return }
+        
+        let prediction = CyclePredictor.predict(records: menstrualRecords)
+        guard let earliest = prediction.nextWindowEarliest,
+              let latest = prediction.nextWindowLatest else { return }
+        
+        let center = UNUserNotificationCenter.current()
+        let cycleNotificationId = "xingxu_cycle_reminder"
+        
+        // 取消旧的周期通知
+        center.removePendingNotificationRequests(withIdentifiers: [cycleNotificationId])
+        
+        let today = Date()
+        let calendar = Calendar.current
+        
+        // 计算预警日期：预测窗口前3天开始提醒
+        guard let alertDate = calendar.date(byAdding: .day, value: -3, to: earliest) else { return }
+        
+        // 如果预警日期已过但窗口未结束，立即提醒
+        if alertDate <= today && today <= latest {
+            let content = UNMutableNotificationContent()
+            content.title = "星序 · 周期提醒"
+            content.body = "这几天周期可能要来了，可以提前做好准备"
+            content.sound = .default
+            
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 5, repeats: false)
+            let request = UNNotificationRequest(identifier: cycleNotificationId, content: content, trigger: trigger)
+            center.add(request)
+            return
+        }
+        
+        // 如果预警日期在未来，安排定时通知
+        guard alertDate > today else { return }
+        
+        // 勿扰检查
+        let alertHour = calendar.component(.hour, from: alertDate)
+        let start = settings.doNotDisturbStartHour
+        let end = settings.doNotDisturbEndHour
+        let inDND: Bool
+        if start > end {
+            inDND = alertHour >= start || alertHour < end
+        } else {
+            inDND = alertHour >= start && alertHour < end
+        }
+        
+        // 如果在勿扰时段，调整到勿扰结束后
+        var finalAlertDate = alertDate
+        if inDND {
+            var components = calendar.dateComponents([.year, .month, .day], from: alertDate)
+            components.hour = end
+            components.minute = 0
+            if let adjusted = calendar.date(from: components) {
+                finalAlertDate = adjusted
+            }
+        }
+        
+        let content = UNMutableNotificationContent()
+        content.title = "星序 · 周期提醒"
+        
+        // 根据规律度调整文案
+        if prediction.regularityScore < 30 {
+            content.body = "这几天周期可能要来了（时间不太固定），可以提前做好准备"
+        } else {
+            content.body = "周期快要来了，可以提前做好准备"
+        }
+        content.sound = .default
+        
+        let components = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: finalAlertDate)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+        let request = UNNotificationRequest(identifier: cycleNotificationId, content: content, trigger: trigger)
+        
+        center.add(request) { error in
+            if let error = error {
+                print("周期通知调度失败: \(error)")
+            }
+        }
     }
 }
 

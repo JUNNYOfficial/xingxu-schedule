@@ -34,6 +34,7 @@
 		08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */; };
 		11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B25E23A72E41A0A431CABDR /* DataManager.swift */; };
 				AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
+		FF52568530034FE4817238B6 /* CycleCorrelationAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */; };
 		81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */; };
 		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
 		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
@@ -107,6 +108,7 @@
 		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
 		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
 				AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
+		FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleCorrelationAnalyzer.swift; path = XingXu/Services/CycleCorrelationAnalyzer.swift; sourceTree = "<group>"; };
 		81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CyclePredictor.swift; path = XingXu/Services/CyclePredictor.swift; sourceTree = "<group>"; };
 		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
 		651E9BC7BCD44D5390D6C866R /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = XingXu/Views/ContentView.swift; sourceTree = "<group>"; };
@@ -335,6 +337,7 @@
 				08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */,
 				08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */,
 					AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */,
+				FF52568530034FE4817238B6 /* CycleCorrelationAnalyzer.swift in Sources */,
 				81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */,
 				B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */,
 				11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */,

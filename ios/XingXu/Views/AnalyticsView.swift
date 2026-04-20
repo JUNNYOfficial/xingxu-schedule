@@ -8,6 +8,14 @@ struct AnalyticsView: View {
         dataManager.stats(forDays: rangeDays)
     }
     
+    private var cycleCorrelation: CycleCorrelationResult {
+        CycleCorrelationAnalyzer.analyze(
+            records: dataManager.menstrualRecords,
+            moods: dataManager.moods,
+            tasks: dataManager.tasks
+        )
+    }
+    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -26,6 +34,9 @@ struct AnalyticsView: View {
                     
                     // 标签分布
                     tagDistribution
+                    
+                    // 周期关联分析
+                    cycleCorrelationSection
                     
                     // 建议
                     insights
@@ -198,6 +209,101 @@ struct AnalyticsView: View {
         .padding()
         .background(Color(.systemGray6))
         .cornerRadius(16)
+    }
+    
+    // MARK: - 周期关联分析
+    
+    private var cycleCorrelationSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("🩸 周期与身心关联")
+                .font(.headline)
+            
+            if !cycleCorrelation.hasEnoughData {
+                EmptyStateView(
+                    icon: "drop",
+                    title: "数据积累中",
+                    subtitle: "记录更多月经周期、心情和任务后，可发现周期对身心状态的影响"
+                )
+            } else {
+                // 心情按周期阶段
+                if !cycleCorrelation.moodByPhase.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("各阶段心情")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        HStack(alignment: .bottom, spacing: 8) {
+                            ForEach(cycleCorrelation.moodByPhase.filter { $0.sampleCount > 0 }, id: \.phaseName) { item in
+                                VStack(spacing: 4) {
+                                    Text(String(format: "%.1f", item.avgMood))
+                                        .font(.caption.bold())
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(phaseColor(item.phaseName).opacity(0.7))
+                                        .frame(height: max(8, CGFloat(item.avgMood) * 20))
+                                    Text(item.phaseName)
+                                        .font(.system(size: 9))
+                                        .foregroundColor(.secondary)
+                                    Text("n=\(item.sampleCount)")
+                                        .font(.system(size: 8))
+                                        .foregroundColor(.secondary.opacity(0.7))
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .frame(height: 100)
+                    }
+                }
+                
+                // 完成率按周期阶段
+                if !cycleCorrelation.completionRateByPhase.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("各阶段完成率")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        HStack(alignment: .bottom, spacing: 8) {
+                            ForEach(cycleCorrelation.completionRateByPhase.filter { $0.totalTasks > 0 }, id: \.phaseName) { item in
+                                VStack(spacing: 4) {
+                                    Text("\(Int(item.rate))%")
+                                        .font(.caption.bold())
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .fill(phaseColor(item.phaseName).opacity(0.7))
+                                        .frame(height: max(8, CGFloat(item.rate) * 0.8))
+                                    Text(item.phaseName)
+                                        .font(.system(size: 9))
+                                        .foregroundColor(.secondary)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                        }
+                        .frame(height: 80)
+                    }
+                }
+                
+                // 洞察建议
+                ForEach(cycleCorrelation.insights, id: \.self) { insight in
+                    Text(insight)
+                        .font(.caption)
+                        .padding(10)
+                        .background(phaseColor("洞察").opacity(0.08))
+                        .cornerRadius(10)
+                }
+            }
+        }
+        .padding()
+        .background(Color(.systemGray6))
+        .cornerRadius(16)
+    }
+    
+    private func phaseColor(_ phase: String) -> Color {
+        switch phase {
+        case "月经期": return Color(hex: "#C27BA0")
+        case "卵泡期": return Color(hex: "#8AABBF")
+        case "排卵期": return Color(hex: "#7AA87B")
+        case "黄体期": return Color(hex: "#D4A76A")
+        case "经前期": return Color(hex: "#D4886A")
+        default: return Color(red: 0.48, green: 0.61, blue: 0.75)
+        }
     }
     
     private var insightTexts: [String] {

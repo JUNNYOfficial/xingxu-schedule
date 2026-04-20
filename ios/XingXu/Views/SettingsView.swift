@@ -80,10 +80,15 @@ struct SettingsView: View {
                 
                 Section {
                     Toggle("开启周期追踪", isOn: $dataManager.settings.cycleTrackingEnabled)
+                    if dataManager.settings.cycleTrackingEnabled {
+                        Toggle("经前提醒", isOn: $dataManager.settings.cycleReminderEnabled)
+                    }
                 } header: {
                     Text("周期")
                 } footer: {
-                    Text("记录月经周期，了解身体规律。所有数据仅存储在本地，完全隐私")
+                    Text(dataManager.settings.cycleTrackingEnabled
+                         ? "记录月经周期，经前自动发送温和提醒。所有数据仅存储在本地"
+                         : "记录月经周期，了解身体规律。所有数据仅存储在本地，完全隐私")
                         .font(.caption)
                 }
                 
