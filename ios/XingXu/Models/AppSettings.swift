@@ -17,6 +17,9 @@ struct AppSettings: Codable, Equatable {
     var cycleTrackingEnabled: Bool
     var cycleReminderEnabled: Bool
     var fullscreenAlarmEnabled: Bool
+    var nickname: String?
+    var avatarEmoji: String?
+    var userId: String?
     var homeLayout: [HomeSectionItem]
     
     init(
@@ -34,6 +37,9 @@ struct AppSettings: Codable, Equatable {
         cycleTrackingEnabled: Bool = false,
         cycleReminderEnabled: Bool = false,
         fullscreenAlarmEnabled: Bool = false,
+        nickname: String? = nil,
+        avatarEmoji: String? = nil,
+        userId: String? = nil,
         homeLayout: [HomeSectionItem]? = nil
     ) {
         self.theme = theme
@@ -50,6 +56,9 @@ struct AppSettings: Codable, Equatable {
         self.cycleTrackingEnabled = cycleTrackingEnabled
         self.cycleReminderEnabled = cycleReminderEnabled
         self.fullscreenAlarmEnabled = fullscreenAlarmEnabled
+        self.nickname = nickname
+        self.avatarEmoji = avatarEmoji
+        self.userId = userId
         self.homeLayout = homeLayout ?? HomeSectionItem.defaultLayout
     }
     
@@ -58,6 +67,7 @@ struct AppSettings: Codable, Equatable {
         case onlyRemindImportant, doNotDisturbStartHour, doNotDisturbEndHour
         case childModeEnabled, highContrastEnabled, colorCodingEnabled
         case healthSyncEnabled, cycleTrackingEnabled, cycleReminderEnabled, fullscreenAlarmEnabled
+        case nickname, avatarEmoji, userId
         case homeLayout
     }
     
@@ -77,6 +87,9 @@ struct AppSettings: Codable, Equatable {
         self.cycleTrackingEnabled = try container.decodeIfPresent(Bool.self, forKey: .cycleTrackingEnabled) ?? false
         self.cycleReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .cycleReminderEnabled) ?? false
         self.fullscreenAlarmEnabled = try container.decodeIfPresent(Bool.self, forKey: .fullscreenAlarmEnabled) ?? false
+        self.nickname = try container.decodeIfPresent(String.self, forKey: .nickname)
+        self.avatarEmoji = try container.decodeIfPresent(String.self, forKey: .avatarEmoji)
+        self.userId = try container.decodeIfPresent(String.self, forKey: .userId)
         self.homeLayout = try container.decodeIfPresent([HomeSectionItem].self, forKey: .homeLayout) ?? HomeSectionItem.defaultLayout
     }
 }

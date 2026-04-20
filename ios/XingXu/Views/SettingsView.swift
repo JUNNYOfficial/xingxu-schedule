@@ -8,36 +8,42 @@ struct SettingsView: View {
     @State private var showClearAlert = false
     @State private var showFileImporter = false
     @State private var importError: String? = nil
+    @State private var showProfileEdit = false
     
     var body: some View {
         NavigationView {
             List {
                 Section {
                     if appleAuth.isSignedIn {
-                        HStack(spacing: 12) {
-                            Image(systemName: "person.circle.fill")
-                                .font(.system(size: 40))
-                                .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
-                            
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(appleAuth.userName.isEmpty ? "Apple ID 用户" : appleAuth.userName)
-                                    .font(.headline)
-                                if !appleAuth.userEmail.isEmpty {
-                                    Text(appleAuth.userEmail)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                        Button(action: { showProfileEdit = true }) {
+                            HStack(spacing: 12) {
+                                Text(dataManager.settings.avatarEmoji ?? "🌸")
+                                    .font(.system(size: 40))
+                                
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(dataManager.settings.nickname ?? (appleAuth.userName.isEmpty ? "星序用户" : appleAuth.userName))
+                                        .font(.headline)
+                                    if let userId = dataManager.settings.userId {
+                                        Text("ID: \(userId)")
+                                            .font(.system(.caption, design: .monospaced))
+                                    }
                                 }
+                                
+                                Spacer()
+                                
+                                Image(systemName: "chevron.right")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary.opacity(0.5))
                             }
-                            
-                            Spacer()
-                            
-                            Button("退出登录") {
-                                appleAuth.signOut()
-                            }
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
                         }
-                        .padding(.vertical, 4)
+                        .buttonStyle(PlainButtonStyle())
+                        
+                        Button(role: .destructive) {
+                            appleAuth.signOut()
+                        } label: {
+                            Text("退出登录")
+                                .frame(maxWidth: .infinity, alignment: .center)
+                        }
                     } else {
                         SignInWithAppleButton(
                             .signIn,
@@ -46,6 +52,7 @@ struct SettingsView: View {
                                 switch result {
                                 case .success:
                                     appleAuth.signInWithApple()
+                                    generateUserIdIfNeeded()
                                 case .failure(let error):
                                     print("登录失败: \(error)")
                                 }
@@ -57,7 +64,7 @@ struct SettingsView: View {
                 } header: {
                     Text("账户")
                 } footer: {
-                    Text("使用 Apple ID 登录后，数据可跨设备同步")
+                    Text(appleAuth.isSignedIn ? "点击头像区域可编辑昵称和头像" : "使用 Apple ID 登录后，可设置昵称和头像")
                         .font(.caption)
                 }
                 
@@ -253,6 +260,10 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("设置")
+            .sheet(isPresented: $showProfileEdit) {
+                ProfileEditView()
+                    .environmentObject(dataManager)
+            }
             .onChange(of: dataManager.settings) { _ in
                 dataManager.saveSettings()
             }
@@ -316,6 +327,14 @@ struct SettingsView: View {
             DispatchQueue.main.async {
                 completion(granted)
             }
+        }
+    }
+    
+    private func generateUserIdIfNeeded() {
+        if dataManager.settings.userId == nil {
+            let id = String(UUID().uuidString.prefix(8).uppercased())
+            dataManager.settings.userId = id
+            dataManager.saveSettings()
         }
     }
     
