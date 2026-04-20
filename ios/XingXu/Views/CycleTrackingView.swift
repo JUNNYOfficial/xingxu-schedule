@@ -147,6 +147,7 @@ struct CycleTrackingView: View {
             Spacer(minLength: 0)
         }
         .frame(minHeight: 210, alignment: .top)
+        .frame(maxWidth: .infinity, alignment: .center)
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(16)
@@ -202,6 +203,7 @@ struct CycleTrackingView: View {
             Spacer(minLength: 0)
         }
         .frame(minHeight: 210, alignment: .top)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(16)
