@@ -238,7 +238,7 @@ struct CycleTrackingView: View {
         formatter.dateFormat = "yyyy-MM-dd"
         
         return VStack(alignment: .leading, spacing: 12) {
-            Text("\(year)年\(month)月")
+            Text("\(month)月")
                 .font(.headline)
                 .padding(.horizontal)
             
