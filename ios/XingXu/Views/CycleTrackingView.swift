@@ -55,8 +55,8 @@ struct CycleTrackingView: View {
     // MARK: - 预测卡片
     
     private var predictionCard: some View {
-        VStack(spacing: 14) {
-            // 大数字显示
+        VStack(spacing: 12) {
+            // 大数字显示（固定占 60pt）
             HStack(alignment: .lastTextBaseline, spacing: 4) {
                 if let earliest = prediction.nextWindowEarliest, let _ = prediction.nextWindowLatest {
                     let daysUntil = daysBetween(Date(), earliest)
@@ -64,18 +64,18 @@ struct CycleTrackingView: View {
                         Text("可能")
                             .font(.title2)
                         Text("快来了")
-                            .font(.system(size: 48, weight: .bold))
+                            .font(.system(size: 42, weight: .bold))
                     } else {
                         Text("\(daysUntil)")
-                            .font(.system(size: 56, weight: .bold))
+                            .font(.system(size: 50, weight: .bold))
                             .foregroundColor(prediction.isPremenstrualAlert ? Color(hex: "#D4886A") : primaryTint)
                         Text("天左右")
                             .font(.title2)
                     }
                 } else {
-                    VStack(spacing: 8) {
+                    VStack(spacing: 4) {
                         Text("--")
-                            .font(.system(size: 48, weight: .bold))
+                            .font(.system(size: 42, weight: .bold))
                             .foregroundColor(.secondary)
                         Text("还需要多记录几次")
                             .font(.subheadline)
@@ -83,15 +83,16 @@ struct CycleTrackingView: View {
                     }
                 }
             }
-            .frame(minHeight: 56)
+            .frame(minHeight: 60)
             
+            // 描述（固定占 22pt）
             Text(prediction.daysUntilDescription)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal)
+                .frame(minHeight: 22)
             
-            // 规律度指示器
+            // 规律度指示器（固定占 20pt）
             HStack(spacing: 8) {
                 Text("周期规律度")
                     .font(.caption)
@@ -114,7 +115,7 @@ struct CycleTrackingView: View {
             .padding(.horizontal)
             .opacity(prediction.regularityScore > 0 ? 1 : 0)
             
-            // 概率窗口显示
+            // 概率窗口显示（固定占 44pt）
             HStack(spacing: 16) {
                 if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
                     VStack(spacing: 4) {
@@ -141,8 +142,11 @@ struct CycleTrackingView: View {
                         .foregroundColor(.secondary)
                 }
             }
-            .padding(.top, 2)
+            .frame(minHeight: 44)
+            
+            Spacer(minLength: 0)
         }
+        .frame(minHeight: 210, alignment: .top)
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(16)
@@ -162,7 +166,8 @@ struct CycleTrackingView: View {
     // MARK: - 状态卡片
     
     private var statusCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
+        VStack(alignment: .leading, spacing: 12) {
+            // 标题行（固定占 24pt）
             HStack {
                 Circle()
                     .fill(Color(hex: prediction.currentPhase.color))
@@ -171,11 +176,16 @@ struct CycleTrackingView: View {
                     .font(.headline)
                 Spacer()
             }
+            .frame(minHeight: 24)
             
+            // 描述（固定占 44pt，最多两行）
             Text(prediction.currentPhase.description)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
+                .lineLimit(2)
+                .frame(minHeight: 44, alignment: .top)
             
+            // 提示文案（固定占 56pt，最多三行）
             HStack(spacing: 8) {
                 Image(systemName: "heart.fill")
                     .font(.caption)
@@ -185,9 +195,13 @@ struct CycleTrackingView: View {
                     : "您的周期记录已足够，预测准确度较高。")
                     .font(.caption)
                     .foregroundColor(Color(hex: "#C27BA0"))
+                    .lineLimit(3)
             }
-            .padding(.top, 2)
+            .frame(minHeight: 56, alignment: .top)
+            
+            Spacer(minLength: 0)
         }
+        .frame(minHeight: 210, alignment: .top)
         .padding()
         .background(Color(.systemBackground))
         .cornerRadius(16)
