@@ -470,21 +470,36 @@ struct SummaryView: View {
                     .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
                     
                     // 阶段卡片
-                    VStack(spacing: 8) {
+                    VStack(alignment: .leading, spacing: 8) {
                         HStack {
-                            Circle()
-                                .fill(Color(hex: prediction.currentPhase.color))
-                                .frame(width: 10, height: 10)
+                            Image(systemName: phaseIcon(for: prediction.currentPhase))
+                                .font(.title2)
+                                .foregroundColor(Color(hex: prediction.currentPhase.color))
                             Spacer()
                         }
+                        
                         Text(prediction.currentPhase.rawValue)
                             .font(.headline)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(prediction.currentPhase.description)
+                        
+                        Text(phaseAdvice(for: prediction.currentPhase))
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .lineLimit(2)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        // 小进度指示：距离下次经期
+                        if let earliest = prediction.nextWindowEarliest {
+                            let days = daysBetween(Date(), earliest)
+                            if days > 0 {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "hourglass")
+                                        .font(.caption2)
+                                        .foregroundColor(Color(hex: prediction.currentPhase.color))
+                                    Text("约 \(days) 天后")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                        }
                         
                         Spacer(minLength: 0)
                     }
@@ -600,6 +615,34 @@ struct SummaryView: View {
         .cornerRadius(14)
         .shadow(color: .black.opacity(0.04), radius: 6, x: 0, y: 2)
         .accessibilityLabel("\(label) \(value)")
+    }
+    
+    // MARK: - Phase Helpers
+    
+    private func phaseIcon(for phase: CyclePhase) -> String {
+        switch phase {
+        case .menstruation: return "drop.fill"
+        case .follicular: return "sun.min.fill"
+        case .ovulation: return "sparkles"
+        case .luteal: return "moon.fill"
+        case .premenstrual: return "exclamationmark.triangle.fill"
+        case .overdue: return "clock.badge.exclamationmark"
+        case .uncertain, .establishing: return "questionmark.circle.fill"
+        case .noData: return "circle.dotted"
+        }
+    }
+    
+    private func phaseAdvice(for phase: CyclePhase) -> String {
+        switch phase {
+        case .menstruation: return "多喝温水，注意保暖，适当休息"
+        case .follicular: return "体力逐渐恢复，适合运动和社交"
+        case .ovulation: return "注意身体信号，保持好心情"
+        case .luteal: return "情绪容易波动，建议早睡减少咖啡因"
+        case .premenstrual: return "经前不适期，减少压力，准备卫生用品"
+        case .overdue: return "延迟较久的话，可考虑咨询医生"
+        case .uncertain, .establishing: return "周期还在变化中，继续记录就好"
+        case .noData: return "记录第一次月经，开始了解身体规律"
+        }
     }
     
     // MARK: - Helpers
