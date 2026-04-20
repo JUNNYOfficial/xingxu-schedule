@@ -26,6 +26,7 @@
 		2BA3C56807AB4C1E9CB6C441 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */; };
 		34EF9553B071D5DC84E775E3 /* XingXuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020AAC044812CF3726128B1 /* XingXuWidget.swift */; };
 		3AE7A42E50A148D4862E4ACB /* MoodHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */; };
+		3D8A55C7030DAC41216825C9 /* AppleAuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A53CECF320220875003F06 /* AppleAuthManager.swift */; };
 		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
 		63B7E9571617AA67A120CDB0 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A682D32E7CC01AE664A5C23 /* Provider.swift */; };
 		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
@@ -121,6 +122,7 @@
 		B200E3687D89151733610CA6 /* SharedData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedData.swift; path = Shared/SharedData.swift; sourceTree = "<group>"; };
 		B478AE92320843D8A83A436CR /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalendarView.swift; path = XingXu/Views/CalendarView.swift; sourceTree = "<group>"; };
 		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
+		B9A53CECF320220875003F06 /* AppleAuthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppleAuthManager.swift; path = XingXu/Services/AppleAuthManager.swift; sourceTree = "<group>"; };
 		C822A0D4413D48B092CF2724 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		C826BFEF4006D191075F8C14 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
 		CE7D815E738E331849E87064 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = XingXuWidget/Info.plist; sourceTree = "<group>"; };
@@ -177,6 +179,14 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		412C48229C67DBCA5F3BFE0D /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B9A53CECF320220875003F06 /* AppleAuthManager.swift */,
+			);
+			name = Services;
+			sourceTree = "<group>";
+		};
 		4E712D03546A5595E0A0AF90 /* XingXu */ = {
 			isa = PBXGroup;
 			children = (
@@ -186,6 +196,7 @@
 				1F0C508626F2C6FC0F962719 /* Info.plist */,
 				9388AF1776C039D18A214EBF /* Assets.xcassets */,
 				CA0DE6A9216DCF943B18B0E1 /* Views */,
+				412C48229C67DBCA5F3BFE0D /* Services */,
 			);
 			name = XingXu;
 			sourceTree = "<group>";
@@ -376,6 +387,7 @@
 				BF112E76059D8D429B79CC51 /* BreathingGuideView.swift in Sources */,
 				0884A3615BA1017E25DA41BC /* AlarmView.swift in Sources */,
 				2862B22AB859405BFFA563CF /* MindfulnessView.swift in Sources */,
+				3D8A55C7030DAC41216825C9 /* AppleAuthManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

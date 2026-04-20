@@ -1,8 +1,10 @@
 import SwiftUI
 import UniformTypeIdentifiers
+import AuthenticationServices
 
 struct SettingsView: View {
     @EnvironmentObject var dataManager: DataManager
+    @StateObject private var appleAuth = AppleAuthManager.shared
     @State private var showClearAlert = false
     @State private var showFileImporter = false
     @State private var importError: String? = nil
@@ -10,6 +12,55 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
+                Section {
+                    if appleAuth.isSignedIn {
+                        HStack(spacing: 12) {
+                            Image(systemName: "person.circle.fill")
+                                .font(.system(size: 40))
+                                .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(appleAuth.userName.isEmpty ? "Apple ID 用户" : appleAuth.userName)
+                                    .font(.headline)
+                                if !appleAuth.userEmail.isEmpty {
+                                    Text(appleAuth.userEmail)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            Button("退出登录") {
+                                appleAuth.signOut()
+                            }
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        }
+                        .padding(.vertical, 4)
+                    } else {
+                        SignInWithAppleButton(
+                            .signIn,
+                            onRequest: { _ in },
+                            onCompletion: { result in
+                                switch result {
+                                case .success:
+                                    appleAuth.signInWithApple()
+                                case .failure(let error):
+                                    print("登录失败: \(error)")
+                                }
+                            }
+                        )
+                        .frame(height: 44)
+                        .cornerRadius(8)
+                    }
+                } header: {
+                    Text("账户")
+                } footer: {
+                    Text("使用 Apple ID 登录后，数据可跨设备同步")
+                        .font(.caption)
+                }
+                
                 Section("外观") {
                     Picker("主题", selection: $dataManager.settings.theme) {
                         ForEach(AppTheme.allCases, id: \.self) { theme in
