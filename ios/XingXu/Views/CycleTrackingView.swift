@@ -27,6 +27,11 @@ struct CycleTrackingView: View {
                 VStack(spacing: 20) {
                     predictionCard
                     statusCard
+                    if !dataManager.menstrualRecords.isEmpty {
+                        cycleCalendarSection
+                        cycleTrendSection
+                        symptomSection
+                    }
                     historySection
                 }
                 .padding(.vertical)
@@ -209,6 +214,235 @@ struct CycleTrackingView: View {
         .cornerRadius(16)
         .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
         .padding(.horizontal)
+    }
+    
+    // MARK: - 周期日历可视化
+    
+    private var cycleCalendarSection: some View {
+        let calendar = Calendar.current
+        let today = Date()
+        let year = calendar.component(.year, from: today)
+        let month = calendar.component(.month, from: today)
+        let daysInMonth = calendar.range(of: .day, in: .month, for: today)!.count
+        let firstDay = calendar.date(from: DateComponents(year: year, month: month, day: 1))!
+        let weekdayOfFirst = calendar.component(.weekday, from: firstDay)
+        let offset = (weekdayOfFirst - calendar.firstWeekday + 7) % 7
+        let totalCells = offset + daysInMonth
+        let rows = Int(ceil(Double(totalCells) / 7.0))
+        let totalGridCells = rows * 7
+        let dayValues: [Int?] = Array(repeating: nil, count: offset)
+            + (1...daysInMonth).map { Int($0) }
+            + Array(repeating: nil, count: totalGridCells - totalCells)
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("\(year)年\(month)月")
+                .font(.headline)
+                .padding(.horizontal)
+            
+            VStack(spacing: 8) {
+                // 星期标题
+                let weekdays = ["日", "一", "二", "三", "四", "五", "六"]
+                HStack {
+                    ForEach(weekdays, id: \.self) { day in
+                        Text(day)
+                            .font(.caption)
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                // 日期网格
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 7), spacing: 8) {
+                    ForEach(Array(dayValues.enumerated()), id: \.offset) { index, day in
+                        if let day = day {
+                            let dateStr = formatter.string(from: calendar.date(from: DateComponents(year: year, month: month, day: day))!)
+                            let isToday = dateStr == formatter.string(from: today)
+                            let isPeriod = dataManager.menstrualRecords.contains { (record: MenstrualRecord) -> Bool in
+                                guard let date = formatter.date(from: dateStr) else { return false }
+                                let start = record.startDate
+                                let end = record.endDate ?? Calendar.current.date(byAdding: .day, value: 4, to: start)!
+                                return date >= start && date <= end
+                            }
+                            let prediction = CyclePredictor.predict(records: dataManager.menstrualRecords)
+                            let isPredicted = isInPredictedWindow(dateStr, prediction: prediction)
+                            
+                            ZStack {
+                                if isPeriod {
+                                    Circle()
+                                        .fill(Color(hex: "#C27BA0").opacity(0.25))
+                                        .frame(width: 34, height: 34)
+                                } else if isPredicted {
+                                    Circle()
+                                        .stroke(Color(hex: "#D4886A").opacity(0.5), lineWidth: 1.5)
+                                        .frame(width: 32, height: 32)
+                                }
+                                
+                                if isToday {
+                                    Circle()
+                                        .stroke(primaryTint, lineWidth: 2)
+                                        .frame(width: 32, height: 32)
+                                }
+                                
+                                Text("\(day)")
+                                    .font(.system(size: 14))
+                                    .foregroundColor(isToday ? primaryTint : .primary)
+                                    .fontWeight(isToday ? .bold : .regular)
+                            }
+                            .frame(height: 36)
+                        } else {
+                            Color.clear
+                                .frame(height: 36)
+                        }
+                    }
+                }
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            .cornerRadius(16)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+            .padding(.horizontal)
+            
+            // 图例
+            HStack(spacing: 16) {
+                HStack(spacing: 4) {
+                    Circle()
+                        .fill(Color(hex: "#C27BA0").opacity(0.25))
+                        .frame(width: 12, height: 12)
+                    Text("经期")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                HStack(spacing: 4) {
+                    Circle()
+                        .stroke(Color(hex: "#D4886A").opacity(0.5), lineWidth: 1.5)
+                        .frame(width: 12, height: 12)
+                    Text("预测窗口")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                HStack(spacing: 4) {
+                    Circle()
+                        .stroke(primaryTint, lineWidth: 2)
+                        .frame(width: 12, height: 12)
+                    Text("今天")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal)
+        }
+    }
+    
+    private func isInPredictedWindow(_ dateStr: String, prediction: CyclePrediction) -> Bool {
+        guard let earliest = prediction.nextWindowEarliest,
+              let latest = prediction.nextWindowLatest else { return false }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        guard let date = formatter.date(from: dateStr) else { return false }
+        return date >= earliest && date <= latest
+    }
+    
+    // MARK: - 周期长度趋势
+    
+    private var cycleTrendSection: some View {
+        let records = dataManager.menstrualRecords.sorted(by: { $0.startDate < $1.startDate })
+        guard records.count >= 2 else { return AnyView(EmptyView()) }
+        
+        let cycleLengths = stride(from: 1, to: records.count, by: 1).map { i in
+            daysBetween(records[i-1].startDate, records[i].startDate)
+        }
+        let maxLength = max(cycleLengths.max() ?? 1, 1)
+        let avgLength = Double(cycleLengths.reduce(0, +)) / Double(cycleLengths.count)
+        
+        return AnyView(VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("周期长度趋势")
+                    .font(.headline)
+                Spacer()
+                Text("平均 \(String(format: "%.1f", avgLength)) 天")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .padding(.horizontal)
+            
+            HStack(alignment: .bottom, spacing: 12) {
+                ForEach(Array(cycleLengths.enumerated()), id: \.offset) { index, length in
+                    VStack(spacing: 4) {
+                        Text("\(length)")
+                            .font(.system(size: 10))
+                            .foregroundColor(.secondary)
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(length > Int(avgLength) + 7 ? Color(hex: "#D4886A") : Color(hex: "#8AABBF"))
+                            .frame(width: 24, height: max(CGFloat(length) / CGFloat(maxLength) * 80, 4))
+                        Text("第\(index + 1)次")
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(Color(.systemBackground))
+            .cornerRadius(16)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+            .padding(.horizontal)
+        })
+    }
+    
+    // MARK: - 症状统计
+    
+    private var symptomSection: some View {
+        var symptomCounts: [CycleSymptom: Int] = [:]
+        for record in dataManager.menstrualRecords {
+            for symptom in record.symptoms {
+                symptomCounts[symptom, default: 0] += 1
+            }
+        }
+        let sortedSymptoms = symptomCounts.sorted { $0.value > $1.value }.prefix(5)
+        let maxCount = max(symptomCounts.values.max() ?? 1, 1)
+        
+        return VStack(alignment: .leading, spacing: 12) {
+            Text("常见症状")
+                .font(.headline)
+                .padding(.horizontal)
+            
+            VStack(spacing: 10) {
+                ForEach(Array(sortedSymptoms), id: \.key) { symptom, count in
+                    HStack(spacing: 8) {
+                        Text(symptom.icon)
+                            .font(.title3)
+                        Text(symptom.rawValue)
+                            .font(.subheadline)
+                            .frame(width: 80, alignment: .leading)
+                        
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.gray.opacity(0.1))
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color(hex: "#C27BA0").opacity(0.4))
+                                    .frame(width: geo.size.width * CGFloat(count) / CGFloat(maxCount))
+                            }
+                        }
+                        .frame(height: 8)
+                        
+                        Text("\(count)次")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .frame(width: 32, alignment: .trailing)
+                    }
+                }
+            }
+            .padding()
+            .background(Color(.systemBackground))
+            .cornerRadius(16)
+            .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
+            .padding(.horizontal)
+        }
     }
     
     // MARK: - 历史记录
