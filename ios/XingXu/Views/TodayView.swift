@@ -8,6 +8,7 @@ struct TodayView: View {
     @State private var showTemplateLibrary = false
     @State private var showNotificationAlert = false
     @State private var animateCompleteId: String? = nil
+    @State private var showTimeline = true
     
     private var todayTasks: [TaskItem] {
         dataManager.tasksForDate(dataManager.currentDate)
@@ -38,6 +39,11 @@ struct TodayView: View {
                     
                     // 快速添加
                     quickAddButton
+                    
+                    // 时间线视图
+                    if showTimeline && !todayTasks.isEmpty {
+                        timelineSection
+                    }
                     
                     // 任务列表
                     taskListSection
@@ -272,6 +278,103 @@ struct TodayView: View {
                 }
             }
         }
+    }
+    
+    // MARK: - Timeline
+    
+    private var timelineSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text("今日时间线")
+                    .font(.headline)
+                Spacer()
+                Button(action: { showTimeline = false }) {
+                    Image(systemName: "xmark")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                timelineContent
+                    .padding(.horizontal)
+            }
+        }
+        .padding(.vertical, 12)
+        .background(Color(.systemGray6))
+        .cornerRadius(16)
+    }
+    
+    private var timelineContent: some View {
+        let startHour = 7
+        let endHour = 22
+        let totalMinutes = (endHour - startHour) * 60
+        let minuteWidth: CGFloat = 3.5
+        let totalWidth = CGFloat(totalMinutes) * minuteWidth
+        let hourHeight: CGFloat = 44
+        
+        return ZStack(alignment: .topLeading) {
+            // 时间刻度背景
+            HStack(spacing: 0) {
+                ForEach(startHour..<endHour, id: \.self) { hour in
+                    VStack(spacing: 2) {
+                        Text("\(hour):00")
+                            .font(.system(size: 9))
+                            .foregroundColor(.secondary)
+                        Rectangle()
+                            .fill(Color.gray.opacity(0.08))
+                            .frame(width: CGFloat(60) * minuteWidth, height: hourHeight)
+                    }
+                    .frame(width: CGFloat(60) * minuteWidth)
+                }
+            }
+            .frame(width: totalWidth)
+            
+            // 任务条
+            ForEach(todayTasks) { task in
+                timelineTaskBar(task: task, startHour: startHour, minuteWidth: minuteWidth, barHeight: hourHeight)
+            }
+        }
+        .frame(width: totalWidth, height: hourHeight + 20)
+    }
+    
+    private func timelineTaskBar(task: TaskItem, startHour: Int, minuteWidth: CGFloat, barHeight: CGFloat) -> some View {
+        let taskStart = timeValue(task.time)
+        let startMinutes = startHour * 60
+        let offset = CGFloat(taskStart - startMinutes) * minuteWidth
+        let duration = task.durationMinutes ?? (task.endTime.map { timeValue($0) - taskStart } ?? 30)
+        let width = max(CGFloat(duration) * minuteWidth, 40)
+        let tagColor = Color(hex: task.tagColor)
+        
+        return VStack(alignment: .leading, spacing: 2) {
+            Text(task.name)
+                .font(.system(size: 10, weight: .medium))
+                .lineLimit(1)
+                .foregroundColor(.primary)
+            if let duration = task.durationMinutes {
+                Text("\(duration)分钟")
+                    .font(.system(size: 9))
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.horizontal, 6)
+        .padding(.vertical, 4)
+        .frame(width: width, height: barHeight - 4, alignment: .leading)
+        .background(tagColor.opacity(task.completed ? 0.15 : 0.3))
+        .cornerRadius(6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 6)
+                .stroke(tagColor.opacity(task.completed ? 0.1 : 0.5), lineWidth: 1)
+        )
+        .offset(x: offset, y: 16)
+    }
+    
+    private func timeValue(_ timeStr: String) -> Int {
+        let parts = timeStr.split(separator: ":")
+        let h = Int(parts.first ?? "0") ?? 0
+        let m = Int(parts.last ?? "0") ?? 0
+        return h * 60 + m
     }
     
     // MARK: - Helpers

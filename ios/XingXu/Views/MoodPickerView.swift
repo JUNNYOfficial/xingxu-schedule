@@ -7,6 +7,7 @@ struct MoodPickerView: View {
     let date: String
     @State private var selectedMood = 3
     @State private var note = ""
+    @State private var showBreathingGuide = false
     
     private let moods = [
         (1, "😢", "很难过", Color(red: 0.35, green: 0.48, blue: 0.62)),
@@ -83,12 +84,23 @@ struct MoodPickerView: View {
                     Button("取消") { dismiss() }
                 }
             }
+            .sheet(isPresented: $showBreathingGuide, onDismiss: {
+                dismiss()
+            }) {
+                BreathingGuideView()
+            }
         }
     }
     
     private func saveMood() {
         let mood = MoodEntry(date: date, value: selectedMood, note: note)
         dataManager.saveMood(mood)
-        dismiss()
+        
+        // 低分心情自动建议呼吸练习
+        if selectedMood <= 2 {
+            showBreathingGuide = true
+        } else {
+            dismiss()
+        }
     }
 }

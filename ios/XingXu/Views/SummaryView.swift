@@ -11,6 +11,7 @@ struct SummaryView: View {
     @State private var showSettings = false
     @State private var showCycleTracking = false
     @State private var showLayoutEditor = false
+    @State private var showBreathingGuide = false
     @StateObject private var healthManager = HealthManager.shared
     
     // 自闭症友好：统一柔和色系
@@ -111,6 +112,9 @@ struct SummaryView: View {
                         Button(action: { showMoodPicker = true }) {
                             Label("记录心情", systemImage: "heart")
                         }
+                        Button(action: { showBreathingGuide = true }) {
+                            Label("呼吸练习", systemImage: "wind")
+                        }
                         Button(action: { showCycleTracking = true }) {
                             Label("周期追踪", systemImage: "drop")
                         }
@@ -162,6 +166,9 @@ struct SummaryView: View {
             .sheet(isPresented: $showLayoutEditor) {
                 HomeLayoutEditorView()
                     .environmentObject(dataManager)
+            }
+            .sheet(isPresented: $showBreathingGuide) {
+                BreathingGuideView()
             }
             .navigationDestination(isPresented: $showTodayDetail) {
                 TodayView()

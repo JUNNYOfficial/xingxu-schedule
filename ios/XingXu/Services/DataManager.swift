@@ -305,6 +305,14 @@ class DataManager: ObservableObject {
         if let index = tasks.firstIndex(where: { $0.id == id }) {
             tasks[index].completed.toggle()
             tasks[index].modifiedAt = Date()
+            
+            // 如果任务完成，所有子步骤也标记完成
+            if tasks[index].completed {
+                for i in tasks[index].subSteps.indices {
+                    tasks[index].subSteps[i].completed = true
+                }
+            }
+            
             saveTasks()
             
             if tasks[index].completed {
@@ -315,6 +323,28 @@ class DataManager: ObservableObject {
             
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
+        }
+    }
+    
+    func toggleSubStep(taskId: String, subStepId: String) {
+        if let taskIndex = tasks.firstIndex(where: { $0.id == taskId }) {
+            if let stepIndex = tasks[taskIndex].subSteps.firstIndex(where: { $0.id == subStepId }) {
+                tasks[taskIndex].subSteps[stepIndex].completed.toggle()
+                tasks[taskIndex].modifiedAt = Date()
+                
+                // 如果所有子步骤完成，任务也标记完成
+                let allDone = tasks[taskIndex].subSteps.allSatisfy(\.completed)
+                if allDone && !tasks[taskIndex].subSteps.isEmpty {
+                    tasks[taskIndex].completed = true
+                } else if !allDone {
+                    tasks[taskIndex].completed = false
+                }
+                
+                saveTasks()
+                
+                let generator = UIImpactFeedbackGenerator(style: .light)
+                generator.impactOccurred()
+            }
         }
     }
     

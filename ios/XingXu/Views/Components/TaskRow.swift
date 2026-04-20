@@ -20,95 +20,183 @@ struct TaskRow: View {
         settings.highContrastEnabled ? 3 : (task.completed ? 1 : 2)
     }
     
+    private var completedSubSteps: Int {
+        task.subSteps.filter(\.completed).count
+    }
+    
+    private var hasSubSteps: Bool {
+        !task.subSteps.isEmpty
+    }
+    
+    private var subStepProgress: Double {
+        task.subSteps.isEmpty ? 0 : Double(completedSubSteps) / Double(task.subSteps.count)
+    }
+    
     @State private var animateCheck = false
+    @State private var isExpanded = false
     
     var body: some View {
-        HStack(spacing: settings.childModeEnabled ? 16 : 12) {
-            // 完成按钮
-            Button(action: {
-                withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
-                    animateCheck = true
-                }
-                onToggle()
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    animateCheck = false
-                }
-            }) {
-                ZStack {
-                    Circle()
-                        .stroke(task.completed ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.gray.opacity(settings.highContrastEnabled ? 1.0 : 0.4), lineWidth: settings.childModeEnabled ? 3 : 2)
-                        .frame(width: settings.childModeEnabled ? 36 : 28, height: settings.childModeEnabled ? 36 : 28)
-                        .scaleEffect(animateCheck ? 1.2 : 1.0)
-                    if task.completed {
-                        Image(systemName: "checkmark")
-                            .font(.system(size: settings.childModeEnabled ? 18 : 14, weight: .bold))
-                            .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
-                            .scaleEffect(animateCheck ? 1.3 : 1.0)
-                            .rotationEffect(.degrees(animateCheck ? 10 : 0))
+        VStack(spacing: 0) {
+            // 主行
+            HStack(spacing: settings.childModeEnabled ? 16 : 12) {
+                // 完成按钮
+                Button(action: {
+                    withAnimation(.spring(response: 0.35, dampingFraction: 0.5)) {
+                        animateCheck = true
                     }
-                }
-            }
-            .buttonStyle(PlainButtonStyle())
-            .accessibilityLabel(task.completed ? "取消完成 \(task.name)" : "完成 \(task.name)")
-            .accessibilityHint("双击切换任务完成状态")
-            
-            // 图标
-            if !task.icon.isEmpty {
-                Text(task.icon)
-                    .font(settings.childModeEnabled ? .title2 : .title3)
-            }
-            
-            // 内容
-            VStack(alignment: .leading, spacing: settings.childModeEnabled ? 6 : 4) {
-                Text(task.name)
-                    .font(settings.childModeEnabled ? .title3 : .body)
-                    .strikethrough(task.completed)
-                    .foregroundColor(task.completed ? .secondary : .primary)
-                
-                if !settings.childModeEnabled {
-                    HStack(spacing: 8) {
-                        Text(task.displayTime)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                        
-                        if !task.tag.isEmpty {
-                            Text(task.tag)
-                                .font(.caption2)
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 2)
-                                .background(effectiveTagColor.opacity(settings.highContrastEnabled ? 0.25 : 0.15))
-                                .foregroundColor(effectiveTagColor)
-                                .cornerRadius(4)
+                    onToggle()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        animateCheck = false
+                    }
+                }) {
+                    ZStack {
+                        Circle()
+                            .stroke(task.completed ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.gray.opacity(settings.highContrastEnabled ? 1.0 : 0.4), lineWidth: settings.childModeEnabled ? 3 : 2)
+                            .frame(width: settings.childModeEnabled ? 36 : 28, height: settings.childModeEnabled ? 36 : 28)
+                            .scaleEffect(animateCheck ? 1.2 : 1.0)
+                        if task.completed {
+                            Image(systemName: "checkmark")
+                                .font(.system(size: settings.childModeEnabled ? 18 : 14, weight: .bold))
+                                .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                                .scaleEffect(animateCheck ? 1.3 : 1.0)
+                                .rotationEffect(.degrees(animateCheck ? 10 : 0))
                         }
                     }
-                } else {
-                    Text(task.displayTime)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                }
+                .buttonStyle(PlainButtonStyle())
+                .accessibilityLabel(task.completed ? "取消完成 \(task.name)" : "完成 \(task.name)")
+                .accessibilityHint("双击切换任务完成状态")
+                
+                // 图标
+                if !task.icon.isEmpty {
+                    Text(task.icon)
+                        .font(settings.childModeEnabled ? .title2 : .title3)
+                }
+                
+                // 内容
+                VStack(alignment: .leading, spacing: settings.childModeEnabled ? 6 : 4) {
+                    Text(task.name)
+                        .font(settings.childModeEnabled ? .title3 : .body)
+                        .strikethrough(task.completed)
+                        .foregroundColor(task.completed ? .secondary : .primary)
+                    
+                    if !settings.childModeEnabled {
+                        HStack(spacing: 8) {
+                            Text(task.displayTime)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            
+                            if !task.tag.isEmpty {
+                                Text(task.tag)
+                                    .font(.caption2)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 2)
+                                    .background(effectiveTagColor.opacity(settings.highContrastEnabled ? 0.25 : 0.15))
+                                    .foregroundColor(effectiveTagColor)
+                                    .cornerRadius(4)
+                            }
+                            
+                            // 步骤进度小标签
+                            if hasSubSteps {
+                                Text("\(completedSubSteps)/\(task.subSteps.count)")
+                                    .font(.caption2)
+                                    .padding(.horizontal, 6)
+                                    .padding(.vertical, 2)
+                                    .background(Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.12))
+                                    .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                                    .cornerRadius(4)
+                            }
+                        }
+                    } else {
+                        Text(task.displayTime)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                Spacer()
+                
+                // 展开按钮（有子步骤时显示）
+                if hasSubSteps && !settings.childModeEnabled {
+                    Button(action: { withAnimation { isExpanded.toggle() } }) {
+                        Image(systemName: isExpanded ? "chevron.up" : "chevron.down")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                            .padding(8)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    .accessibilityLabel(isExpanded ? "收起步骤" : "展开步骤")
+                }
+                
+                // 菜单（儿童模式下隐藏）
+                if !settings.childModeEnabled {
+                    Menu {
+                        Button(action: onEdit) {
+                            Label("编辑", systemImage: "pencil")
+                        }
+                        Button(role: .destructive, action: onDelete) {
+                            Label("删除", systemImage: "trash")
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis")
+                            .foregroundColor(.secondary)
+                            .padding(8)
+                    }
+                    .accessibilityLabel("\(task.name) 的更多选项")
+                    .accessibilityHint("双击打开编辑和删除菜单")
                 }
             }
+            .padding(settings.childModeEnabled ? 20 : 16)
             
-            Spacer()
-            
-            // 菜单（儿童模式下隐藏）
-            if !settings.childModeEnabled {
-                Menu {
-                    Button(action: onEdit) {
-                        Label("编辑", systemImage: "pencil")
+            // 展开的子步骤
+            if isExpanded && hasSubSteps && !settings.childModeEnabled {
+                VStack(alignment: .leading, spacing: 8) {
+                    // 进度条
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(Color.gray.opacity(0.12))
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(Color(red: 0.48, green: 0.61, blue: 0.75).opacity(0.5))
+                                .frame(width: geo.size.width * CGFloat(subStepProgress))
+                        }
                     }
-                    Button(role: .destructive, action: onDelete) {
-                        Label("删除", systemImage: "trash")
+                    .frame(height: 6)
+                    .padding(.horizontal, settings.childModeEnabled ? 20 : 16)
+                    
+                    // 步骤列表
+                    ForEach(task.subSteps.sorted(by: { $0.sortOrder < $1.sortOrder })) { step in
+                        HStack(spacing: 12) {
+                            Button(action: {
+                                dataManager.toggleSubStep(taskId: task.id, subStepId: step.id)
+                            }) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 4)
+                                        .stroke(step.completed ? Color(red: 0.48, green: 0.61, blue: 0.75) : Color.gray.opacity(0.4), lineWidth: 1.5)
+                                        .frame(width: 20, height: 20)
+                                    if step.completed {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                                    }
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            
+                            Text(step.title)
+                                .font(.subheadline)
+                                .strikethrough(step.completed)
+                                .foregroundColor(step.completed ? .secondary : .primary)
+                            
+                            Spacer()
+                        }
+                        .padding(.horizontal, settings.childModeEnabled ? 20 : 16)
                     }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .foregroundColor(.secondary)
-                        .padding(8)
                 }
-                .accessibilityLabel("\(task.name) 的更多选项")
-                .accessibilityHint("双击打开编辑和删除菜单")
+                .padding(.bottom, 12)
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
-        .padding(settings.childModeEnabled ? 20 : 16)
         .background(Color(.systemBackground))
         .overlay(
             RoundedRectangle(cornerRadius: 12)

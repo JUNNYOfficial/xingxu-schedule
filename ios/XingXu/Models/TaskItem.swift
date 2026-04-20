@@ -1,6 +1,21 @@
 import Foundation
 
 /// 任务模型
+/// 任务子步骤（Social Story）
+struct TaskSubStep: Codable, Identifiable, Equatable {
+    var id: String
+    var title: String
+    var completed: Bool
+    var sortOrder: Int
+    
+    init(id: String = UUID().uuidString, title: String, completed: Bool = false, sortOrder: Int = 0) {
+        self.id = id
+        self.title = title
+        self.completed = completed
+        self.sortOrder = sortOrder
+    }
+}
+
 struct TaskItem: Codable, Identifiable, Equatable {
     var id: String
     var name: String
@@ -14,12 +29,15 @@ struct TaskItem: Codable, Identifiable, Equatable {
     var remindMinutes: Int?
     var imageData: Data?
     var sortOrder: Int
+    var durationMinutes: Int?      // 预估时长（分钟）
+    var subSteps: [TaskSubStep]    // 子步骤拆解
     var createdAt: Date
     var modifiedAt: Date
     
     enum CodingKeys: String, CodingKey {
         case id, name, time, endTime, icon, completed, date, tag
-        case repeatPattern, remindMinutes, imageData, sortOrder, createdAt, modifiedAt
+        case repeatPattern, remindMinutes, imageData, sortOrder
+        case durationMinutes, subSteps, createdAt, modifiedAt
     }
     
     init(from decoder: Decoder) throws {
@@ -36,6 +54,8 @@ struct TaskItem: Codable, Identifiable, Equatable {
         remindMinutes = try container.decodeIfPresent(Int.self, forKey: .remindMinutes)
         imageData = try container.decodeIfPresent(Data.self, forKey: .imageData)
         sortOrder = try container.decodeIfPresent(Int.self, forKey: .sortOrder) ?? 0
+        durationMinutes = try container.decodeIfPresent(Int.self, forKey: .durationMinutes)
+        subSteps = try container.decodeIfPresent([TaskSubStep].self, forKey: .subSteps) ?? []
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? Date()
         modifiedAt = try container.decodeIfPresent(Date.self, forKey: .modifiedAt) ?? Date()
     }
@@ -52,7 +72,9 @@ struct TaskItem: Codable, Identifiable, Equatable {
         repeatPattern: String = "none",
         remindMinutes: Int? = nil,
         imageData: Data? = nil,
-        sortOrder: Int = 0
+        sortOrder: Int = 0,
+        durationMinutes: Int? = nil,
+        subSteps: [TaskSubStep] = []
     ) {
         self.id = id
         self.name = name
@@ -66,6 +88,8 @@ struct TaskItem: Codable, Identifiable, Equatable {
         self.remindMinutes = remindMinutes
         self.imageData = imageData
         self.sortOrder = sortOrder
+        self.durationMinutes = durationMinutes
+        self.subSteps = subSteps
         self.createdAt = Date()
         self.modifiedAt = Date()
     }

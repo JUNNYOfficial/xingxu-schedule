@@ -14,6 +14,9 @@ struct AddTaskView: View {
     @State private var tag = ""
     @State private var repeatPattern = "none"
     @State private var remindMinutes: Int? = nil
+    @State private var durationMinutes: Int? = nil
+    @State private var subSteps: [TaskSubStep] = []
+    @State private var newStepText = ""
     @State private var showEmojiPicker = false
     
     private let emojiGroups: [(String, [String])] = [
@@ -42,6 +45,16 @@ struct AddTaskView: View {
         (60, "提前1小时")
     ]
     
+    private let durationOptions: [(Int?, String)] = [
+        (nil, "未设置"),
+        (15, "15分钟"),
+        (30, "30分钟"),
+        (45, "45分钟"),
+        (60, "1小时"),
+        (90, "1.5小时"),
+        (120, "2小时")
+    ]
+    
     init(task: TaskItem? = nil, date: String = "") {
         self.editingTask = task
         self.date = task?.date ?? date
@@ -54,6 +67,8 @@ struct AddTaskView: View {
             _tag = State(initialValue: task.tag)
             _repeatPattern = State(initialValue: task.repeatPattern)
             _remindMinutes = State(initialValue: task.remindMinutes)
+            _durationMinutes = State(initialValue: task.durationMinutes)
+            _subSteps = State(initialValue: task.subSteps)
         }
     }
     
@@ -147,6 +162,60 @@ struct AddTaskView: View {
                             .frame(height: 280)
                         }
                     }
+                }
+                
+                Section {
+                    Picker("预估时长", selection: Binding(
+                        get: { durationMinutes },
+                        set: { newValue in
+                            durationMinutes = newValue
+                            updateEndTimeFromDuration()
+                        }
+                    )) {
+                        ForEach(durationOptions, id: \.0) { option in
+                            Text(option.1).tag(option.0)
+                        }
+                    }
+                } header: {
+                    Text("预估时长")
+                } footer: {
+                    Text(durationMinutes == nil
+                         ? "设置时长后自动计算结束时间"
+                         : "结束时间：\(endTime.isEmpty ? "与开始相同" : endTime)")
+                        .font(.caption)
+                }
+                
+                // 子步骤编辑（Social Story）
+                Section {
+                    ForEach($subSteps) { $step in
+                        HStack {
+                            TextField("步骤名称", text: $step.title)
+                            Button(action: {
+                                withAnimation {
+                                    subSteps.removeAll { $0.id == step.id }
+                                    reindexSubSteps()
+                                }
+                            }) {
+                                Image(systemName: "minus.circle.fill")
+                                    .foregroundColor(.gray.opacity(0.5))
+                            }
+                        }
+                    }
+                    .onMove(perform: moveSubStep)
+                    
+                    HStack {
+                        TextField("新步骤，如：穿衣服", text: $newStepText)
+                        Button(action: addSubStep) {
+                            Image(systemName: "plus.circle.fill")
+                                .foregroundColor(Color(red: 0.48, green: 0.61, blue: 0.75))
+                        }
+                        .disabled(newStepText.isEmpty)
+                    }
+                } header: {
+                    Text("步骤拆解（可选）")
+                } footer: {
+                    Text("将复杂任务拆成小步骤，完成一步勾一步，降低认知负荷")
+                        .font(.caption)
                 }
                 
                 Section("分类") {
@@ -251,7 +320,9 @@ struct AddTaskView: View {
             date: date,
             tag: tag,
             repeatPattern: repeatPattern,
-            remindMinutes: remindMinutes
+            remindMinutes: remindMinutes,
+            durationMinutes: durationMinutes,
+            subSteps: subSteps
         )
         
         if editingTask != nil {
@@ -273,7 +344,9 @@ struct AddTaskView: View {
             date: date,
             tag: tag,
             repeatPattern: repeatPattern,
-            remindMinutes: remindMinutes
+            remindMinutes: remindMinutes,
+            durationMinutes: durationMinutes,
+            subSteps: subSteps
         )
         
         if editingTask != nil {
@@ -282,6 +355,36 @@ struct AddTaskView: View {
             dataManager.addTask(task)
         }
         dismiss()
+    }
+    
+    private func updateEndTimeFromDuration() {
+        guard let duration = durationMinutes else {
+            endTime = ""
+            return
+        }
+        let start = timeValue(time)
+        let endTotal = start + duration
+        let endH = endTotal / 60
+        let endM = endTotal % 60
+        endTime = String(format: "%02d:%02d", endH, endM)
+    }
+    
+    private func addSubStep() {
+        guard !newStepText.isEmpty else { return }
+        let step = TaskSubStep(title: newStepText.trimmingCharacters(in: .whitespaces), sortOrder: subSteps.count)
+        subSteps.append(step)
+        newStepText = ""
+    }
+    
+    private func moveSubStep(from source: IndexSet, to destination: Int) {
+        subSteps.move(fromOffsets: source, toOffset: destination)
+        reindexSubSteps()
+    }
+    
+    private func reindexSubSteps() {
+        for i in subSteps.indices {
+            subSteps[i].sortOrder = i
+        }
     }
     
     private func timeValue(_ timeStr: String) -> Int {

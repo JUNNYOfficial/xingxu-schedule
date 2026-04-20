@@ -42,6 +42,7 @@
 		AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */; };
 		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
 		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
+		BF112E76059D8D429B79CC51 /* BreathingGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C0112CA75E848FE496F6A69 /* BreathingGuideView.swift */; };
 		CEDC0E3C1E49330684227E81 /* XingXuWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A82CEE3871070D4828FEA22D /* XingXuWidget.appex */; };
 		D49896F719214D1C80940075 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F719214D1C80940075R /* SummaryView.swift */; };
 		E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */; };
@@ -92,6 +93,7 @@
 		22DCC227640646E487D598B3R /* TaskItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskItem.swift; path = XingXu/Models/TaskItem.swift; sourceTree = "<group>"; };
 		27DE56753FF54732BD3B7A2CR /* BrowseView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowseView.swift; path = XingXu/Views/BrowseView.swift; sourceTree = "<group>"; };
 		2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsView.swift; path = XingXu/Views/AnalyticsView.swift; sourceTree = "<group>"; };
+		2C0112CA75E848FE496F6A69 /* BreathingGuideView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BreathingGuideView.swift; path = XingXu/Views/BreathingGuideView.swift; sourceTree = "<group>"; };
 		2E2554652AD8C991E62ED3BC /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = XingXuWidget/Entry.swift; sourceTree = "<group>"; };
 		3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodHistoryView.swift; path = XingXu/Views/MoodHistoryView.swift; sourceTree = "<group>"; };
 		3C71537FC9DAB77414DA593E /* XingXu.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = XingXu.entitlements; sourceTree = "<group>"; };
@@ -213,6 +215,7 @@
 			isa = PBXGroup;
 			children = (
 				8759B83BAF7C36A03212B5A0 /* HomeLayoutEditorView.swift */,
+				2C0112CA75E848FE496F6A69 /* BreathingGuideView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -364,6 +367,7 @@
 				E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */,
 				AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */,
 				059FE1113E0006CABCD12310 /* HomeLayoutEditorView.swift in Sources */,
+				BF112E76059D8D429B79CC51 /* BreathingGuideView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
