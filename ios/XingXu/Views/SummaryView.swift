@@ -289,39 +289,50 @@ struct SummaryView: View {
                     .padding()
                 } else {
                     ForEach(todayTasks.prefix(4)) { task in
-                        Button(action: { editingTask = task }) {
-                            HStack(spacing: 12) {
-                                Circle()
-                                    .fill(task.completed ? primaryTint : Color.gray.opacity(0.25))
-                                    .frame(width: 8, height: 8)
-                                
-                                if !task.icon.isEmpty {
-                                    Text(task.icon)
-                                        .font(.title3)
-                                }
-                                
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(task.name)
-                                        .font(.body)
-                                        .foregroundColor(task.completed ? .secondary : .primary)
-                                        .strikethrough(task.completed)
-                                    Text(task.displayTime)
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                                
-                                Spacer()
-                                
-                                if task.completed {
-                                    Image(systemName: "checkmark")
-                                        .font(.caption2)
-                                        .foregroundColor(primaryTint)
+                        HStack(spacing: 12) {
+                            // 完成按钮
+                            Button(action: {
+                                dataManager.toggleComplete(id: task.id)
+                            }) {
+                                ZStack {
+                                    Circle()
+                                        .stroke(task.completed ? primaryTint : Color.gray.opacity(0.4), lineWidth: 2)
+                                        .frame(width: 22, height: 22)
+                                    if task.completed {
+                                        Image(systemName: "checkmark")
+                                            .font(.system(size: 12, weight: .bold))
+                                            .foregroundColor(primaryTint)
+                                    }
                                 }
                             }
-                            .padding()
+                            .buttonStyle(PlainButtonStyle())
+                            .accessibilityLabel(task.completed ? "取消完成 \(task.name)" : "完成 \(task.name)")
+                            
+                            // 任务内容（点击编辑）
+                            Button(action: { editingTask = task }) {
+                                HStack(spacing: 12) {
+                                    if !task.icon.isEmpty {
+                                        Text(task.icon)
+                                            .font(.title3)
+                                    }
+                                    
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(task.name)
+                                            .font(.body)
+                                            .foregroundColor(task.completed ? .secondary : .primary)
+                                            .strikethrough(task.completed)
+                                        Text(task.displayTime)
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
+                                    
+                                    Spacer()
+                                }
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                            .accessibilityLabel("编辑 \(task.completed ? "已完成" : "未完成")任务：\(task.name)")
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .accessibilityLabel("\(task.completed ? "已完成" : "未完成")任务：\(task.name)，时间 \(task.displayTime)")
+                        .padding()
                         
                         if task.id != todayTasks.prefix(4).last?.id {
                             Divider()
