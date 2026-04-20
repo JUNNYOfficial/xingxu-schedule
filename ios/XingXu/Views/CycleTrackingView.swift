@@ -150,7 +150,7 @@ struct CycleTrackingView: View {
             
             Spacer(minLength: 0)
         }
-        .frame(minHeight: 210, alignment: .top)
+        .frame(minHeight: 210, alignment: .center)
         .frame(maxWidth: .infinity, alignment: .center)
         .padding()
         .background(Color(.systemBackground))
