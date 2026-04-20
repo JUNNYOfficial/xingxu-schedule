@@ -16,6 +16,7 @@ struct AppSettings: Codable, Equatable {
     var healthSyncEnabled: Bool
     var cycleTrackingEnabled: Bool
     var cycleReminderEnabled: Bool
+    var homeLayout: [HomeSectionItem]
     
     init(
         theme: AppTheme = .system,
@@ -30,7 +31,8 @@ struct AppSettings: Codable, Equatable {
         colorCodingEnabled: Bool = true,
         healthSyncEnabled: Bool = false,
         cycleTrackingEnabled: Bool = false,
-        cycleReminderEnabled: Bool = false
+        cycleReminderEnabled: Bool = false,
+        homeLayout: [HomeSectionItem]? = nil
     ) {
         self.theme = theme
         self.fontSize = fontSize
@@ -45,6 +47,33 @@ struct AppSettings: Codable, Equatable {
         self.healthSyncEnabled = healthSyncEnabled
         self.cycleTrackingEnabled = cycleTrackingEnabled
         self.cycleReminderEnabled = cycleReminderEnabled
+        self.homeLayout = homeLayout ?? HomeSectionItem.defaultLayout
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case theme, fontSize, notificationsEnabled, notificationMinutes
+        case onlyRemindImportant, doNotDisturbStartHour, doNotDisturbEndHour
+        case childModeEnabled, highContrastEnabled, colorCodingEnabled
+        case healthSyncEnabled, cycleTrackingEnabled, cycleReminderEnabled
+        case homeLayout
+    }
+    
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.theme = try container.decode(AppTheme.self, forKey: .theme)
+        self.fontSize = try container.decode(FontSize.self, forKey: .fontSize)
+        self.notificationsEnabled = try container.decodeIfPresent(Bool.self, forKey: .notificationsEnabled) ?? false
+        self.notificationMinutes = try container.decodeIfPresent(Int.self, forKey: .notificationMinutes) ?? 10
+        self.onlyRemindImportant = try container.decodeIfPresent(Bool.self, forKey: .onlyRemindImportant) ?? false
+        self.doNotDisturbStartHour = try container.decodeIfPresent(Int.self, forKey: .doNotDisturbStartHour) ?? 22
+        self.doNotDisturbEndHour = try container.decodeIfPresent(Int.self, forKey: .doNotDisturbEndHour) ?? 8
+        self.childModeEnabled = try container.decodeIfPresent(Bool.self, forKey: .childModeEnabled) ?? false
+        self.highContrastEnabled = try container.decodeIfPresent(Bool.self, forKey: .highContrastEnabled) ?? false
+        self.colorCodingEnabled = try container.decodeIfPresent(Bool.self, forKey: .colorCodingEnabled) ?? true
+        self.healthSyncEnabled = try container.decodeIfPresent(Bool.self, forKey: .healthSyncEnabled) ?? false
+        self.cycleTrackingEnabled = try container.decodeIfPresent(Bool.self, forKey: .cycleTrackingEnabled) ?? false
+        self.cycleReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .cycleReminderEnabled) ?? false
+        self.homeLayout = try container.decodeIfPresent([HomeSectionItem].self, forKey: .homeLayout) ?? HomeSectionItem.defaultLayout
     }
 }
 
@@ -94,6 +123,56 @@ struct ExportData: Codable {
     let moods: [MoodEntry]
     let settings: AppSettings
     let customTemplates: [ScheduleTemplate]
+}
+
+/// 主页区块类型
+enum HomeSection: String, Codable, CaseIterable, Identifiable {
+    case progress = "progress"
+    case todaySchedule = "todaySchedule"
+    case moodOverview = "moodOverview"
+    case cycleOverview = "cycleOverview"
+    case healthOverview = "healthOverview"
+    case weeklyTrend = "weeklyTrend"
+    
+    var id: String { rawValue }
+    
+    var displayName: String {
+        switch self {
+        case .progress: return "今日进度"
+        case .todaySchedule: return "今日日程"
+        case .moodOverview: return "心情概览"
+        case .cycleOverview: return "周期追踪"
+        case .healthOverview: return "健康概览"
+        case .weeklyTrend: return "本周趋势"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .progress: return "chart.pie"
+        case .todaySchedule: return "list.bullet"
+        case .moodOverview: return "face.smiling"
+        case .cycleOverview: return "drop"
+        case .healthOverview: return "heart"
+        case .weeklyTrend: return "chart.bar"
+        }
+    }
+}
+
+/// 主页布局项（顺序 + 显隐）
+struct HomeSectionItem: Codable, Equatable, Identifiable {
+    var id: String { section.rawValue }
+    var section: HomeSection
+    var isVisible: Bool
+    
+    static let defaultLayout: [HomeSectionItem] = [
+        HomeSectionItem(section: .progress, isVisible: true),
+        HomeSectionItem(section: .todaySchedule, isVisible: true),
+        HomeSectionItem(section: .moodOverview, isVisible: true),
+        HomeSectionItem(section: .cycleOverview, isVisible: true),
+        HomeSectionItem(section: .healthOverview, isVisible: true),
+        HomeSectionItem(section: .weeklyTrend, isVisible: true),
+    ]
 }
 
 enum FontSize: String, Codable, CaseIterable {

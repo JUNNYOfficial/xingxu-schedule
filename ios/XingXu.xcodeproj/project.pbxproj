@@ -7,51 +7,52 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		059FE1113E0006CABCD12310 /* HomeLayoutEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8759B83BAF7C36A03212B5A0 /* HomeLayoutEditorView.swift */; };
 		07365785FD4E575DC286BBCA /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200E3687D89151733610CA6 /* SharedData.swift */; };
+		08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */; };
+		08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D087871E0D4FC5B06F9D87R /* AppSettings.swift */; };
+		0D56975539A0466890C1DCA0 /* CycleTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */; };
 		0F1E507E461FC84C9762CEA1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E53D743D55BB54E3DBF2891E /* SceneDelegate.swift */; };
+		11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B25E23A72E41A0A431CABDR /* DataManager.swift */; };
+		17FD4E3E5C5F482EA4EE1EC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */; };
 		187C9124EF63E45EBE767AF0 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 051EFB82BFF2F9A989DA2F6E /* SwiftUI.framework */; };
+		1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1908A7110B084AE985C88D15R /* MoodPickerView.swift */; };
 		1CB70490B81DD5FCD220FF9B /* XingXuWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8105E3B4C44D233FE1E39DC9 /* XingXuWidgetBundle.swift */; };
+		22DCC227640646E487D598B3 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DCC227640646E487D598B3R /* TaskItem.swift */; };
+		27DE56753FF54732BD3B7A2C /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DE56753FF54732BD3B7A2CR /* BrowseView.swift */; };
+		298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C822A0D4413D48B092CF2724 /* HealthKit.framework */; };
+		2BA3C56807AB4C1E9CB6C441 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */; };
 		34EF9553B071D5DC84E775E3 /* XingXuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020AAC044812CF3726128B1 /* XingXuWidget.swift */; };
+		3AE7A42E50A148D4862E4ACB /* MoodHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */; };
+		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
 		63B7E9571617AA67A120CDB0 /* Provider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A682D32E7CC01AE664A5C23 /* Provider.swift */; };
+		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
 		721C9F7DAA106DC916DE4665 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */; };
 		766408B5C3B6FC53376A050A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9388AF1776C039D18A214EBF /* Assets.xcassets */; };
 		80B24B9719F9929A394D6491 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2331054A197DE0C3A517CF /* WidgetKit.framework */; };
 		81032D8F64673FB0A1A97F7F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5CD203DC48EC2F4C10D2252 /* Foundation.framework */; };
+		81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */; };
 		82C8C012D89CA061C3C43527 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C826BFEF4006D191075F8C14 /* WebKit.framework */; };
+		8BF9F06748DD462F99DF03CA /* MenstrualCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */; };
+		8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */; };
 		9D06BDB568EC83F4029C2D50 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = DDF128991EA269DD7BDF8423 /* AppDelegate.swift */; };
+		A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */; };
 		A42CD6DB0FF90649DF7433B0 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE2331054A197DE0C3A517CF /* WidgetKit.framework */; };
+		AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
+		AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */; };
+		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
+		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
 		CEDC0E3C1E49330684227E81 /* XingXuWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A82CEE3871070D4828FEA22D /* XingXuWidget.appex */; };
+		D49896F719214D1C80940075 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F719214D1C80940075R /* SummaryView.swift */; };
+		E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */; };
 		E36E767451085DC998743142 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EA2B7A4EB17A57C0B184AFA /* UIKit.framework */; };
 		E716904B2E62243271EA6E58 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E2554652AD8C991E62ED3BC /* Entry.swift */; };
 		E7A694512340E4810EE8D6A1 /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 11EDA863F2D457E98D5EF291 /* UserNotifications.framework */; };
-		298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C822A0D4413D48B092CF2724 /* HealthKit.framework */; };
 		F4C5CE42D642EAE9C77C31FB /* SharedData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B200E3687D89151733610CA6 /* SharedData.swift */; };
-		FF11361711D0961284B8CDEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5CD203DC48EC2F4C10D2252 /* Foundation.framework */; };
-		22DCC227640646E487D598B3 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DCC227640646E487D598B3R /* TaskItem.swift */; };
-		F88E9E06D2AD429CAD984C4E /* MoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */; };
-		8BF9F06748DD462F99DF03CA /* MenstrualCycle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */; };
-		08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08D087871E0D4FC5B06F9D87R /* AppSettings.swift */; };
-		08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */; };
-		11B25E23A72E41A0A431CABD /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11B25E23A72E41A0A431CABDR /* DataManager.swift */; };
-				AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */; };
-		FF52568530034FE4817238B6 /* CycleCorrelationAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */; };
-		81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */; };
-		B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53C3264B38C4CBFB56857DFR /* HealthManager.swift */; };
-		651E9BC7BCD44D5390D6C866 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 651E9BC7BCD44D5390D6C866R /* ContentView.swift */; };
-		6156274E582A4A71BB4E1950 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6156274E582A4A71BB4E1950R /* TodayView.swift */; };
-		0D56975539A0466890C1DCA0 /* CycleTrackingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */; };
-		8F23BC620F1C456CB76EEC73 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */; };
 		F5DDEBBE76AA495F97147811 /* AddTaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F5DDEBBE76AA495F97147811R /* AddTaskView.swift */; };
-		1908A7110B084AE985C88D15 /* MoodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1908A7110B084AE985C88D15R /* MoodPickerView.swift */; };
-		B478AE92320843D8A83A436C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B478AE92320843D8A83A436CR /* CalendarView.swift */; };
-		2BA3C56807AB4C1E9CB6C441 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */; };
-		D49896F719214D1C80940075 /* SummaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D49896F719214D1C80940075R /* SummaryView.swift */; };
-		27DE56753FF54732BD3B7A2C /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DE56753FF54732BD3B7A2CR /* BrowseView.swift */; };
-		3AE7A42E50A148D4862E4ACB /* MoodHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */; };
-		17FD4E3E5C5F482EA4EE1EC0 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */; };
-		A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */; };
-		E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */; };
-		AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */; };
+		F88E9E06D2AD429CAD984C4E /* MoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */; };
+		FF11361711D0961284B8CDEA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D5CD203DC48EC2F4C10D2252 /* Foundation.framework */; };
+		FF52568530034FE4817238B6 /* CycleCorrelationAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,56 +81,53 @@
 
 /* Begin PBXFileReference section */
 		051EFB82BFF2F9A989DA2F6E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
-		C822A0D4413D48B092CF2724 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
+		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
+		08D087871E0D4FC5B06F9D87R /* AppSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = XingXu/Models/AppSettings.swift; sourceTree = "<group>"; };
+		0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleTrackingView.swift; path = XingXu/Views/CycleTrackingView.swift; sourceTree = "<group>"; };
+		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
 		11EDA863F2D457E98D5EF291 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
+		17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = XingXu/Views/SettingsView.swift; sourceTree = "<group>"; };
+		1908A7110B084AE985C88D15R /* MoodPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodPickerView.swift; path = XingXu/Views/MoodPickerView.swift; sourceTree = "<group>"; };
 		1F0C508626F2C6FC0F962719 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = XingXu/Info.plist; sourceTree = "<group>"; };
+		22DCC227640646E487D598B3R /* TaskItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskItem.swift; path = XingXu/Models/TaskItem.swift; sourceTree = "<group>"; };
+		27DE56753FF54732BD3B7A2CR /* BrowseView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowseView.swift; path = XingXu/Views/BrowseView.swift; sourceTree = "<group>"; };
+		2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsView.swift; path = XingXu/Views/AnalyticsView.swift; sourceTree = "<group>"; };
 		2E2554652AD8C991E62ED3BC /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = XingXuWidget/Entry.swift; sourceTree = "<group>"; };
+		3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodHistoryView.swift; path = XingXu/Views/MoodHistoryView.swift; sourceTree = "<group>"; };
 		3C71537FC9DAB77414DA593E /* XingXu.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; path = XingXu.entitlements; sourceTree = "<group>"; };
 		4EA2B7A4EB17A57C0B184AFA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		6156274E582A4A71BB4E1950R /* TodayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = XingXu/Views/TodayView.swift; sourceTree = "<group>"; };
+		651E9BC7BCD44D5390D6C866R /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = XingXu/Views/ContentView.swift; sourceTree = "<group>"; };
 		6A682D32E7CC01AE664A5C23 /* Provider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Provider.swift; path = XingXuWidget/Provider.swift; sourceTree = "<group>"; };
 		8105E3B4C44D233FE1E39DC9 /* XingXuWidgetBundle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = XingXuWidgetBundle.swift; path = XingXuWidget/XingXuWidgetBundle.swift; sourceTree = "<group>"; };
+		81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CyclePredictor.swift; path = XingXu/Services/CyclePredictor.swift; sourceTree = "<group>"; };
+		8759B83BAF7C36A03212B5A0 /* HomeLayoutEditorView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = XingXu/Views/HomeLayoutEditorView.swift; sourceTree = "<group>"; };
 		880D873AFF3B00AB0EAFD191 /* XingXuWidget.entitlements */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.entitlements; name = XingXuWidget.entitlements; path = XingXuWidget/XingXuWidget.entitlements; sourceTree = "<group>"; };
+		8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MenstrualCycle.swift; path = XingXu/Models/MenstrualCycle.swift; sourceTree = "<group>"; };
+		8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingView.swift; path = XingXu/Views/OnboardingView.swift; sourceTree = "<group>"; };
 		9388AF1776C039D18A214EBF /* Assets.xcassets */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder.assetcatalog; name = Assets.xcassets; path = XingXu/Assets.xcassets; sourceTree = "<group>"; };
+		A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateLibraryView.swift; path = XingXu/Views/TemplateLibraryView.swift; sourceTree = "<group>"; };
 		A82CEE3871070D4828FEA22D /* XingXuWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = XingXuWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
+		AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = XingXu/Views/Components/EmptyStateView.swift; sourceTree = "<group>"; };
 		AE2331054A197DE0C3A517CF /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/WidgetKit.framework; sourceTree = DEVELOPER_DIR; };
 		B020AAC044812CF3726128B1 /* XingXuWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = XingXuWidget.swift; path = XingXuWidget/XingXuWidget.swift; sourceTree = "<group>"; };
 		B200E3687D89151733610CA6 /* SharedData.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SharedData.swift; path = Shared/SharedData.swift; sourceTree = "<group>"; };
+		B478AE92320843D8A83A436CR /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalendarView.swift; path = XingXu/Views/CalendarView.swift; sourceTree = "<group>"; };
+		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
+		C822A0D4413D48B092CF2724 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/HealthKit.framework; sourceTree = DEVELOPER_DIR; };
 		C826BFEF4006D191075F8C14 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/WebKit.framework; sourceTree = DEVELOPER_DIR; };
 		CE7D815E738E331849E87064 /* Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; name = Info.plist; path = XingXuWidget/Info.plist; sourceTree = "<group>"; };
 		D04A50D1EA49A52A3347DDDB /* XingXu.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = XingXu.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D49896F719214D1C80940075R /* SummaryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SummaryView.swift; path = XingXu/Views/SummaryView.swift; sourceTree = "<group>"; };
 		D5CD203DC48EC2F4C10D2252 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		DDF128991EA269DD7BDF8423 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = XingXu/AppDelegate.swift; sourceTree = "<group>"; };
+		E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskRow.swift; path = XingXu/Views/Components/TaskRow.swift; sourceTree = "<group>"; };
 		E53D743D55BB54E3DBF2891E /* SceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = XingXu/SceneDelegate.swift; sourceTree = "<group>"; };
 		EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = XingXu/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		22DCC227640646E487D598B3R /* TaskItem.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskItem.swift; path = XingXu/Models/TaskItem.swift; sourceTree = "<group>"; };
-		F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodEntry.swift; path = XingXu/Models/MoodEntry.swift; sourceTree = "<group>"; };
-		8BF9F06748DD462F99DF03CAR /* MenstrualCycle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MenstrualCycle.swift; path = XingXu/Models/MenstrualCycle.swift; sourceTree = "<group>"; };
-		08D087871E0D4FC5B06F9D87R /* AppSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = XingXu/Models/AppSettings.swift; sourceTree = "<group>"; };
-		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
-		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
-				AA1B2C3D4E5F6789ABCDEF0R /* iCloudSyncManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = iCloudSyncManager.swift; path = XingXu/Services/iCloudSyncManager.swift; sourceTree = "<group>"; };
-		FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleCorrelationAnalyzer.swift; path = XingXu/Services/CycleCorrelationAnalyzer.swift; sourceTree = "<group>"; };
-		81D7E4ECB8C64FFEB9E9A8C3R /* CyclePredictor.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CyclePredictor.swift; path = XingXu/Services/CyclePredictor.swift; sourceTree = "<group>"; };
-		B53C3264B38C4CBFB56857DFR /* HealthManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = HealthManager.swift; path = XingXu/Services/HealthManager.swift; sourceTree = "<group>"; };
-		651E9BC7BCD44D5390D6C866R /* ContentView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = XingXu/Views/ContentView.swift; sourceTree = "<group>"; };
-		6156274E582A4A71BB4E1950R /* TodayView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TodayView.swift; path = XingXu/Views/TodayView.swift; sourceTree = "<group>"; };
-		0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleTrackingView.swift; path = XingXu/Views/CycleTrackingView.swift; sourceTree = "<group>"; };
-		8F23BC620F1C456CB76EEC73R /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = OnboardingView.swift; path = XingXu/Views/OnboardingView.swift; sourceTree = "<group>"; };
 		F5DDEBBE76AA495F97147811R /* AddTaskView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AddTaskView.swift; path = XingXu/Views/AddTaskView.swift; sourceTree = "<group>"; };
-		1908A7110B084AE985C88D15R /* MoodPickerView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodPickerView.swift; path = XingXu/Views/MoodPickerView.swift; sourceTree = "<group>"; };
-		B478AE92320843D8A83A436CR /* CalendarView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CalendarView.swift; path = XingXu/Views/CalendarView.swift; sourceTree = "<group>"; };
-		2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AnalyticsView.swift; path = XingXu/Views/AnalyticsView.swift; sourceTree = "<group>"; };
-		D49896F719214D1C80940075R /* SummaryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SummaryView.swift; path = XingXu/Views/SummaryView.swift; sourceTree = "<group>"; };
-		27DE56753FF54732BD3B7A2CR /* BrowseView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = BrowseView.swift; path = XingXu/Views/BrowseView.swift; sourceTree = "<group>"; };
-		3AE7A42E50A148D4862E4ACBR /* MoodHistoryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodHistoryView.swift; path = XingXu/Views/MoodHistoryView.swift; sourceTree = "<group>"; };
-		17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = XingXu/Views/SettingsView.swift; sourceTree = "<group>"; };
-		A02F2AC355814E249CC5AC68R /* TemplateLibraryView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TemplateLibraryView.swift; path = XingXu/Views/TemplateLibraryView.swift; sourceTree = "<group>"; };
-		E1DD7E79ECCF4053BE8E9AE1R /* TaskRow.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = TaskRow.swift; path = XingXu/Views/Components/TaskRow.swift; sourceTree = "<group>"; };
-		AD2D8BE939FF4820861A7900R /* EmptyStateView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = EmptyStateView.swift; path = XingXu/Views/Components/EmptyStateView.swift; sourceTree = "<group>"; };
-		AA1111111111111111111111 /* Models */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Models; path = XingXu/Models; sourceTree = "<group>"; };
-		BB2222222222222222222222 /* Views */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Views; path = XingXu/Views; sourceTree = "<group>"; };
-		CC3333333333333333333333 /* Services */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Services; path = XingXu/Services; sourceTree = "<group>"; };
-		DD4444444444444444444444 /* Components */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; name = Components; path = XingXu/Views/Components; sourceTree = "<group>"; };
+		F88E9E06D2AD429CAD984C4ER /* MoodEntry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MoodEntry.swift; path = XingXu/Models/MoodEntry.swift; sourceTree = "<group>"; };
+		FF52568530034FE4817238B6R /* CycleCorrelationAnalyzer.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleCorrelationAnalyzer.swift; path = XingXu/Services/CycleCorrelationAnalyzer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,7 +138,7 @@
 				FF11361711D0961284B8CDEA /* Foundation.framework in Frameworks */,
 				A42CD6DB0FF90649DF7433B0 /* WidgetKit.framework in Frameworks */,
 				187C9124EF63E45EBE767AF0 /* SwiftUI.framework in Frameworks */,
-					298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */,
+				298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -181,6 +179,7 @@
 				EF088B807E7ACE3FB3AF830C /* LaunchScreen.storyboard */,
 				1F0C508626F2C6FC0F962719 /* Info.plist */,
 				9388AF1776C039D18A214EBF /* Assets.xcassets */,
+				CA0DE6A9216DCF943B18B0E1 /* Views */,
 			);
 			name = XingXu;
 			sourceTree = "<group>";
@@ -208,6 +207,14 @@
 				0D041AA80EF49BF15B9E159F /* iOS */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CA0DE6A9216DCF943B18B0E1 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				8759B83BAF7C36A03212B5A0 /* HomeLayoutEditorView.swift */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 		CEE889B1D9511D1AFAF4028F /* XingXuWidget */ = {
@@ -336,7 +343,7 @@
 				8BF9F06748DD462F99DF03CA /* MenstrualCycle.swift in Sources */,
 				08D087871E0D4FC5B06F9D87 /* AppSettings.swift in Sources */,
 				08B4B7BA651A41F589A1B225 /* ScheduleTemplate.swift in Sources */,
-					AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */,
+				AA1B2C3D4E5F6789ABCDEF01 /* iCloudSyncManager.swift in Sources */,
 				FF52568530034FE4817238B6 /* CycleCorrelationAnalyzer.swift in Sources */,
 				81D7E4ECB8C64FFEB9E9A8C3 /* CyclePredictor.swift in Sources */,
 				B53C3264B38C4CBFB56857DF /* HealthManager.swift in Sources */,
@@ -356,6 +363,7 @@
 				A02F2AC355814E249CC5AC68 /* TemplateLibraryView.swift in Sources */,
 				E1DD7E79ECCF4053BE8E9AE1 /* TaskRow.swift in Sources */,
 				AD2D8BE939FF4820861A7900 /* EmptyStateView.swift in Sources */,
+				059FE1113E0006CABCD12310 /* HomeLayoutEditorView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

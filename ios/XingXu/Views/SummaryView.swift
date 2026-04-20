@@ -10,6 +10,7 @@ struct SummaryView: View {
     @State private var showTemplateLibrary = false
     @State private var showSettings = false
     @State private var showCycleTracking = false
+    @State private var showLayoutEditor = false
     @StateObject private var healthManager = HealthManager.shared
     
     // 自闭症友好：统一柔和色系
@@ -36,6 +37,24 @@ struct SummaryView: View {
         dataManager.stats(forDays: 7)
     }
     
+    @ViewBuilder
+    private func sectionView(for section: HomeSection) -> some View {
+        switch section {
+        case .progress:
+            progressCard
+        case .todaySchedule:
+            todayScheduleSection
+        case .moodOverview:
+            moodOverviewSection
+        case .cycleOverview:
+            cycleOverviewSection
+        case .healthOverview:
+            healthOverviewSection
+        case .weeklyTrend:
+            weeklyTrendSection
+        }
+    }
+    
     private var greeting: String {
         let hour = Calendar.current.component(.hour, from: Date())
         switch hour {
@@ -59,12 +78,11 @@ struct SummaryView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     headerGreeting
-                    progressCard
-                    todayScheduleSection
-                    moodOverviewSection
-                    cycleOverviewSection
-                    healthOverviewSection
-                    weeklyTrendSection
+                    
+                    let visibleSections = dataManager.settings.homeLayout.filter { $0.isVisible }
+                    ForEach(visibleSections) { item in
+                        sectionView(for: item.section)
+                    }
                 }
                 .padding(.vertical)
             }
@@ -95,6 +113,9 @@ struct SummaryView: View {
                             Label("日程模板", systemImage: "doc.on.doc")
                         }
                         Divider()
+                        Button(action: { showLayoutEditor = true }) {
+                            Label("主页布局", systemImage: "rectangle.3.group")
+                        }
                         Button(action: { showSettings = true }) {
                             Label("设置", systemImage: "gearshape")
                         }
@@ -128,6 +149,10 @@ struct SummaryView: View {
             }
             .sheet(isPresented: $showCycleTracking) {
                 CycleTrackingView()
+                    .environmentObject(dataManager)
+            }
+            .sheet(isPresented: $showLayoutEditor) {
+                HomeLayoutEditorView()
                     .environmentObject(dataManager)
             }
             .navigationDestination(isPresented: $showTodayDetail) {
@@ -390,7 +415,7 @@ struct SummaryView: View {
                             Spacer()
                         }
                         HStack(alignment: .lastTextBaseline, spacing: 2) {
-                            if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
+                            if let earliest = prediction.nextWindowEarliest, let _ = prediction.nextWindowLatest {
                                 let daysUntil = daysBetween(Date(), earliest)
                                 if daysUntil <= 0 {
                                     Text("快了")

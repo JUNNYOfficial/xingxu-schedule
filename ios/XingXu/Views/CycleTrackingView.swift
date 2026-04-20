@@ -55,10 +55,10 @@ struct CycleTrackingView: View {
     // MARK: - 预测卡片
     
     private var predictionCard: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 14) {
             // 大数字显示
             HStack(alignment: .lastTextBaseline, spacing: 4) {
-                if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
+                if let earliest = prediction.nextWindowEarliest, let _ = prediction.nextWindowLatest {
                     let daysUntil = daysBetween(Date(), earliest)
                     if daysUntil <= 0 {
                         Text("可能")
@@ -67,17 +67,23 @@ struct CycleTrackingView: View {
                             .font(.system(size: 48, weight: .bold))
                     } else {
                         Text("\(daysUntil)")
-                            .font(.system(size: 64, weight: .bold))
+                            .font(.system(size: 56, weight: .bold))
                             .foregroundColor(prediction.isPremenstrualAlert ? Color(hex: "#D4886A") : primaryTint)
                         Text("天左右")
                             .font(.title2)
                     }
                 } else {
-                    Text("--")
-                        .font(.system(size: 64, weight: .bold))
-                        .foregroundColor(.secondary)
+                    VStack(spacing: 8) {
+                        Text("--")
+                            .font(.system(size: 48, weight: .bold))
+                            .foregroundColor(.secondary)
+                        Text("还需要多记录几次")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
+            .frame(minHeight: 56)
             
             Text(prediction.daysUntilDescription)
                 .font(.subheadline)
@@ -86,32 +92,31 @@ struct CycleTrackingView: View {
                 .padding(.horizontal)
             
             // 规律度指示器
-            if prediction.regularityScore > 0 {
-                HStack(spacing: 8) {
-                    Text("周期规律度")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(Color.gray.opacity(0.15))
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(regularityColor)
-                                .frame(width: geo.size.width * CGFloat(prediction.regularityScore) / 100)
-                        }
+            HStack(spacing: 8) {
+                Text("周期规律度")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.15))
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(regularityColor)
+                            .frame(width: geo.size.width * CGFloat(prediction.regularityScore) / 100)
                     }
-                    .frame(height: 8)
-                    Text("\(prediction.regularityScore)")
-                        .font(.caption.bold())
-                        .foregroundColor(regularityColor)
-                        .frame(width: 28, alignment: .trailing)
                 }
-                .padding(.horizontal)
+                .frame(height: 8)
+                Text("\(prediction.regularityScore)")
+                    .font(.caption.bold())
+                    .foregroundColor(regularityColor)
+                    .frame(width: 28, alignment: .trailing)
             }
+            .padding(.horizontal)
+            .opacity(prediction.regularityScore > 0 ? 1 : 0)
             
             // 概率窗口显示
-            if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
-                HStack(spacing: 16) {
+            HStack(spacing: 16) {
+                if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
                     VStack(spacing: 4) {
                         Text(formatShortDate(earliest))
                             .font(.subheadline.bold())
@@ -130,14 +135,18 @@ struct CycleTrackingView: View {
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
+                } else {
+                    Text("记录 3 次以上即可预测")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
-                .padding(.top, 4)
             }
+            .padding(.top, 2)
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(20)
-        .shadow(color: .black.opacity(0.04), radius: 10, x: 0, y: 3)
+        .cornerRadius(16)
+        .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
         .padding(.horizontal)
     }
     
@@ -153,7 +162,7 @@ struct CycleTrackingView: View {
     // MARK: - 状态卡片
     
     private var statusCard: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Circle()
                     .fill(Color(hex: prediction.currentPhase.color))
@@ -167,17 +176,17 @@ struct CycleTrackingView: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
             
-            if profile.needsGentleCare {
-                HStack(spacing: 8) {
-                    Image(systemName: "heart.fill")
-                        .font(.caption)
-                        .foregroundColor(Color(hex: "#C27BA0"))
-                    Text("您的周期还在变化中，这是完全正常的。多记录几次，预测会越来越准。")
-                        .font(.caption)
-                        .foregroundColor(Color(hex: "#C27BA0"))
-                }
-                .padding(.top, 4)
+            HStack(spacing: 8) {
+                Image(systemName: "heart.fill")
+                    .font(.caption)
+                    .foregroundColor(Color(hex: "#C27BA0"))
+                Text(profile.needsGentleCare
+                    ? "您的周期还在变化中，这是完全正常的。多记录几次，预测会越来越准。"
+                    : "您的周期记录已足够，预测准确度较高。")
+                    .font(.caption)
+                    .foregroundColor(Color(hex: "#C27BA0"))
             }
+            .padding(.top, 2)
         }
         .padding()
         .background(Color(.systemBackground))
