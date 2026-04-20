@@ -460,9 +460,11 @@ struct SummaryView: View {
                             .foregroundColor(.secondary)
                             .lineLimit(2)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer(minLength: 0)
                     }
                     .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)
                     .background(Color(.systemBackground))
                     .cornerRadius(16)
                     .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
@@ -483,9 +485,11 @@ struct SummaryView: View {
                             .foregroundColor(.secondary)
                             .lineLimit(2)
                             .frame(maxWidth: .infinity, alignment: .leading)
+                        
+                        Spacer(minLength: 0)
                     }
                     .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, minHeight: 110, alignment: .topLeading)
                     .background(Color(.systemBackground))
                     .cornerRadius(16)
                     .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
