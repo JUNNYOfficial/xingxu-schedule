@@ -21,6 +21,7 @@
 		1CB70490B81DD5FCD220FF9B /* XingXuWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8105E3B4C44D233FE1E39DC9 /* XingXuWidgetBundle.swift */; };
 		22DCC227640646E487D598B3 /* TaskItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22DCC227640646E487D598B3R /* TaskItem.swift */; };
 		27DE56753FF54732BD3B7A2C /* BrowseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27DE56753FF54732BD3B7A2CR /* BrowseView.swift */; };
+		2862B22AB859405BFFA563CF /* MindfulnessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FA4C1BE2CF38747D4339C17 /* MindfulnessView.swift */; };
 		298B6D08B62D4A52A827DE1D /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C822A0D4413D48B092CF2724 /* HealthKit.framework */; };
 		2BA3C56807AB4C1E9CB6C441 /* AnalyticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA3C56807AB4C1E9CB6C441R /* AnalyticsView.swift */; };
 		34EF9553B071D5DC84E775E3 /* XingXuWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B020AAC044812CF3726128B1 /* XingXuWidget.swift */; };
@@ -86,6 +87,7 @@
 		08B4B7BA651A41F589A1B225R /* ScheduleTemplate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ScheduleTemplate.swift; path = XingXu/Models/ScheduleTemplate.swift; sourceTree = "<group>"; };
 		08D087871E0D4FC5B06F9D87R /* AppSettings.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppSettings.swift; path = XingXu/Models/AppSettings.swift; sourceTree = "<group>"; };
 		0D56975539A0466890C1DCA0R /* CycleTrackingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = CycleTrackingView.swift; path = XingXu/Views/CycleTrackingView.swift; sourceTree = "<group>"; };
+		0FA4C1BE2CF38747D4339C17 /* MindfulnessView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = MindfulnessView.swift; path = XingXu/Views/MindfulnessView.swift; sourceTree = "<group>"; };
 		11B25E23A72E41A0A431CABDR /* DataManager.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DataManager.swift; path = XingXu/Services/DataManager.swift; sourceTree = "<group>"; };
 		11EDA863F2D457E98D5EF291 /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/UserNotifications.framework; sourceTree = DEVELOPER_DIR; };
 		17FD4E3E5C5F482EA4EE1EC0R /* SettingsView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = XingXu/Views/SettingsView.swift; sourceTree = "<group>"; };
@@ -219,6 +221,7 @@
 				8759B83BAF7C36A03212B5A0 /* HomeLayoutEditorView.swift */,
 				2C0112CA75E848FE496F6A69 /* BreathingGuideView.swift */,
 				49CAE587F550506895BEAE39 /* AlarmView.swift */,
+				0FA4C1BE2CF38747D4339C17 /* MindfulnessView.swift */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -372,6 +375,7 @@
 				059FE1113E0006CABCD12310 /* HomeLayoutEditorView.swift in Sources */,
 				BF112E76059D8D429B79CC51 /* BreathingGuideView.swift in Sources */,
 				0884A3615BA1017E25DA41BC /* AlarmView.swift in Sources */,
+				2862B22AB859405BFFA563CF /* MindfulnessView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
