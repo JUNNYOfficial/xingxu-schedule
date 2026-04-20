@@ -37,21 +37,29 @@ struct SummaryView: View {
         dataManager.stats(forDays: 7)
     }
     
-    @ViewBuilder
     private func sectionView(for section: HomeSection) -> some View {
-        switch section {
-        case .progress:
-            progressCard
-        case .todaySchedule:
-            todayScheduleSection
-        case .moodOverview:
-            moodOverviewSection
-        case .cycleOverview:
-            cycleOverviewSection
-        case .healthOverview:
-            healthOverviewSection
-        case .weeklyTrend:
-            weeklyTrendSection
+        Group {
+            switch section {
+            case .progress:
+                progressCard
+            case .todaySchedule:
+                todayScheduleSection
+            case .moodOverview:
+                moodOverviewSection
+            case .cycleOverview:
+                cycleOverviewSection
+            case .healthOverview:
+                healthOverviewSection
+            case .weeklyTrend:
+                weeklyTrendSection
+            }
+        }
+        .contextMenu {
+            Button {
+                showLayoutEditor = true
+            } label: {
+                Label("编辑布局", systemImage: "rectangle.3.group")
+            }
         }
     }
     
