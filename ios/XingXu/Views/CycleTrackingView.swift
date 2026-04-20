@@ -26,7 +26,6 @@ struct CycleTrackingView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     predictionCard
-                    statusCard
                     if !dataManager.menstrualRecords.isEmpty {
                         cycleCalendarSection
                         cycleTrendSection
