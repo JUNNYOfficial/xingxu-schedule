@@ -427,88 +427,60 @@ struct SummaryView: View {
                 )
                 .padding(.horizontal)
             } else {
-                HStack(spacing: 12) {
-                    // 预测卡片
-                    VStack(spacing: 8) {
-                        HStack {
-                            Image(systemName: "calendar.badge.clock")
-                                .font(.title3)
-                                .foregroundColor(prediction.isPremenstrualAlert ? Color(hex: "#D4886A") : primaryTint)
-                            Spacer()
+                VStack(spacing: 12) {
+                    HStack {
+                        Image(systemName: "calendar.badge.clock")
+                            .font(.title3)
+                            .foregroundColor(prediction.isPremenstrualAlert ? Color(hex: "#D4886A") : primaryTint)
+                        Spacer()
+                        HStack(spacing: 4) {
+                            Circle()
+                                .fill(Color(hex: prediction.currentPhase.color))
+                                .frame(width: 8, height: 8)
+                            Text(prediction.currentPhase.rawValue)
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                        HStack(alignment: .lastTextBaseline, spacing: 2) {
-                            if let earliest = prediction.nextWindowEarliest, let _ = prediction.nextWindowLatest {
-                                let daysUntil = daysBetween(Date(), earliest)
-                                if daysUntil <= 0 {
-                                    Text("快了")
-                                        .font(.headline)
-                                } else {
-                                    Text("\(daysUntil)")
-                                        .font(.system(size: 28, weight: .bold))
-                                    Text("天")
-                                        .font(.subheadline)
-                                }
-                            } else {
-                                Text("--")
-                                    .font(.title2)
-                                    .foregroundColor(.secondary)
-                            }
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        Text(prediction.daysUntilDescription)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(2)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        
-                        Spacer(minLength: 0)
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(16)
-                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
                     
-                    // 阶段卡片
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Image(systemName: phaseIcon(for: prediction.currentPhase))
+                    HStack(alignment: .lastTextBaseline, spacing: 4) {
+                        if let earliest = prediction.nextWindowEarliest, let _ = prediction.nextWindowLatest {
+                            let daysUntil = daysBetween(Date(), earliest)
+                            if daysUntil <= 0 {
+                                Text("可能快来了")
+                                    .font(.title2.bold())
+                            } else {
+                                Text("\(daysUntil)")
+                                    .font(.system(size: 36, weight: .bold))
+                                Text("天")
+                                    .font(.title3)
+                            }
+                        } else {
+                            Text("--")
                                 .font(.title2)
-                                .foregroundColor(Color(hex: prediction.currentPhase.color))
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    Text(prediction.daysUntilDescription)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    
+                    if let earliest = prediction.nextWindowEarliest, let latest = prediction.nextWindowLatest {
+                        HStack(spacing: 12) {
+                            Text("预计 \(formatShortDate(earliest)) — \(formatShortDate(latest))")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                             Spacer()
                         }
-                        
-                        Text(prediction.currentPhase.rawValue)
-                            .font(.headline)
-                        
-                        Text(phaseAdvice(for: prediction.currentPhase))
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                            .lineLimit(2)
-                        
-                        // 小进度指示：距离下次经期
-                        if let earliest = prediction.nextWindowEarliest {
-                            let days = daysBetween(Date(), earliest)
-                            if days > 0 {
-                                HStack(spacing: 4) {
-                                    Image(systemName: "hourglass")
-                                        .font(.caption2)
-                                        .foregroundColor(Color(hex: prediction.currentPhase.color))
-                                    Text("约 \(days) 天后")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                        }
-                        
-                        Spacer(minLength: 0)
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .topLeading)
-                    .background(Color(.systemBackground))
-                    .cornerRadius(16)
-                    .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
                 }
+                .padding()
+                .background(Color(.systemBackground))
+                .cornerRadius(16)
+                .shadow(color: .black.opacity(0.04), radius: 8, x: 0, y: 2)
                 .padding(.horizontal)
             }
         }
@@ -657,5 +629,12 @@ struct SummaryView: View {
     
     private func daysBetween(_ from: Date, _ to: Date) -> Int {
         Calendar.current.dateComponents([.day], from: from, to: to).day ?? 0
+    }
+    
+    private func formatShortDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateFormat = "M/d"
+        return formatter.string(from: date)
     }
 }
